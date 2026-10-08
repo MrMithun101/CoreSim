@@ -1,0 +1,37 @@
+name: build-and-test
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  linux:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler: [gcc, clang]
+        build_type: [Debug, Release]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install platform dependencies
+        run: sudo apt-get update && sudo apt-get install -y xorg-dev libgl1-mesa-dev xvfb
+      - name: Configure
+        env:
+          CC: ${{ matrix.compiler == 'gcc' && 'gcc' || 'clang' }}
+          CXX: ${{ matrix.compiler == 'gcc' && 'g++' || 'clang++' }}
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCORESIM_WINDOW_TESTS=ON
+      - run: cmake --build build --parallel 2
+      - name: Unit and software-rendered window tests
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+        run: xvfb-run -a ctest --test-dir build --output-on-failure
+  sanitizers:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure headless ASan and UBSan tests
+        env:
+          CC: clang
+          CXX: clang++
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DCORESIM_BUILD_APP=OFF -DCORESIM_SANITIZER=address
+      - run: cmake --build build --parallel 2
+      - run: ctest --test-dir build --output-on-failure
