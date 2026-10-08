@@ -25,3 +25,11 @@ Mesh components reference shared geometry through `MeshKind`; they never own Ope
 ## Tests
 
 Tests cover stale/default IDs, generation changes after reuse, repeated destruction, all-component cleanup, missing/replaced/removed components, compaction, const lookups, and a fixed-seed 6,000-operation reference-model comparison. Generation exhaustion is guarded in code but is not iterated to exhaustion in tests.
+
+## Demo and rendering integration
+
+`DemoScene` owns a World and populates 64 entities with transform, cube-mesh reference, and spin components. Spin axes/speeds are attached once and travel with their entity; compaction cannot silently change animation identity. The animation loop iterates spin entries, looks up each transform, and updates only matching entities. Removing a transform or omitting spin is valid.
+
+`Renderer::draw` borrows a const World for the duration of the call. It iterates mesh entries, looks up transforms by ID, and draws the supported intersection. Neither the renderer nor the demo retains component pointers across structural changes. A transform without a mesh is invisible; a mesh without a transform is skipped; an entity without spin is static. Destruction removes it from rendering immediately, and reusing the slot starts with no components.
+
+Display tests use actual framebuffer readback to check those combinations, including restoring a removed transform and reusing a destroyed entity's slot. The scene remains visually equivalent to milestone 3 at initialization. The title reads the actual live entity count rather than a hardcoded 64. Future rigid-body and collider components remain unimplemented, as do physics integration and collision behavior.

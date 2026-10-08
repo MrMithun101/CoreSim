@@ -1,6 +1,6 @@
 # Rendering foundation
 
-The renderer draws indexed cubes with six flat face colors; milestone 3 supplies 64 independent transforms. It uses an OpenGL 3.3 core context and GLSL 330 shaders. The camera and demo scene live in the CPU-only scene module; the renderer borrows a view-projection matrix and transform span. There is no entity/component model yet.
+The renderer draws indexed cubes with six flat face colors; milestone 4 supplies 64 entities through component storage. It uses an OpenGL 3.3 core context and GLSL 330 shaders. The camera and demo scene live in the CPU-only scene module; the renderer borrows a view-projection matrix and const World, joining mesh and transform components by entity ID.
 
 ## Ownership and context lifetime
 

@@ -78,7 +78,11 @@ void draw_single(Renderer& renderer, int width, int height, float angle) {
     const auto view = glm::lookAt(glm::vec3(3.5F, 2.5F, 5.0F), glm::vec3(0), glm::vec3(0, 1, 0));
     const float aspect = height > 0 && width > 0 ? static_cast<float>(width) / static_cast<float>(height) : 1.0F;
     const auto projection = glm::perspective(glm::radians(45.0F), aspect, 0.1F, 100.0F);
-    renderer.draw(width, height, projection * view, std::span(&transform, 1));
+    World world;
+    const auto entity = world.create();
+    world.set_transform(entity, transform);
+    world.set_mesh(entity);
+    renderer.draw(width, height, projection * view, world);
 }
 
 static_assert(!std::is_copy_constructible_v<Shader>);
@@ -241,17 +245,21 @@ TEST_CASE("Renderer draws independent transforms and responds to camera motion")
     Context context;
     Target target;
     Renderer renderer(shaders);
-    std::array<Transform, 2> objects;
-    objects[0].position = {-0.5F, 0, 0};
-    objects[1].position = {0.5F, 0, 0};
-    objects[0].scale = objects[1].scale = glm::vec3(0.2F);
+    World objects;
+    const auto left_entity = objects.create();
+    const auto right_entity = objects.create();
+    objects.set_transform(left_entity).position = {-0.5F, 0, 0};
+    objects.set_transform(right_entity).position = {0.5F, 0, 0};
+    objects.transform(left_entity)->scale = objects.transform(right_entity)->scale = glm::vec3(0.2F);
+    objects.set_mesh(left_entity);
+    objects.set_mesh(right_entity);
     renderer.draw(Target::size, Target::size, glm::mat4(1), objects);
     const auto before = target.pixels();
     const auto left = static_cast<std::size_t>((Target::size / 2 * Target::size + Target::size / 4) * 4);
     const auto right = static_cast<std::size_t>((Target::size / 2 * Target::size + 3 * Target::size / 4) * 4);
     REQUIRE(before[left + 2] > 100);
     REQUIRE(before[right + 2] > 100);
-    objects[1].position.y = 0.7F;
+    objects.transform(right_entity)->position.y = 0.7F;
     renderer.draw(Target::size, Target::size, glm::mat4(1), objects);
     const auto after = target.pixels();
     REQUIRE(after[left + 2] == before[left + 2]);
@@ -259,11 +267,11 @@ TEST_CASE("Renderer draws independent transforms and responds to camera motion")
 
     DemoScene scene;
     Camera camera({16, 18, 27}, -2.106F, -0.52F);
-    renderer.draw(Target::size, Target::size, camera.projection(1) * camera.view(), scene.transforms());
+    renderer.draw(Target::size, Target::size, camera.projection(1) * camera.view(), scene.world());
     const auto initial = target.pixels();
     camera.move({1, 0, 1}, 0.5F);
     camera.look(0.1F, 0.05F);
-    renderer.draw(Target::size, Target::size, camera.projection(1) * camera.view(), scene.transforms());
+    renderer.draw(Target::size, Target::size, camera.projection(1) * camera.view(), scene.world());
     REQUIRE(initial != target.pixels());
     REQUIRE(glGetError() == GL_NO_ERROR);
     if (const char* path = std::getenv("CORESIM_SCENE_IMAGE")) {
@@ -277,4 +285,32 @@ TEST_CASE("Renderer draws independent transforms and responds to camera motion")
         }
         REQUIRE(image.good());
     }
+}
+
+TEST_CASE("Rendering joins mesh and transform components and excludes destroyed entities") {
+    Context context;
+    Target target;
+    Renderer renderer(shaders);
+    World world;
+    const auto entity = world.create();
+    world.set_transform(entity).scale = glm::vec3(0.4F);
+    renderer.draw(Target::size, Target::size, glm::mat4(1), world);
+    const auto background = target.pixels();
+    world.set_mesh(entity);
+    renderer.draw(Target::size, Target::size, glm::mat4(1), world);
+    const auto visible = target.pixels();
+    REQUIRE(visible != background);
+    REQUIRE(world.remove_transform(entity));
+    renderer.draw(Target::size, Target::size, glm::mat4(1), world);
+    REQUIRE(target.pixels() == background);
+    world.set_transform(entity).scale = glm::vec3(0.4F);
+    renderer.draw(Target::size, Target::size, glm::mat4(1), world);
+    REQUIRE(target.pixels() == visible);
+    REQUIRE(world.destroy(entity));
+    const auto replacement = world.create();
+    REQUIRE(replacement.index == entity.index);
+    REQUIRE(replacement.generation != entity.generation);
+    renderer.draw(Target::size, Target::size, glm::mat4(1), world);
+    REQUIRE(target.pixels() == background);
+    REQUIRE(glGetError() == GL_NO_ERROR);
 }

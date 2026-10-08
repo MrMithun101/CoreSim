@@ -64,20 +64,37 @@ TEST_CASE("Transform scales then rotates then translates independently") {
 TEST_CASE("Demo scene has 64 deterministic independent transforms with stable rotations") {
     DemoScene scene;
     const DemoScene copy;
-    REQUIRE(scene.transforms().size() == 64);
-    for (std::size_t i = 0; i < scene.transforms().size(); ++i) {
-        REQUIRE(scene.transforms()[i].position == copy.transforms()[i].position);
+    REQUIRE(scene.world().transforms().size() == 64);
+    for (std::size_t i = 0; i < scene.world().transforms().size(); ++i) {
+        REQUIRE(scene.world().transforms()[i].value.position == copy.world().transforms()[i].value.position);
         if (i > 0) {
-            REQUIRE(scene.transforms()[i].position != scene.transforms()[i - 1].position);
+            REQUIRE(scene.world().transforms()[i].value.position != scene.world().transforms()[i - 1].value.position);
         }
     }
     for (int frame = 0; frame < 1000; ++frame) {
         scene.update(0.016F);
     }
-    for (std::size_t i = 0; i < scene.transforms().size(); ++i) {
-        REQUIRE(scene.transforms()[i].position == copy.transforms()[i].position);
-        REQUIRE(glm::length(scene.transforms()[i].rotation) == Catch::Approx(1.0F));
+    for (std::size_t i = 0; i < scene.world().transforms().size(); ++i) {
+        REQUIRE(scene.world().transforms()[i].value.position == copy.world().transforms()[i].value.position);
+        REQUIRE(glm::length(scene.world().transforms()[i].value.rotation) == Catch::Approx(1.0F));
     }
-    REQUIRE(scene.transforms()[0].rotation != scene.transforms()[1].rotation);
+    REQUIRE(scene.world().transforms()[0].value.rotation != scene.world().transforms()[1].value.rotation);
     REQUIRE_THROWS_AS(scene.update(-1), std::invalid_argument);
+}
+
+TEST_CASE("Demo updates survive entity deletion and incomplete component combinations") {
+    DemoScene scene;
+    auto& world = scene.world();
+    const auto removed = world.spins().front().entity;
+    REQUIRE(world.destroy(removed));
+    const auto missing_transform = world.spins().front().entity;
+    REQUIRE(world.remove_transform(missing_transform));
+    const auto static_entity = world.create();
+    const auto initial = world.set_transform(static_entity).rotation;
+    world.set_mesh(static_entity);
+    REQUIRE_NOTHROW(scene.update(0.1F));
+    REQUIRE(world.transform(static_entity)->rotation == initial);
+    REQUIRE_FALSE(world.alive(removed));
+    REQUIRE(world.transform(missing_transform) == nullptr);
+    REQUIRE(world.size() == 64);
 }

@@ -1,5 +1,13 @@
 # Verification
 
+## Milestone 4 — October 8, 2026
+
+Debug, Release, and ASan/UBSan builds passed all five local CTest entries on the macOS/Apple Clang environment below. No CoreSim compiler warnings or sanitizer diagnostics were reported. The CPU suite passed 53,042 assertions across 12 cases; the renderer suite passed 59 assertions across six cases. Most CPU assertions come from the deterministic lifecycle reference-model test; the count is not a coverage percentage.
+
+New tests cover generation invalidation and slot reuse, repeated destruction, component attachment/replacement/removal, packed-pool compaction, const access, cleanup of all component types, and 6,000 fixed-seed lifecycle operations checked against a reference model. Demo animation remains valid after deletion, missing transforms, and adding a static entity. GPU readback verifies transform-only invisibility, rendering after mesh attachment, hiding/restoring a removed transform, removal after destruction, and an empty replacement entity.
+
+All configurations passed the window smoke test with the entity-backed 64-cube scene. Display tests require desktop access as before. Generation exhaustion is guarded but not practically exercised to its limit. IDs remain scoped to their originating World; cross-World misuse is a documented precondition, not a detected error. No new physics behavior or performance claims were added.
+
 ## Milestone 3 — October 8, 2026
 
 On the same macOS/Apple Clang environment described below, Debug, Release, and ASan/UBSan builds passed all five CTest entries with no CoreSim compiler warnings or sanitizer diagnostics. The CPU suite passed 307 assertions across eight cases; the renderer suite passed 50 assertions across five cases (51 with scene image capture enabled).

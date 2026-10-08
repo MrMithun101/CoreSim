@@ -2,7 +2,7 @@
 
 **High-Performance 3D Physics Simulation Engine**
 
-A C++20 systems and performance engineering project developed one measured milestone at a time. Current scope: **Milestone 3 — Camera and 3D Scene**. It provides a movable perspective camera and 64 independently transformed cubes, move-aware RAII GPU resources, file-based shaders, depth testing, frame timing, and tests. Entity/component storage, physics, profiling, and GPU compute are future milestones. No performance claims are made yet.
+A C++20 systems and performance engineering project developed one measured milestone at a time. Current scope: **Milestone 4 — Entity/Component Foundation**. It provides generation-checked entity IDs, packed component storage, a movable perspective camera and 64 independently transformed cubes, move-aware RAII GPU resources, file-based shaders, depth testing, frame timing, and tests. Physics, profiling, and GPU compute are future milestones. No performance claims are made yet.
 
 ![64-cube scene rendered by CoreSim](docs/images/scene.png)
 
@@ -52,7 +52,7 @@ Initial configuration requires network access. Alternatively, use installed CMak
 
 ## Tests
 
-Default CTest checks timing, camera/transform/scene math, and CLI handling without opening a window. The CPU tests use explicit time inputs and never sleep. GLM is required even for headless scene tests. A build without any GLFW/OpenGL dependency is available:
+Default CTest checks timing, camera/transform/scene math, entity lifecycle and component storage, and CLI handling without opening a window. The CPU tests use explicit time inputs and never sleep. GLM is required even for headless scene tests. A build without any GLFW/OpenGL dependency is available:
 
 ```sh
 cmake -S . -B build-headless -DCORESIM_BUILD_APP=OFF
@@ -84,10 +84,11 @@ ctest --preset asan
 - `Application` owns `GlfwRuntime`, `Window`, `Renderer`, camera, and scene. Reverse destruction releases GPU resources before the context and runtime.
 - `Window` handles native events, context setup, framebuffer size, and presentation. OpenGL rendering lives in `coresim_renderer`.
 - `VertexBuffer`, `IndexBuffer`, `VertexArray`, and `Shader` are noncopyable, movable RAII owners. Shader compilation/link failures include file paths and driver diagnostics.
-- `Renderer` receives view-projection and a read-only transform span; it shares one cube mesh across 64 draws. Camera and scene state remain outside the renderer.
+- `World` owns stable entity IDs and packed transform, mesh-reference, and demo-spin components. Destruction invalidates stale IDs and removes components.
+- `Renderer` borrows a const World and draws entities with both mesh and transform components. It owns shared GPU geometry; camera and CPU scene state remain outside the renderer.
 - `FrameTimer` uses a steady clock. Delta is start-to-start; frame duration covers event processing through buffer swap. FPS averages completed frames over elapsed runtime.
 
-See [camera/scene design and controls](docs/scene.md) and [renderer design](docs/renderer.md) for ownership contracts, the draw pipeline, shader paths, and testing rationale. Format C++ files with the checked-in `.clang-format` configuration.
+See [entity storage and lifecycle](docs/entities.md), [camera/scene design and controls](docs/scene.md) and [renderer design](docs/renderer.md) for ownership contracts, the draw pipeline, shader paths, and testing rationale. Format C++ files with the checked-in `.clang-format` configuration.
 
 Shaders are copied into the build directory and found independently of the working directory. Rebuild and restart after changing them. For a relocated executable or custom shaders:
 
@@ -97,4 +98,4 @@ Shaders are copied into the build directory and found independently of the worki
 
 See [verification notes](docs/verification.md) for actual local results and commands. The screenshot above is an actual framebuffer capture, not an illustration or performance benchmark.
 
-**Next: Milestone 4 — Entity/Component Foundation**, only on explicit request: stable IDs, safe entity lifecycle, and simple contiguous component storage.
+**Next: Milestone 5 — Physics V1**, only on explicit request: custom translational rigid-body physics, gravity, force accumulation, and fixed-timestep integration.

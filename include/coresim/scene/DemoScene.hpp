@@ -1,16 +1,15 @@
 #pragma once
 
-#include <coresim/scene/Transform.hpp>
-#include <array>
-#include <span>
+#include <coresim/scene/World.hpp>
 
 namespace coresim {
 class DemoScene {
 public:
     DemoScene();
     void update(float delta_seconds);
-    [[nodiscard]] std::span<const Transform> transforms() const noexcept { return transforms_; }
+    [[nodiscard]] World& world() noexcept { return world_; }
+    [[nodiscard]] const World& world() const noexcept { return world_; }
 private:
-    std::array<Transform, 64> transforms_{};
+    World world_;
 };
 } // namespace coresim

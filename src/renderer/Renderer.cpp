@@ -1,4 +1,5 @@
 #include <coresim/renderer/Renderer.hpp>
+#include <coresim/scene/World.hpp>
 
 #include <glad/gl.h>
 #include <glm/gtc/type_ptr.hpp>
@@ -36,7 +37,7 @@ Renderer::Renderer(const std::filesystem::path& shader_directory)
 }
 
 void Renderer::draw(int framebuffer_width, int framebuffer_height,
-                    const glm::mat4& view_projection, std::span<const Transform> transforms) {
+                    const glm::mat4& view_projection, const World& world) {
     // Minimized windows may have zero-size framebuffers; avoid division by zero.
     if (framebuffer_width <= 0 || framebuffer_height <= 0) {
         return;
@@ -49,8 +50,12 @@ void Renderer::draw(int framebuffer_width, int framebuffer_height,
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     shader_.bind();
     vertex_array_.bind();
-    for (const auto& object : transforms) {
-        const auto transform = view_projection * object.matrix();
+    for (const auto& entry : world.meshes()) {
+        const auto* object = world.transform(entry.entity);
+        if (!object || entry.value.kind != MeshKind::cube) {
+            continue;
+        }
+        const auto transform = view_projection * object->matrix();
         std::array<float, 16> matrix{};
         std::copy_n(glm::value_ptr(transform), matrix.size(), matrix.begin());
         shader_.set_matrix(transform_location_, matrix);

@@ -3,15 +3,15 @@
 #include <coresim/renderer/Buffers.hpp>
 #include <coresim/renderer/Shader.hpp>
 #include <filesystem>
-#include <coresim/scene/Transform.hpp>
-#include <span>
+#include <glm/mat4x4.hpp>
 
 namespace coresim {
+class World;
 class Renderer {
 public:
     explicit Renderer(const std::filesystem::path& shader_directory);
     void draw(int framebuffer_width, int framebuffer_height, const glm::mat4& view_projection,
-              std::span<const Transform> transforms);
+              const World& world);
 private:
     Shader shader_;
     VertexBuffer vertices_;

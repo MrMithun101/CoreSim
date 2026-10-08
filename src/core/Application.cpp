@@ -38,7 +38,8 @@ void Application::update(const FrameStats& stats) {
     scene_.update(dt);
     if (stats.frame_count > 0 && stats.elapsed_seconds >= next_title_update_) {
         std::ostringstream title;
-        title << std::fixed << std::setprecision(2) << "CoreSim | 64 cubes | WASD/QE move, RMB look | avg FPS " << stats.fps
+        title << std::fixed << std::setprecision(2) << "CoreSim | " << scene_.world().size()
+              << " entities | WASD/QE move, RMB look | avg FPS " << stats.fps
               << " | dt " << stats.delta_seconds * 1000.0 << " ms | frame "
               << stats.total_frame_seconds * 1000.0 << " ms";
         window_.set_title(title.str());
@@ -49,7 +50,7 @@ void Application::render() {
     const auto [width, height] = window_.framebuffer_size();
     if (width > 0 && height > 0) {
         const float aspect = static_cast<float>(width) / static_cast<float>(height);
-        renderer_.draw(width, height, camera_.projection(aspect) * camera_.view(), scene_.transforms());
+        renderer_.draw(width, height, camera_.projection(aspect) * camera_.view(), scene_.world());
     }
     window_.present();
 }
