@@ -8,7 +8,7 @@ New checks cover camera movement and timestep independence, diagonal speed, view
 
 The interactive application ran and exited cleanly after 2,427 frames. The desktop automation tool could not attach to the command-line GLFW executable, so live WASD/mouse/cursor-focus behavior was not verified through UI automation. Movement/look math and its effect on rendered output were tested independently. This distinction remains relevant for manual testing.
 
-GitHub Actions passed the baseline commit `d84e2b8` and camera-math commit `622d2bc`, including Linux GCC/Clang Debug/Release display tests and the headless ASan/UBSan job. The scene integration's remote results are checked after pushing. Local verification used the same pinned dependency checkouts as milestone 2.
+GitHub Actions passed the baseline commit `d84e2b8` and camera-math commit `622d2bc`, including Linux GCC/Clang Debug/Release display tests and the headless ASan/UBSan job. The scene integration commit `4e2b7b4` also passed all five Linux jobs: GCC and Clang in Debug/Release with software-rendered display tests, plus headless ASan/UBSan ([CI run](https://github.com/MrMithun101/CoreSim/actions/runs/37729629798)). Local verification used the same pinned dependency checkouts as milestone 2.
 
 ## Milestone 2 — October 8, 2026
 
