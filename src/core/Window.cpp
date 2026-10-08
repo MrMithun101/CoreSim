@@ -34,7 +34,7 @@ Window::Window(const GlfwRuntime&, int width, int height, bool visible) {
 #ifdef __APPLE__
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
 #endif
-    handle_.reset(glfwCreateWindow(width, height, "CoreSim | WASD move, hold RMB to look", nullptr, nullptr));
+    handle_.reset(glfwCreateWindow(width, height, "CoreSim | WASD move, RMB look, R reset physics", nullptr, nullptr));
     if (!handle_) {
         throw std::runtime_error("Could not create CoreSim OpenGL 3.3 window");
     }
@@ -74,9 +74,14 @@ InputState Window::input() {
         const auto pressed = [this](int key) {
             return glfwGetKey(handle_.get(), key) == GLFW_PRESS ? 1.0F : 0.0F;
         };
+        const bool reset_down = pressed(GLFW_KEY_R) > 0;
+        state.reset_physics = reset_down && !reset_was_down_;
+        reset_was_down_ = reset_down;
         state.right = pressed(GLFW_KEY_D) - pressed(GLFW_KEY_A);
         state.forward = pressed(GLFW_KEY_W) - pressed(GLFW_KEY_S);
         state.up = pressed(GLFW_KEY_E) - pressed(GLFW_KEY_Q);
+    } else {
+        reset_was_down_ = false;
     }
     return state;
 }

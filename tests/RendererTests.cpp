@@ -1,3 +1,5 @@
+#include <coresim/core/FixedStepper.hpp>
+#include <coresim/physics/PhysicsSystem.hpp>
 #include <coresim/core/Window.hpp>
 #include <coresim/renderer/Renderer.hpp>
 #include <coresim/scene/Camera.hpp>
@@ -312,5 +314,30 @@ TEST_CASE("Rendering joins mesh and transform components and excludes destroyed 
     REQUIRE(replacement.generation != entity.generation);
     renderer.draw(Target::size, Target::size, glm::mat4(1), world);
     REQUIRE(target.pixels() == background);
+    REQUIRE(glGetError() == GL_NO_ERROR);
+}
+
+
+TEST_CASE("Renderer observes fixed-step body positions without owning physics state") {
+    Context context;
+    Target target;
+    Renderer renderer(shaders);
+    World world;
+    const auto entity = world.create();
+    world.set_transform(entity).scale = glm::vec3(0.2F);
+    world.set_mesh(entity);
+    world.set_rigid_body(entity);
+    const auto draw = [&] { renderer.draw(Target::size, Target::size, glm::mat4(1), world); };
+    draw();
+    const auto before = target.pixels();
+    PhysicsSystem physics;
+    FixedStepper clock;
+    for (int frame = 0; frame < 30; ++frame) {
+        clock.advance(1.0 / 60, [&](float step) { physics.step(world, step); });
+    }
+    REQUIRE(world.transform(entity)->position.y < -1.0F);
+    draw();
+    REQUIRE(before != target.pixels());
+    REQUIRE(target.center()[2] < 50);
     REQUIRE(glGetError() == GL_NO_ERROR);
 }

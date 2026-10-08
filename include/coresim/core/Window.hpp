@@ -38,6 +38,7 @@ private:
     };
     std::unique_ptr<GLFWwindow, Deleter> handle_;
     bool mouse_captured_{};
+    bool reset_was_down_{};
     double cursor_x_{};
     double cursor_y_{};
 };

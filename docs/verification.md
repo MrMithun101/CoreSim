@@ -1,5 +1,13 @@
 # Verification
 
+## Milestone 5 — October 8, 2026
+
+Debug, Release, and ASan/UBSan builds passed all five local CTest entries without CoreSim compiler warnings or sanitizer diagnostics. The CPU suite passed 53,700 assertions in 20 cases; the renderer suite passed 63 assertions in seven cases. Counts include prior milestone tests and are not coverage percentages.
+
+New tests check the semi-implicit discrete solution, gravity and inverse-mass force response, static and missing-transform handling, force accumulation/clearing, rigid-body lifecycle, invalid state handling, fixed-step remainders, stall time accounting, and reset behavior. Two seconds at 30/60/144 render FPS produce identical 240-step states; irregular frame durations also produce 240 steps. A GPU readback test confirms that physics-updated positions change rendering without renderer-owned simulation state.
+
+A separate 240-frame application run exited normally and reported 260 physics ticks and 0.275308 seconds of dropped physics time. The nonzero dropped time demonstrates the configured stall policy being exercised; this run is not a performance benchmark or a claim of real-time simulation during overload. R-key edge detection was not manually verified; the reset operation itself is covered by CPU tests, including stale-ID safety. Collision handling and angular dynamics remain absent.
+
 ## Milestone 4 — October 8, 2026
 
 Commits `40bb5a6` (storage) and `f311ebf` (integration) passed Linux CI. The [integration run](https://github.com/MrMithun101/CoreSim/actions/runs/37832701304) passed all five jobs: GCC/Clang Debug/Release with software-rendered display tests and headless ASan/UBSan.

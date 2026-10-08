@@ -14,7 +14,7 @@ int main(int argc, char** argv) {
         for (int i = 1; i < argc; ++i) {
             const std::string_view option(argv[i]);
             if (option == "--help") {
-                std::cout << usage << "WASD move, Q/E down/up, hold right mouse to look. Escape closes.\n";
+                std::cout << usage << "WASD move, Q/E down/up, hold right mouse to look. R resets physics. Escape closes.\n";
                 return 0;
             }
             if ((option != "--frames" && option != "--shader-dir") || i + 1 >= argc) {

@@ -46,7 +46,7 @@ if(CORESIM_BUILD_APP)
     configure_file(shaders/cube.vert shaders/cube.vert COPYONLY)
     configure_file(shaders/cube.frag shaders/cube.frag COPYONLY)
     add_executable(coresim src/main.cpp src/core/Application.cpp)
-    target_link_libraries(coresim PRIVATE coresim_core coresim_platform coresim_renderer)
+    target_link_libraries(coresim PRIVATE coresim_core coresim_platform coresim_renderer coresim_physics)
     target_compile_definitions(coresim PRIVATE CORESIM_SHADER_DIR="${CORESIM_SHADER_DIRECTORY}")
     coresim_target_options(coresim)
 endif()
@@ -62,7 +62,7 @@ if(BUILD_TESTING)
         if(CORESIM_WINDOW_TESTS)
             add_executable(coresim_renderer_tests tests/RendererTests.cpp)
             target_link_libraries(coresim_renderer_tests PRIVATE coresim_platform coresim_renderer
-                                  coresim_glad Catch2::Catch2WithMain)
+                                  coresim_glad coresim_physics Catch2::Catch2WithMain)
             target_compile_definitions(coresim_renderer_tests PRIVATE
                 CORESIM_SHADER_DIR="${CORESIM_SHADER_DIRECTORY}"
                 CORESIM_TEST_SHADER_DIR="${CMAKE_CURRENT_SOURCE_DIR}/tests/shaders")

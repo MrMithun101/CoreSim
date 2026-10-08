@@ -1,6 +1,6 @@
 # Entity/component foundation
 
-`World` is the single-threaded CPU owner of entities and their components. It has explicit APIs for the components used now: `Transform`, `MeshComponent`, and demo-only `SpinComponent`. There is no runtime type registry, inheritance tree, scheduler, or third-party ECS. Physics components will be introduced with their first consumers in later milestones.
+`World` is the single-threaded CPU owner of entities and their components. It has explicit APIs for the components used now: `Transform`, `MeshComponent`, demo-only `SpinComponent`, and `RigidBody`. There is no runtime type registry, inheritance tree, scheduler, or third-party ECS. RigidBody was added in milestone 5 with the translational integrator; colliders remain future work.
 
 ## IDs and lifecycle
 
@@ -8,7 +8,7 @@
 
 `create()` returns a live ID without automatically attaching components. `destroy()` removes every attached component and invalidates the ID. The slot may then be reused with a new generation. Destruction of an invalid/stale ID returns false. A generation at its maximum value retires the slot permanently rather than wrapping and reviving an old ID. The free list is embedded in slots, so destruction does not allocate.
 
-`set_transform`, `set_mesh`, and `set_spin` attach or replace a value, throwing `std::invalid_argument` for a non-live ID. Lookups return pointers, or null for missing components/invalid IDs. Removal returns whether a component was actually removed; it does not destroy the entity. Component presence is independent, so systems must check the combinations they require.
+`set_transform`, `set_mesh`, `set_spin`, and `set_rigid_body` attach or replace a value, throwing `std::invalid_argument` for a non-live ID. Lookups return pointers, or null for missing components/invalid IDs. Removal returns whether a component was actually removed; it does not destroy the entity. Component presence is independent, so systems must check the combinations they require.
 
 ## Storage and references
 
@@ -32,4 +32,4 @@ Tests cover stale/default IDs, generation changes after reuse, repeated destruct
 
 `Renderer::draw` borrows a const World for the duration of the call. It iterates mesh entries, looks up transforms by ID, and draws the supported intersection. Neither the renderer nor the demo retains component pointers across structural changes. A transform without a mesh is invisible; a mesh without a transform is skipped; an entity without spin is static. Destruction removes it from rendering immediately, and reusing the slot starts with no components.
 
-Display tests use actual framebuffer readback to check those combinations, including restoring a removed transform and reusing a destroyed entity's slot. The scene remains visually equivalent to milestone 3 at initialization. The title reads the actual live entity count rather than a hardcoded 64. Future rigid-body and collider components remain unimplemented, as do physics integration and collision behavior.
+Display tests use actual framebuffer readback to check those combinations, including restoring a removed transform and reusing a destroyed entity's slot. The scene remains visually equivalent to milestone 3 at initialization. The title reads the actual live entity count rather than a hardcoded 64. Milestone 5 adds rigid bodies and integration; collider components and collision behavior remain unimplemented.

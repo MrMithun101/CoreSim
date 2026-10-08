@@ -11,12 +11,13 @@
 - W/S: forward/back along the view direction; A/D: strafe.
 - Q/E: down/up along world Y.
 - Hold the right mouse button: capture the cursor and look around. Release it to restore the cursor.
+- R: reset original demo body motion and the physics clock.
 - Escape or the native close button: exit.
 
 `Window` polls GLFW into a small `InputState` value. The application applies mouse deltas at 0.0025 radians per cursor unit, independent of frame duration, and movement at 8 units/second. Unfocused windows ignore input; capture transitions rebase the previous cursor position to avoid a first-frame jump. Cursor capture uses GLFW's disabled cursor mode, following the [GLFW input guide](https://www.glfw.org/docs/3.4/input_guide.html#cursor_mode).
 
-Application motion and demo animation cap their timestep at 0.1 seconds after stalls. This is a responsiveness choice for the camera/demo, not a physics integrator or fixed timestep. Frame timing still records the actual elapsed time.
+Camera motion caps its timestep at 0.1 seconds after stalls. This clamp now applies only to the camera; physics and demo spin use the separate fixed clock described in `physics.md`. Frame timing still records the actual elapsed time.
 
-`DemoScene` owns a World containing 64 entities arranged in an 8×8 grid. Each has a transform, mesh reference, and demo spin component in its corresponding packed pool. Initial position, nonuniform scale, and rotation are deterministic. Each cube rotates with its own axis/speed; quaternion normalization prevents gradual length drift. There are no per-frame scene allocations.
+`DemoScene` owns a World containing 64 entities arranged in an 8×8 grid. Each has a transform, mesh reference, and rigid body. Static reference cubes have an additional demo spin component. Initial position, nonuniform scale, and rotation are deterministic. Static reference cubes rotate with their own axis/speed; quaternion normalization prevents gradual length drift. There are no per-frame scene allocations.
 
-The application owns the camera and scene and passes a view-projection matrix plus a const World reference to `Renderer`. The renderer owns only shared cube geometry and shaders. Each entity with both a supported mesh and transform produces one uniform update and indexed draw. Instancing and physics remain future milestones.
+The application owns the camera and scene and passes a view-projection matrix plus a const World reference to `Renderer`. The renderer owns only shared cube geometry and shaders. Each entity with both a supported mesh and transform produces one uniform update and indexed draw. Instancing and collision behavior remain future milestones. Translational physics now runs at 120 Hz. R resets the original demo bodies without recreating entities; dynamic cubes fall out of view until reset.

@@ -31,3 +31,13 @@ Each frame accepts at most 0.25 seconds and executes at most 16 ticks. Whole tic
 ## Tests
 
 The CPU suite checks semi-implicit integration against its known discrete solution, gravity independence from mass, inverse-mass force response, static/missing-transform handling, force accumulation and clearing, pending forces across no-tick frames, component lifecycle, invalid inputs, and overload accounting. Two seconds at 30, 60, and 144 render FPS produce identical 240-tick results for the tested workload. This is a correctness check, not a performance benchmark or a cross-platform bitwise-determinism claim.
+
+## Demo and reset
+
+The default 8×8 grid alternates 32 dynamic cubes with 32 static reference cubes. Dynamic cubes start with a small upward velocity, then fall under gravity; their masses vary. Static cubes keep the earlier nonphysical spin animation as a visual reference. Dynamic orientations are held fixed: angular dynamics is a later milestone. There is deliberately no floor or collision response, so the falling cubes eventually leave the view.
+
+Press **R** to restore the original entities' positions/velocities, clear their forces and user acceleration, and reset the accumulator, tick counter, and dropped-time counter. Reset uses generation-checked saved IDs and cannot modify replacement entities that reuse destroyed slots. It does not restore removed components, mass/restitution edits, or demo orientation. Holding R triggers only one reset until it is released.
+
+The application feeds actual frame elapsed time to FixedStepper (not the camera's 0.1-second movement clamp). Both physics and static demo spin update inside the fixed callback. The window title shows simulated seconds and dropped time; shutdown reports tick count and dropped seconds. No renderer changes are required to observe physical motion: it reads updated transforms from World. Rendering uses the latest state without interpolation, so slight 120 Hz stepping may be visible on high-refresh displays.
+
+Additional tests cover irregular frame durations, the 32/32 demo composition, gravity-driven motion relative to static references, reset and stale-ID safety, and framebuffer changes after real fixed physics ticks.

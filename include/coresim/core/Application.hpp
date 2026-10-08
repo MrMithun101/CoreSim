@@ -5,6 +5,8 @@
 #include <coresim/renderer/Renderer.hpp>
 #include <coresim/scene/Camera.hpp>
 #include <coresim/scene/DemoScene.hpp>
+#include <coresim/core/FixedStepper.hpp>
+#include <coresim/physics/PhysicsSystem.hpp>
 
 namespace coresim {
 class Application {
@@ -21,6 +23,10 @@ private:
     Renderer renderer_;
     Camera camera_{{16.0F, 18.0F, 27.0F}, -2.106F, -0.52F};
     DemoScene scene_;
+    PhysicsSystem physics_;
+    FixedStepper physics_clock_;
+    std::uint64_t physics_ticks_{};
+    double dropped_physics_seconds_{};
     double next_title_update_{};
 };
 } // namespace coresim

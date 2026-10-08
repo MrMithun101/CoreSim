@@ -26,7 +26,9 @@ int Application::run(std::uint64_t frame_limit) {
     const auto& stats = timer.stats();
     std::cout << "CoreSim stopped cleanly: frames=" << stats.frame_count
               << " elapsed_s=" << stats.elapsed_seconds << " average_fps=" << stats.fps
-              << " last_frame_ms=" << stats.total_frame_seconds * 1000.0 << '\n';
+              << " last_frame_ms=" << stats.total_frame_seconds * 1000.0
+              << " physics_ticks=" << physics_ticks_
+              << " dropped_physics_s=" << dropped_physics_seconds_ << '\n';
     return 0;
 }
 void Application::update(const FrameStats& stats) {
@@ -35,11 +37,25 @@ void Application::update(const FrameStats& stats) {
     const auto dt = static_cast<float>(std::min(stats.delta_seconds, 0.1));
     camera_.look(input.look_x * 0.0025F, input.look_y * 0.0025F);
     camera_.move({input.right, input.up, input.forward}, dt);
-    scene_.update(dt);
+    if (input.reset_physics) {
+        scene_.reset_physics();
+        physics_clock_.reset();
+        physics_ticks_ = 0;
+        dropped_physics_seconds_ = 0;
+    } else {
+        const auto result = physics_clock_.advance(stats.delta_seconds, [this](float step) {
+            physics_.step(scene_.world(), step);
+            scene_.update(step);
+        });
+        physics_ticks_ += result.steps;
+        dropped_physics_seconds_ += result.dropped_seconds;
+    }
     if (stats.frame_count > 0 && stats.elapsed_seconds >= next_title_update_) {
         std::ostringstream title;
         title << std::fixed << std::setprecision(2) << "CoreSim | " << scene_.world().size()
-              << " entities | WASD/QE move, RMB look | avg FPS " << stats.fps
+              << " entities | R reset | sim "
+              << static_cast<double>(physics_ticks_) * FixedStepper::step_seconds
+              << " s | dropped " << dropped_physics_seconds_ << " s | FPS " << stats.fps
               << " | dt " << stats.delta_seconds * 1000.0 << " ms | frame "
               << stats.total_frame_seconds * 1000.0 << " ms";
         window_.set_title(title.str());

@@ -1,3 +1,4 @@
+#include <coresim/scene/DemoScene.hpp>
 #include <coresim/core/FixedStepper.hpp>
 #include <coresim/physics/PhysicsSystem.hpp>
 #include <coresim/scene/World.hpp>
@@ -150,4 +151,56 @@ TEST_CASE("Invalid physics inputs fail explicitly without corrupting validated p
     world.rigid_body(entity)->velocity.x = std::numeric_limits<float>::infinity();
     REQUIRE_THROWS_AS(PhysicsSystem{}.step(world, 0.01F), std::runtime_error);
     REQUIRE(world.transform(entity)->position == glm::vec3(0));
+}
+
+
+TEST_CASE("Falling-body demo uses static references and resets motion without reviving stale IDs") {
+    DemoScene scene;
+    auto& world = scene.world();
+    unsigned int dynamic = 0, stationary = 0;
+    for (const auto& entry : world.rigid_bodies()) {
+        if (entry.value.inverse_mass() > 0) { ++dynamic; } else { ++stationary; }
+    }
+    REQUIRE(dynamic == 32);
+    REQUIRE(stationary == 32);
+    const auto moving = world.rigid_bodies()[0].entity;
+    const auto fixed = world.rigid_bodies()[1].entity;
+    const auto initial_position = world.transform(moving)->position;
+    const auto initial_velocity = world.rigid_body(moving)->velocity;
+    const auto fixed_position = world.transform(fixed)->position;
+    PhysicsSystem physics;
+    for (int tick = 0; tick < 240; ++tick) {
+        physics.step(world, static_cast<float>(FixedStepper::step_seconds));
+    }
+    REQUIRE(world.transform(moving)->position.y < initial_position.y);
+    REQUIRE(world.transform(fixed)->position == fixed_position);
+    world.rigid_body(moving)->add_force({1, 2, 3});
+    scene.reset_physics();
+    REQUIRE(world.transform(moving)->position == initial_position);
+    REQUIRE(world.rigid_body(moving)->velocity == initial_velocity);
+    REQUIRE(world.rigid_body(moving)->accumulated_force() == glm::vec3(0));
+    REQUIRE(world.destroy(moving));
+    const auto replacement = dynamic_body(world);
+    world.transform(replacement)->position = {42, 42, 42};
+    scene.reset_physics();
+    REQUIRE(world.transform(replacement)->position == glm::vec3(42));
+}
+
+TEST_CASE("Irregular render durations retain fixed-tick integration") {
+    World world;
+    const auto entity = dynamic_body(world);
+    FixedStepper clock;
+    PhysicsSystem physics;
+    constexpr double frames[]{0.001, 0.02, 0.017, 0.009, 0.041};
+    double elapsed = 0;
+    unsigned int count = 0, ticks = 0;
+    while (elapsed < 2.0) {
+        const double dt = std::min(frames[count++ % 5], 2.0 - elapsed);
+        elapsed += dt;
+        const auto result = clock.advance(dt, [&](float step) { physics.step(world, step); });
+        ticks += result.steps;
+        REQUIRE(result.dropped_seconds == 0);
+    }
+    REQUIRE(ticks == 240);
+    REQUIRE(world.rigid_body(entity)->velocity.y == Catch::Approx(-19.62).epsilon(0.0001));
 }

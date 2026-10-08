@@ -20,7 +20,7 @@ The cube contains 24 vertices and 36 unsigned 32-bit indices. Vertices contain i
 
 Each frame sets the viewport from actual framebuffer pixels, enables `GL_DEPTH_TEST` with `GL_LESS`, enables depth writes, and clears both color and depth. The CPU constructs `projection * view * model` with GLM and uploads a column-major matrix. One indexed triangle draw renders each cube using shared geometry. The program and VAO are unbound afterward. There is no per-frame mesh allocation or shader compilation. The renderer owns the relevant OpenGL state; it does not save and restore arbitrary external state.
 
-The application advances each demo object with its own rotation speed and axis. Zero-size framebuffers skip rendering to avoid division by zero when minimized. Resizing recomputes aspect ratio and viewport each frame. GLM handles matrix math; camera movement is described in `scene.md`.
+The application advances static reference objects with demo spin and dynamic objects through fixed-step translational physics. Zero-size framebuffers skip rendering to avoid division by zero when minimized. Resizing recomputes aspect ratio and viewport each frame. GLM handles matrix math; camera movement is described in `scene.md`.
 
 ## Shaders and loader
 
