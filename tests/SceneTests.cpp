@@ -1,0 +1,60 @@
+#include <coresim/scene/Camera.hpp>
+#include <coresim/scene/Transform.hpp>
+
+#include <catch2/catch_approx.hpp>
+#include <catch2/catch_test_macros.hpp>
+#include <glm/gtc/constants.hpp>
+#include <cmath>
+#include <limits>
+#include <stdexcept>
+
+using namespace coresim;
+TEST_CASE("Camera movement uses local axes without diagonal speed gain") {
+    Camera forward;
+    forward.move({0, 0, 1}, 1.0F);
+    REQUIRE(forward.position().z == Catch::Approx(-3.0F));
+    Camera diagonal;
+    diagonal.move({1, 0, 1}, 1.0F);
+    REQUIRE(glm::length(diagonal.position() - glm::vec3(0, 0, 5)) == Catch::Approx(8.0F));
+    Camera split;
+    for (int i = 0; i < 100; ++i) {
+        split.move({0, 0, 1}, 0.01F);
+    }
+    REQUIRE(glm::length(split.position() - forward.position()) < 0.0001F);
+    Camera turned;
+    turned.look(glm::half_pi<float>(), 0);
+    turned.move({0, 0, 1}, 1.0F);
+    REQUIRE(turned.position().x == Catch::Approx(8.0F));
+}
+TEST_CASE("Camera view maps its position to the origin and look stays finite at poles") {
+    Camera camera({3, 4, 5});
+    const auto eye = camera.view() * glm::vec4(camera.position(), 1);
+    REQUIRE(glm::length(glm::vec3(eye)) < 0.00001F);
+    camera.look(10000, 10000);
+    REQUIRE(glm::length(camera.direction()) == Catch::Approx(1.0F));
+    REQUIRE(camera.direction().y < 1.0F);
+    for (int column = 0; column < 4; ++column) {
+        for (int row = 0; row < 4; ++row) {
+            REQUIRE(std::isfinite(camera.view()[column][row]));
+        }
+    }
+    const auto wide = camera.projection(2);
+    const auto square = camera.projection(1);
+    REQUIRE(wide[0][0] == Catch::Approx(square[0][0] / 2));
+    REQUIRE(wide[1][1] == Catch::Approx(square[1][1]));
+    REQUIRE_THROWS_AS(camera.projection(0), std::invalid_argument);
+    REQUIRE_THROWS_AS(camera.move({0, 0, 1}, -1), std::invalid_argument);
+    REQUIRE_THROWS_AS(camera.look(std::numeric_limits<float>::infinity(), 0), std::invalid_argument);
+}
+TEST_CASE("Transform scales then rotates then translates independently") {
+    Transform first;
+    first.position = {10, 0, 0};
+    first.scale = {2, 3, 4};
+    first.rotation = glm::angleAxis(glm::half_pi<float>(), glm::vec3(0, 0, 1));
+    const auto point = first.matrix() * glm::vec4(1, 0, 0, 1);
+    REQUIRE(point.x == Catch::Approx(10));
+    REQUIRE(point.y == Catch::Approx(2));
+    REQUIRE(point.z == Catch::Approx(0).margin(0.00001));
+    const Transform second;
+    REQUIRE(second.matrix() * glm::vec4(1, 2, 3, 1) == glm::vec4(1, 2, 3, 1));
+}
