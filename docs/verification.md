@@ -2,6 +2,8 @@
 
 ## Milestone 4 — October 8, 2026
 
+Commits `40bb5a6` (storage) and `f311ebf` (integration) passed Linux CI. The [integration run](https://github.com/MrMithun101/CoreSim/actions/runs/37832701304) passed all five jobs: GCC/Clang Debug/Release with software-rendered display tests and headless ASan/UBSan.
+
 Debug, Release, and ASan/UBSan builds passed all five local CTest entries on the macOS/Apple Clang environment below. No CoreSim compiler warnings or sanitizer diagnostics were reported. The CPU suite passed 53,042 assertions across 12 cases; the renderer suite passed 59 assertions across six cases. Most CPU assertions come from the deterministic lifecycle reference-model test; the count is not a coverage percentage.
 
 New tests cover generation invalidation and slot reuse, repeated destruction, component attachment/replacement/removal, packed-pool compaction, const access, cleanup of all component types, and 6,000 fixed-seed lifecycle operations checked against a reference model. Demo animation remains valid after deletion, missing transforms, and adding a static entity. GPU readback verifies transform-only invisibility, rendering after mesh attachment, hiding/restoring a removed transform, removal after destruction, and an empty replacement entity.
