@@ -2,6 +2,8 @@
 
 ## Milestone 5 — October 8, 2026
 
+Commits `b920e44` (CPU physics) and `204cf3d` (application integration) passed Linux CI. Both integration runs completed successfully; the [recorded run](https://github.com/MrMithun101/CoreSim/actions/runs/37834311413) covers GCC/Clang Debug/Release with software-rendered display tests plus headless ASan/UBSan.
+
 Debug, Release, and ASan/UBSan builds passed all five local CTest entries without CoreSim compiler warnings or sanitizer diagnostics. The CPU suite passed 53,700 assertions in 20 cases; the renderer suite passed 63 assertions in seven cases. Counts include prior milestone tests and are not coverage percentages.
 
 New tests check the semi-implicit discrete solution, gravity and inverse-mass force response, static and missing-transform handling, force accumulation/clearing, rigid-body lifecycle, invalid state handling, fixed-step remainders, stall time accounting, and reset behavior. Two seconds at 30/60/144 render FPS produce identical 240-step states; irregular frame durations also produce 240 steps. A GPU readback test confirms that physics-updated positions change rendering without renderer-owned simulation state.
