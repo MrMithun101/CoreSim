@@ -4,6 +4,7 @@
 #include <coresim/scene/Transform.hpp>
 #include <coresim/scene/detail/ComponentPool.hpp>
 #include <utility>
+#include <coresim/physics/RigidBody.hpp>
 
 namespace coresim {
 // A single-threaded owner of IDs and CPU component data. No graphics resources.
@@ -19,6 +20,12 @@ public:
     bool destroy(Entity entity) noexcept;
     [[nodiscard]] bool alive(Entity entity) const noexcept;
     [[nodiscard]] std::size_t size() const noexcept { return count_; }
+
+    RigidBody& set_rigid_body(Entity entity, const RigidBody& value = RigidBody{});
+    [[nodiscard]] RigidBody* rigid_body(Entity entity) noexcept;
+    [[nodiscard]] const RigidBody* rigid_body(Entity entity) const noexcept;
+    bool remove_rigid_body(Entity entity) noexcept;
+    [[nodiscard]] auto rigid_bodies() const noexcept { return rigid_bodies_.entries(); }
 
     Transform& set_transform(Entity entity, const Transform& value = {});
     MeshComponent& set_mesh(Entity entity, const MeshComponent& value = {});
@@ -47,6 +54,7 @@ private:
     std::vector<Slot> slots_;
     std::uint32_t free_head_{Entity::invalid_index};
     std::size_t count_{};
+    detail::ComponentPool<RigidBody> rigid_bodies_;
     detail::ComponentPool<Transform> transforms_;
     detail::ComponentPool<MeshComponent> meshes_;
     detail::ComponentPool<SpinComponent> spins_;

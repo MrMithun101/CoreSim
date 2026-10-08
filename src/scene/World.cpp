@@ -29,6 +29,7 @@ bool World::destroy(Entity entity) noexcept {
     if (!alive(entity)) {
         return false;
     }
+    rigid_bodies_.remove(entity);
     transforms_.remove(entity);
     meshes_.remove(entity);
     spins_.remove(entity);
@@ -47,6 +48,19 @@ void World::require_alive(Entity entity) const {
     if (!alive(entity)) {
         throw std::invalid_argument("Component attachment requires a live entity from this World");
     }
+}
+RigidBody& World::set_rigid_body(Entity entity, const RigidBody& value) {
+    require_alive(entity);
+    return rigid_bodies_.set(entity, value);
+}
+const RigidBody* World::rigid_body(Entity entity) const noexcept {
+    return alive(entity) ? rigid_bodies_.get(entity) : nullptr;
+}
+RigidBody* World::rigid_body(Entity entity) noexcept {
+    return const_cast<RigidBody*>(std::as_const(*this).rigid_body(entity));
+}
+bool World::remove_rigid_body(Entity entity) noexcept {
+    return alive(entity) && rigid_bodies_.remove(entity);
 }
 Transform& World::set_transform(Entity entity, const Transform& value) {
     require_alive(entity);
