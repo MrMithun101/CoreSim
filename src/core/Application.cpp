@@ -1,7 +1,6 @@
 #include <coresim/core/Application.hpp>
 #include <iomanip>
-#include <cmath>
-#include <numbers>
+#include <algorithm>
 #include <iostream>
 #include <sstream>
 
@@ -31,11 +30,15 @@ int Application::run(std::uint64_t frame_limit) {
     return 0;
 }
 void Application::update(const FrameStats& stats) {
-    angle_radians_ = std::fmod(angle_radians_ + stats.delta_seconds * 0.7,
-                               2.0 * std::numbers::pi);
+    const auto input = window_.input();
+    // Interactive motion must not leap after a debugger stop or a long OS stall.
+    const auto dt = static_cast<float>(std::min(stats.delta_seconds, 0.1));
+    camera_.look(input.look_x * 0.0025F, input.look_y * 0.0025F);
+    camera_.move({input.right, input.up, input.forward}, dt);
+    scene_.update(dt);
     if (stats.frame_count > 0 && stats.elapsed_seconds >= next_title_update_) {
         std::ostringstream title;
-        title << std::fixed << std::setprecision(2) << "CoreSim | avg FPS " << stats.fps
+        title << std::fixed << std::setprecision(2) << "CoreSim | 64 cubes | WASD/QE move, RMB look | avg FPS " << stats.fps
               << " | dt " << stats.delta_seconds * 1000.0 << " ms | frame "
               << stats.total_frame_seconds * 1000.0 << " ms";
         window_.set_title(title.str());
@@ -44,7 +47,10 @@ void Application::update(const FrameStats& stats) {
 }
 void Application::render() {
     const auto [width, height] = window_.framebuffer_size();
-    renderer_.draw(width, height, angle_radians_);
+    if (width > 0 && height > 0) {
+        const float aspect = static_cast<float>(width) / static_cast<float>(height);
+        renderer_.draw(width, height, camera_.projection(aspect) * camera_.view(), scene_.transforms());
+    }
     window_.present();
 }
 } // namespace coresim

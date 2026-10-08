@@ -1,5 +1,15 @@
 # Verification
 
+## Milestone 3 — October 8, 2026
+
+On the same macOS/Apple Clang environment described below, Debug, Release, and ASan/UBSan builds passed all five CTest entries with no CoreSim compiler warnings or sanitizer diagnostics. The CPU suite passed 307 assertions across eight cases; the renderer suite passed 50 assertions across five cases (51 with scene image capture enabled).
+
+New checks cover camera movement and timestep independence, diagonal speed, view/projection behavior, pitch limits, transform composition, deterministic 64-object initialization, quaternion normalization over 1,000 updates, independent object rendering, and rendered output after camera motion. The multi-object framebuffer capture was visually inspected and saved as `docs/images/scene.png`.
+
+The interactive application ran and exited cleanly after 2,427 frames. The desktop automation tool could not attach to the command-line GLFW executable, so live WASD/mouse/cursor-focus behavior was not verified through UI automation. Movement/look math and its effect on rendered output were tested independently. This distinction remains relevant for manual testing.
+
+GitHub Actions passed the baseline commit `d84e2b8` and camera-math commit `622d2bc`, including Linux GCC/Clang Debug/Release display tests and the headless ASan/UBSan job. The scene integration's remote results are checked after pushing. Local verification used the same pinned dependency checkouts as milestone 2.
+
 ## Milestone 2 — October 8, 2026
 
 Environment: macOS arm64, Apple Clang 21.0.0 (`clang-2100.1.1.101`), CMake 3.31.6. GLFW 3.4 and Catch2 3.7.1 use the commits recorded in `cmake/Dependencies.cmake`; GLM 1.0.1 was added at commit `0af55ccecd98d4e5a8d1fad7de25ba429d60e863`. GLAD provenance is recorded in `third_party/glad/README.md`.
@@ -48,4 +58,4 @@ The temporary tools/checkouts may be removed by the OS. For long-term use instal
 
 ## Milestone 1 history
 
-Before the renderer was added, Debug, Release, and ASan/UBSan builds passed all four then-existing CTest checks, including a five-frame window test. The project was recreated at the user's request after the original directory was removed. Git was reinitialized on `main`. No commits, remote configuration, or pushes have been created.
+Before the renderer was added, Debug, Release, and ASan/UBSan builds passed all four then-existing CTest checks, including a five-frame window test. The project was recreated at the user's request after the original directory was removed. Git was reinitialized on `main`. The user subsequently requested frequent commits and pushes; the completed baseline and camera math were committed and pushed to `main` at the supplied GitHub repository.

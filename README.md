@@ -2,9 +2,9 @@
 
 **High-Performance 3D Physics Simulation Engine**
 
-A C++20 systems and performance engineering project developed one measured milestone at a time. Current scope: **Milestone 2 — OpenGL Rendering Foundation**. It provides a rotating 3D cube, move-aware RAII GPU resources, file-based shaders, depth testing, a GLFW application shell, frame timing, and tests. Physics, camera controls, profiling, and GPU compute are future milestones. No performance claims are made yet.
+A C++20 systems and performance engineering project developed one measured milestone at a time. Current scope: **Milestone 3 — Camera and 3D Scene**. It provides a movable perspective camera and 64 independently transformed cubes, move-aware RAII GPU resources, file-based shaders, depth testing, frame timing, and tests. Entity/component storage, physics, profiling, and GPU compute are future milestones. No performance claims are made yet.
 
-![Cube rendered by CoreSim](docs/images/cube.png)
+![64-cube scene rendered by CoreSim](docs/images/scene.png)
 
 ## Build and run
 
@@ -24,7 +24,7 @@ ctest --test-dir build --output-on-failure
 ./build/coresim
 ```
 
-A colored cube rotates against a dark background. Escape or the close button exits. Its title updates twice per second with average FPS, delta time, and the last completed frame duration. A shutdown summary appears on standard output. Vertical synchronization is enabled; frame duration includes presentation waiting and is not a rendering benchmark.
+A grid of 64 independently rotating cubes appears. Use **WASD** to move, **Q/E** to descend/ascend, and **hold right mouse** to look. Release right mouse to restore the cursor. Escape or the close button exits. Its title updates twice per second with average FPS, delta time, and the last completed frame duration. A shutdown summary appears on standard output. Vertical synchronization is enabled; frame duration includes presentation waiting and is not a rendering benchmark.
 
 ```sh
 cmake -S . -B build-release -DCMAKE_BUILD_TYPE=Release
@@ -52,7 +52,7 @@ Initial configuration requires network access. Alternatively, use installed CMak
 
 ## Tests
 
-Default CTest checks timing and CLI handling without opening a window. The timing tests use explicit timestamps and never sleep. A build without any GLFW/OpenGL dependency is available:
+Default CTest checks timing, camera/transform/scene math, and CLI handling without opening a window. The CPU tests use explicit time inputs and never sleep. GLM is required even for headless scene tests. A build without any GLFW/OpenGL dependency is available:
 
 ```sh
 cmake -S . -B build-headless -DCORESIM_BUILD_APP=OFF
@@ -81,13 +81,13 @@ ctest --preset asan
 
 ## Architecture
 
-- `Application` owns `GlfwRuntime`, `Window`, and `Renderer` in that order. Reverse destruction releases GPU resources before the context and runtime.
+- `Application` owns `GlfwRuntime`, `Window`, `Renderer`, camera, and scene. Reverse destruction releases GPU resources before the context and runtime.
 - `Window` handles native events, context setup, framebuffer size, and presentation. OpenGL rendering lives in `coresim_renderer`.
 - `VertexBuffer`, `IndexBuffer`, `VertexArray`, and `Shader` are noncopyable, movable RAII owners. Shader compilation/link failures include file paths and driver diagnostics.
-- `Renderer` draws one indexed cube with depth testing and a fixed view. It handles framebuffer resizing and skips zero-size framebuffers.
+- `Renderer` receives view-projection and a read-only transform span; it shares one cube mesh across 64 draws. Camera and scene state remain outside the renderer.
 - `FrameTimer` uses a steady clock. Delta is start-to-start; frame duration covers event processing through buffer swap. FPS averages completed frames over elapsed runtime.
 
-See [renderer design](docs/renderer.md) for ownership contracts, the draw pipeline, shader paths, and testing rationale. Format C++ files with the checked-in `.clang-format` configuration.
+See [camera/scene design and controls](docs/scene.md) and [renderer design](docs/renderer.md) for ownership contracts, the draw pipeline, shader paths, and testing rationale. Format C++ files with the checked-in `.clang-format` configuration.
 
 Shaders are copied into the build directory and found independently of the working directory. Rebuild and restart after changing them. For a relocated executable or custom shaders:
 
@@ -97,4 +97,4 @@ Shaders are copied into the build directory and found independently of the worki
 
 See [verification notes](docs/verification.md) for actual local results and commands. The screenshot above is an actual framebuffer capture, not an illustration or performance benchmark.
 
-**Next: Milestone 3 — Camera and 3D Scene**, only on explicit request: camera controls, entity transforms, and dozens of independently transformed objects.
+**Next: Milestone 4 — Entity/Component Foundation**, only on explicit request: stable IDs, safe entity lifecycle, and simple contiguous component storage.

@@ -1,4 +1,5 @@
 #pragma once
+#include <coresim/core/InputState.hpp>
 #include <memory>
 #include <string>
 #include <utility>
@@ -25,6 +26,7 @@ public:
     Window(Window&&) = delete;
     Window& operator=(Window&&) = delete;
     void process_events();
+    [[nodiscard]] InputState input();
     [[nodiscard]] bool should_close() const;
     void request_close();
     [[nodiscard]] std::pair<int, int> framebuffer_size() const;
@@ -35,5 +37,8 @@ private:
         void operator()(GLFWwindow* window) const noexcept;
     };
     std::unique_ptr<GLFWwindow, Deleter> handle_;
+    bool mouse_captured_{};
+    double cursor_x_{};
+    double cursor_y_{};
 };
 } // namespace coresim

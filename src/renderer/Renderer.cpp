@@ -1,8 +1,6 @@
 #include <coresim/renderer/Renderer.hpp>
 
 #include <glad/gl.h>
-#include <glm/ext/matrix_clip_space.hpp>
-#include <glm/ext/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <algorithm>
 #include <array>
@@ -37,7 +35,8 @@ Renderer::Renderer(const std::filesystem::path& shader_directory)
     transform_location_ = shader_.uniform_location("u_transform");
 }
 
-void Renderer::draw(int framebuffer_width, int framebuffer_height, double angle_radians) {
+void Renderer::draw(int framebuffer_width, int framebuffer_height,
+                    const glm::mat4& view_projection, std::span<const Transform> transforms) {
     // Minimized windows may have zero-size framebuffers; avoid division by zero.
     if (framebuffer_width <= 0 || framebuffer_height <= 0) {
         return;
@@ -48,19 +47,15 @@ void Renderer::draw(int framebuffer_width, int framebuffer_height, double angle_
     glDepthMask(GL_TRUE);
     glClearColor(0.035F, 0.055F, 0.085F, 1.0F);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    const auto model = glm::rotate(glm::mat4(1.0F), static_cast<float>(angle_radians),
-                                   glm::normalize(glm::vec3(0.35F, 1.0F, 0.2F)));
-    const auto view = glm::lookAt(glm::vec3(3.5F, 2.5F, 5.0F), glm::vec3(0.0F),
-                                  glm::vec3(0.0F, 1.0F, 0.0F));
-    const float aspect = static_cast<float>(framebuffer_width) / static_cast<float>(framebuffer_height);
-    const auto projection = glm::perspective(glm::radians(45.0F), aspect, 0.1F, 100.0F);
-    const auto transform = projection * view * model;
-    std::array<float, 16> matrix{};
-    std::copy_n(glm::value_ptr(transform), matrix.size(), matrix.begin());
     shader_.bind();
-    shader_.set_matrix(transform_location_, matrix);
     vertex_array_.bind();
-    glDrawElements(GL_TRIANGLES, indices_.count(), GL_UNSIGNED_INT, nullptr);
+    for (const auto& object : transforms) {
+        const auto transform = view_projection * object.matrix();
+        std::array<float, 16> matrix{};
+        std::copy_n(glm::value_ptr(transform), matrix.size(), matrix.begin());
+        shader_.set_matrix(transform_location_, matrix);
+        glDrawElements(GL_TRIANGLES, indices_.count(), GL_UNSIGNED_INT, nullptr);
+    }
     glBindVertexArray(0);
     glUseProgram(0);
 }

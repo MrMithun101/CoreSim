@@ -1,4 +1,5 @@
 #include <coresim/scene/Camera.hpp>
+#include <coresim/scene/DemoScene.hpp>
 #include <coresim/scene/Transform.hpp>
 
 #include <catch2/catch_approx.hpp>
@@ -57,4 +58,26 @@ TEST_CASE("Transform scales then rotates then translates independently") {
     REQUIRE(point.z == Catch::Approx(0).margin(0.00001));
     const Transform second;
     REQUIRE(second.matrix() * glm::vec4(1, 2, 3, 1) == glm::vec4(1, 2, 3, 1));
+}
+
+
+TEST_CASE("Demo scene has 64 deterministic independent transforms with stable rotations") {
+    DemoScene scene;
+    const DemoScene copy;
+    REQUIRE(scene.transforms().size() == 64);
+    for (std::size_t i = 0; i < scene.transforms().size(); ++i) {
+        REQUIRE(scene.transforms()[i].position == copy.transforms()[i].position);
+        if (i > 0) {
+            REQUIRE(scene.transforms()[i].position != scene.transforms()[i - 1].position);
+        }
+    }
+    for (int frame = 0; frame < 1000; ++frame) {
+        scene.update(0.016F);
+    }
+    for (std::size_t i = 0; i < scene.transforms().size(); ++i) {
+        REQUIRE(scene.transforms()[i].position == copy.transforms()[i].position);
+        REQUIRE(glm::length(scene.transforms()[i].rotation) == Catch::Approx(1.0F));
+    }
+    REQUIRE(scene.transforms()[0].rotation != scene.transforms()[1].rotation);
+    REQUIRE_THROWS_AS(scene.update(-1), std::invalid_argument);
 }

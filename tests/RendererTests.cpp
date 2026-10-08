@@ -1,5 +1,9 @@
 #include <coresim/core/Window.hpp>
 #include <coresim/renderer/Renderer.hpp>
+#include <coresim/scene/Camera.hpp>
+#include <coresim/scene/DemoScene.hpp>
+#include <glm/ext/matrix_transform.hpp>
+#include <glm/ext/matrix_clip_space.hpp>
 
 #include <glad/gl.h>
 #include <catch2/catch_test_macros.hpp>
@@ -67,6 +71,15 @@ struct Target {
         return result;
     }
 };
+
+void draw_single(Renderer& renderer, int width, int height, float angle) {
+    Transform transform;
+    transform.rotation = glm::angleAxis(angle, glm::normalize(glm::vec3(0.35F, 1.0F, 0.2F)));
+    const auto view = glm::lookAt(glm::vec3(3.5F, 2.5F, 5.0F), glm::vec3(0), glm::vec3(0, 1, 0));
+    const float aspect = height > 0 && width > 0 ? static_cast<float>(width) / static_cast<float>(height) : 1.0F;
+    const auto projection = glm::perspective(glm::radians(45.0F), aspect, 0.1F, 100.0F);
+    renderer.draw(width, height, projection * view, std::span(&transform, 1));
+}
 
 static_assert(!std::is_copy_constructible_v<Shader>);
 static_assert(!std::is_copy_constructible_v<VertexBuffer>);
@@ -161,7 +174,7 @@ TEST_CASE("Renderer produces a cube, rotates it, and handles an empty framebuffe
     Context context;
     Target target;
     Renderer renderer(shaders);
-    renderer.draw(Target::size, Target::size, 0.0);
+    draw_single(renderer, Target::size, Target::size, 0.0F);
     REQUIRE(glIsEnabled(GL_DEPTH_TEST) == GL_TRUE);
     float depth = 1.0F;
     glReadPixels(Target::size / 2, Target::size / 2, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
@@ -169,10 +182,10 @@ TEST_CASE("Renderer produces a cube, rotates it, and handles an empty framebuffe
     const auto first = target.pixels();
     const auto center = target.center();
     REQUIRE((center[0] > 50 || center[1] > 50 || center[2] > 50));
-    renderer.draw(Target::size, Target::size, 1.0);
+    draw_single(renderer, Target::size, Target::size, 1.0F);
     REQUIRE(first != target.pixels());
-    renderer.draw(0, 0, 0.0);
-    renderer.draw(128, 256, 0.5);
+    draw_single(renderer, 0, 0, 0.0F);
+    draw_single(renderer, 128, 256, 0.5F);
     std::array<GLint, 4> viewport{};
     glGetIntegerv(GL_VIEWPORT, viewport.data());
     REQUIRE(viewport[2] == 128);
@@ -195,7 +208,7 @@ TEST_CASE("Depth testing keeps the nearer surface even when the farther one is d
     Context context;
     Target target;
     Renderer renderer(shaders);
-    renderer.draw(Target::size, Target::size, 0.0);
+    draw_single(renderer, Target::size, Target::size, 0.0F);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // Red triangle at z=-0.5, blue triangle at z=+0.5, identical coverage.
     constexpr std::array<float, 36> vertices{
@@ -223,3 +236,45 @@ TEST_CASE("Depth testing keeps the nearer surface even when the farther one is d
     REQUIRE(glGetError() == GL_NO_ERROR);
 }
 } // namespace
+
+TEST_CASE("Renderer draws independent transforms and responds to camera motion") {
+    Context context;
+    Target target;
+    Renderer renderer(shaders);
+    std::array<Transform, 2> objects;
+    objects[0].position = {-0.5F, 0, 0};
+    objects[1].position = {0.5F, 0, 0};
+    objects[0].scale = objects[1].scale = glm::vec3(0.2F);
+    renderer.draw(Target::size, Target::size, glm::mat4(1), objects);
+    const auto before = target.pixels();
+    const auto left = static_cast<std::size_t>((Target::size / 2 * Target::size + Target::size / 4) * 4);
+    const auto right = static_cast<std::size_t>((Target::size / 2 * Target::size + 3 * Target::size / 4) * 4);
+    REQUIRE(before[left + 2] > 100);
+    REQUIRE(before[right + 2] > 100);
+    objects[1].position.y = 0.7F;
+    renderer.draw(Target::size, Target::size, glm::mat4(1), objects);
+    const auto after = target.pixels();
+    REQUIRE(after[left + 2] == before[left + 2]);
+    REQUIRE(after[right + 2] < 50);
+
+    DemoScene scene;
+    Camera camera({16, 18, 27}, -2.106F, -0.52F);
+    renderer.draw(Target::size, Target::size, camera.projection(1) * camera.view(), scene.transforms());
+    const auto initial = target.pixels();
+    camera.move({1, 0, 1}, 0.5F);
+    camera.look(0.1F, 0.05F);
+    renderer.draw(Target::size, Target::size, camera.projection(1) * camera.view(), scene.transforms());
+    REQUIRE(initial != target.pixels());
+    REQUIRE(glGetError() == GL_NO_ERROR);
+    if (const char* path = std::getenv("CORESIM_SCENE_IMAGE")) {
+        std::ofstream image(path, std::ios::binary);
+        image << "P6\n" << Target::size << ' ' << Target::size << "\n255\n";
+        for (int y = Target::size - 1; y >= 0; --y) {
+            for (int x = 0; x < Target::size; ++x) {
+                const auto offset = static_cast<std::size_t>((y * Target::size + x) * 4);
+                image.write(reinterpret_cast<const char*>(initial.data() + offset), 3);
+            }
+        }
+        REQUIRE(image.good());
+    }
+}

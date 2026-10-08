@@ -3,6 +3,8 @@
 #include <coresim/core/Window.hpp>
 #include <cstdint>
 #include <coresim/renderer/Renderer.hpp>
+#include <coresim/scene/Camera.hpp>
+#include <coresim/scene/DemoScene.hpp>
 
 namespace coresim {
 class Application {
@@ -17,7 +19,8 @@ private:
     GlfwRuntime runtime_;
     Window window_{runtime_};
     Renderer renderer_;
-    double angle_radians_{};
+    Camera camera_{{16.0F, 18.0F, 27.0F}, -2.106F, -0.52F};
+    DemoScene scene_;
     double next_title_update_{};
 };
 } // namespace coresim
