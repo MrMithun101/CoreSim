@@ -2,6 +2,8 @@
 
 ## Milestone 6 — October 8, 2026
 
+Commits `836b3f6` (detection), `250a4a7` (response), and `837571a` (demo/rendering) passed Linux CI. The [integration run](https://github.com/MrMithun101/CoreSim/actions/runs/37867746105) passed GCC/Clang Debug/Release with software-rendered display tests and the headless ASan/UBSan job.
+
 Debug, Release, and ASan/UBSan builds passed all five local CTest entries without CoreSim compiler warnings or sanitizer diagnostics. The CPU suite passed 54,513 assertions in 30 cases. The renderer suite passed 67 assertions in eight cases (68 when optional scene-image output was enabled). Counts include earlier milestones and are not a coverage percentage.
 
 Primitive tests cover separated/touching/overlapping spheres and AABBs, contained boxes, coincident sphere centers, translated planes, reversed normals, unsupported pairs, constructor validation, and collider lifecycle. Response tests cover restitution, equal-mass momentum, separating contacts, inverse-mass correction, static and missing-body colliders, plane restrictions, and resting spheres. The 100-box floor workload ran five simulated seconds; the mixed 100-body two-layer demo ran ten seconds, with all dynamic bodies remaining supported and near rest within the recorded test tolerances. These are correctness workloads, not performance benchmarks or arbitrary-stack stability claims.
