@@ -16,7 +16,7 @@ Eight sequential-impulse iterations enforce a nonnegative accumulated normal imp
 
 Four position-correction iterations recompute geometry for the detected pairs and remove 80% of penetration beyond 0.001 world units, weighted by inverse mass. Position correction does not change velocity. New pairs created by correction are considered on the next tick. The representative contact point is retained for future visualization; this solver applies only linear impulses.
 
-This is discrete collision detection, so sufficiently fast bodies can tunnel through boxes/spheres. There is no friction, CCD, angular response, rotated-box support, or guarantee for tall stacks. The all-pairs baseline is intentionally unoptimized; Milestone 7 records its cost before spatial acceleration is added.
+This is discrete collision detection, so sufficiently fast bodies can tunnel through boxes/spheres. There is no friction, CCD, angular response, rotated-box support, or guarantee for tall stacks. The naive reference remains available; Milestone 8 defaults to a conservative spatial hash.
 
 ## Demo and validation scope
 
@@ -27,3 +27,5 @@ Sphere meshes are generated once during renderer initialization with 16 latitude
 Tests verify restitution at 0/0.5/1, equal-mass momentum, separating pairs, inverse-mass separation, static bodies with nonzero stored velocity, missing-body static colliders, plane restrictions, and ten seconds of sphere resting. A 100-AABB floor test runs five simulated seconds; the mixed 100-body demo runs ten seconds with two-body stacks. These are specific correctness/stability workloads, not throughput benchmarks or guarantees for arbitrary stacks. No friction, high-speed tunneling fix, or unsupported shape interaction is implied.
 
 Milestone 7 retains this all-pairs algorithm with bounded 4096-pair batches and optional phase/counter instrumentation. See [benchmark definitions and measured baseline](../BENCHMARKS.md). Candidate counting includes all collider pairs; missing transforms and static/static pairs are filtered in the measured narrow phase.
+
+Milestone 8 changes the default candidate source to [spatial hashing](spatial-hash.md), preserving contact ordering and the narrow-phase/response rules above. Benchmark modes explicitly select naive or spatial generation.

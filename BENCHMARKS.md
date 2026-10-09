@@ -1,4 +1,4 @@
-# Collision baseline
+# Collision benchmarks
 
 Milestone 7 measures the deliberately naive all-pairs implementation. No spatial pruning is performed. Run a **Release** build without sanitizers for performance measurements:
 
@@ -16,9 +16,9 @@ The `separated-spheres` scene is deterministic: N dynamic unit-mass spheres of r
 
 This deliberately empty-contact scene isolates the wasted work of testing spatially distant bodies. It does **not** characterize dense contacts, solver scaling, interactive rendering, or frame pacing. Candidate pairs and initial checks must both be N(N−1)/2 each tick, while contacts and correction checks must be zero. For 10000 bodies, that is **49,995,000 checks per tick** even with no collisions.
 
-Candidate generation enumerates each i<j pair in component order into a fixed 4096-pair scratch batch. Narrow phase consumes each batch before enumeration resumes. This preserves O(N²) work and pair order with bounded candidate storage (64 KiB on the measured 64-bit host), instead of storing tens of millions of pairs. Contact storage remains proportional to detected contacts. The interactive solver uses the same enumeration; timing is opt-in via `CollisionStats*`, with no clock reads when omitted.
+Candidate generation enumerates each i<j pair in component order into a fixed 4096-pair scratch batch. Narrow phase consumes each batch before enumeration resumes. This preserves O(N²) work and pair order with bounded candidate storage (64 KiB on the measured 64-bit host), instead of storing tens of millions of pairs. Contact storage remains proportional to detected contacts. The naive solver uses this enumeration; as of Milestone 8 the interactive solver defaults to spatial hashing. Timing is opt-in via `CollisionStats*`, with no clock reads when omitted.
 
-CSV schema version 1 emits one row per measured tick, with no discarded outliers:
+The archived Milestone 7 CSV schema version 1 emits one row per measured tick, with no discarded outliers:
 
 | Field | Meaning |
 | --- | --- |
@@ -52,3 +52,21 @@ All 30 measured rows have the expected exact pair/check count and zero contacts/
 A tenfold body increase required about 101 times the physics time. At 10,000 bodies a tick took roughly 0.59 seconds, far beyond the 8.33 ms budget for 120 Hz physics. Even separated bodies incur all-pairs checks. This is the poor-performance baseline that spatial hashing in Milestone 8 must be compared against using the same scene and machine; no speedup has been implemented here.
 
 Raw rows: [1,000 bodies](benchmarks/results/naive-m1-1000.csv), [5,000 bodies](benchmarks/results/naive-m1-5000.csv), [10,000 bodies](benchmarks/results/naive-m1-10000.csv). [Machine and run metadata](benchmarks/results/naive-m1-metadata.json) records the exact commands. Each CSV includes all ten measured ticks. Repeat runs may differ.
+
+
+## Milestone 8: spatial-hash comparison
+
+The application now uses the [spatial hash](docs/spatial-hash.md) by default. Benchmark modes explicitly select their algorithm, preserving a naive reference:
+
+```sh
+./build-release/coresim --benchmark collision-naive --bodies 10000 --steps 10 --warmup 2 > naive.csv
+./build-release/coresim --benchmark collision-spatial --bodies 10000 --steps 10 --warmup 2 --cell-size 3 > spatial.csv
+```
+
+Both use the same separated-sphere layout, timestep, integration, detector, solver, build, and instrumentation. No speedup should be inferred by comparing different machines or build configurations. Re-run both modes at the same revision; the original Milestone 7 files above remain historical evidence.
+
+Current output uses **schema 2**, preserving the first 18 columns and appending `cell_size`, `hash_build_ms`, `query_ms`, `total_collision_ms`, and `pair_reduction_percent`. Cell size is a positive finite float (default 3); it is reported but unused in naive mode. Naive hash-build time is zero, and naive query time is its pair-enumeration duration. Hash query time includes duplicate removal, sorting, and pair-batch filling; broad phase equals hash build plus query. Total collision time includes narrow phase and response, excluding integration. Reduction uses all N(N−1)/2 collider pairs as its denominator, with zero reduction for fewer than two colliders.
+
+`--scene paired-spheres` places groups of two spheres 1.5 units apart on a lattice of spacing 6, using ceil(N/2) sites and leaving the final sphere unpaired for odd N. All bodies remain dynamic with zero gravity, velocity and restitution. Positional correction separates each pair toward the solver's penetration tolerance. Unlike the default separated scene, positions evolve during warmup; both modes execute the same ticks from the same initial state. This scene exercises N/2 independent contacts, not dense piles or arbitrary stacks. For even N, the expected initial contact count is N/2 per tick and correction rechecks are 2N. Cell size affects false positives and cost. Globally large shapes, planes, or dense occupancy can reduce or eliminate the grid's advantage; worst-case work remains quadratic.
+
+Measurements below use three independent invocations per mode/workload, with two warmup and ten measured ticks each. Algorithm order alternates naive/hash, hash/naive, naive/hash to reduce a fixed ordering bias. Runs are sequential after test/build jobs finish. All 30 ticks per algorithm/workload are retained; summaries use their median and min/max. Speedup is median naive physics time divided by median hash physics time, not an average of per-frame ratios. Candidate reduction is measured independently of runtime improvement.

@@ -2,7 +2,7 @@
 
 **High-Performance 3D Physics Simulation Engine**
 
-A C++20 systems and performance engineering project developed one measured milestone at a time. Current scope: **Milestone 7 — Naive Collision Benchmark**. It provides custom fixed-step translational physics, generation-checked entity IDs, packed component storage, primitive collision detection and impulse response, a movable perspective camera and a 100-body sphere/box demo, move-aware RAII GPU resources, file-based shaders, depth testing, frame timing, and tests. Spatial acceleration, angular dynamics, profiling, and GPU compute are future milestones. A headless CSV benchmark records the unoptimized all-pairs baseline; see [measurements and methodology](BENCHMARKS.md).
+A C++20 systems and performance engineering project developed one measured milestone at a time. Current scope: **Milestone 8 — Spatial Hash Broad Phase**. It provides custom fixed-step translational physics, generation-checked entity IDs, packed component storage, primitive collision detection and impulse response, a movable perspective camera and a 100-body sphere/box demo, move-aware RAII GPU resources, file-based shaders, depth testing, frame timing, and tests. A deterministic spatial hash accelerates broad-phase collision detection; angular dynamics, profiling, and GPU compute are future milestones. A headless CSV benchmark compares spatial hashing with the retained all-pairs baseline; see [measurements and methodology](BENCHMARKS.md).
 
 ![Sphere and box collision scene rendered by CoreSim](docs/images/collisions.png)
 
@@ -44,10 +44,11 @@ ctest --preset debug
 ./build/debug/coresim
 ```
 
-## Naive collision benchmark
+## Collision benchmarks
 
 ```sh
 ./build-release/coresim --benchmark collision-naive --bodies 10000 --steps 10 --warmup 2 > naive-10000.csv
+./build-release/coresim --benchmark collision-spatial --bodies 10000 --steps 10 --warmup 2 > spatial-10000.csv
 ```
 
 The standalone `coresim_benchmark` accepts the same arguments and is available with `CORESIM_BUILD_APP=OFF`. See [BENCHMARKS.md](BENCHMARKS.md) for counter definitions, timing boundaries, workload limits, and measured results.
@@ -97,7 +98,7 @@ ctest --preset asan
 - `PhysicsSystem` integrates gravity, acceleration, and forces using semi-implicit Euler, then resolves supported contacts using normal impulses and penetration correction. `FixedStepper` runs at 120 Hz with bounded catch-up; renderer and physics borrow World without owning each other’s state.
 - `FrameTimer` uses a steady clock. Delta is start-to-start; frame duration covers event processing through buffer swap. FPS averages completed frames over elapsed runtime.
 
-See [collision geometry and solver limits](docs/collisions.md), [physics and timestep policy](docs/physics.md), [entity storage and lifecycle](docs/entities.md), [camera/scene design and controls](docs/scene.md) and [renderer design](docs/renderer.md) for ownership contracts, the draw pipeline, shader paths, and testing rationale. Format C++ files with the checked-in `.clang-format` configuration.
+See [spatial-hash design](docs/spatial-hash.md), [collision geometry and solver limits](docs/collisions.md), [physics and timestep policy](docs/physics.md), [entity storage and lifecycle](docs/entities.md), [camera/scene design and controls](docs/scene.md) and [renderer design](docs/renderer.md) for ownership contracts, the draw pipeline, shader paths, and testing rationale. Format C++ files with the checked-in `.clang-format` configuration.
 
 Shaders are copied into the build directory and found independently of the working directory. Rebuild and restart after changing them. For a relocated executable or custom shaders:
 
@@ -107,4 +108,4 @@ Shaders are copied into the build directory and found independently of the worki
 
 See [verification notes](docs/verification.md) for actual local results and commands. The screenshot above is an actual framebuffer capture, not an illustration or performance benchmark.
 
-**Next: Milestone 8 — Spatial Hash Broad Phase**, only on explicit request.
+**Next: Milestone 9 — Built-in Profiler**, only on explicit request.

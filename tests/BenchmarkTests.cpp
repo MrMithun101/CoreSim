@@ -25,7 +25,13 @@ TEST_CASE("Benchmark CLI rejects ambiguous malformed or unbounded workloads") {
         {"--benchmark", "collision-naive", "--warmup", "10001"},
         {"--benchmark", "collision-naive", "--warmup", "4294967296"},
         {"--benchmark", "collision-naive", "--bodies", "1", "--bodies", "2"},
-        {"--benchmark", "collision-naive", "--frames", "2"}};
+        {"--benchmark", "collision-naive", "--frames", "2"},
+        {"--benchmark", "collision-spatial", "--cell-size", "0"},
+        {"--benchmark", "collision-spatial", "--cell-size", "nan"},
+        {"--benchmark", "collision-spatial", "--cell-size", "inf"},
+        {"--benchmark", "collision-spatial", "--cell-size", "-1"},
+        {"--benchmark", "collision-spatial", "--cell-size", "3x"},
+        {"--benchmark", "collision-spatial", "--scene", "unknown"}};
     for (const auto& arguments : invalid) { REQUIRE_THROWS_AS(parse_benchmark_options(arguments), std::invalid_argument); }
 }
 TEST_CASE("Benchmark CSV contains one complete measurable row per requested tick") {
@@ -41,8 +47,8 @@ TEST_CASE("Benchmark CSV contains one complete measurable row per requested tick
         std::vector<std::string> fields;
         std::string field;
         while (std::getline(row, field, ',')) { fields.push_back(field); }
-        REQUIRE(fields.size() == 18);
-        REQUIRE(fields[0] == "1");
+        REQUIRE(fields.size() == 23);
+        REQUIRE(fields[0] == "2");
         REQUIRE(fields[1] == "collision-naive");
         REQUIRE(fields[2] == "separated-spheres");
         REQUIRE(fields[5] == "93");
@@ -62,4 +68,42 @@ TEST_CASE("Benchmark CSV contains one complete measurable row per requested tick
     std::ostringstream broken;
     broken.setstate(std::ios::badbit);
     REQUIRE_THROWS_AS(run_collision_benchmark({1, 1, 0}, broken), std::runtime_error);
+}
+TEST_CASE("Spatial benchmark reports reduction and retains paired contacts") {
+    const std::array<std::string_view, 12> args{
+        "--benchmark", "collision-spatial", "--bodies", "100", "--steps", "2",
+        "--warmup", "0", "--scene", "paired-spheres", "--cell-size", "2.5"};
+    auto options = parse_benchmark_options(args);
+    REQUIRE(options.mode == BroadPhase::spatial_hash);
+    REQUIRE(options.paired);
+    REQUIRE(options.cell_size == 2.5F);
+    for (const auto mode : {BroadPhase::naive, BroadPhase::spatial_hash}) {
+        options.mode = mode;
+        std::ostringstream output;
+        run_collision_benchmark(options, output);
+        std::istringstream input(output.str());
+        std::string line;
+        std::getline(input, line);
+        for (int tick = 0; tick < 2; ++tick) {
+            REQUIRE(static_cast<bool>(std::getline(input, line)));
+            std::istringstream row(line);
+            std::vector<std::string> fields;
+            std::string field;
+            while (std::getline(row, field, ',')) { fields.push_back(field); }
+            REQUIRE(fields.size() == 23);
+            REQUIRE(fields[11] == "50");
+            REQUIRE(fields[12] == "200");
+            REQUIRE(fields[9] == fields[10]);
+            if (mode == BroadPhase::spatial_hash) {
+                REQUIRE(fields[1] == "collision-spatial");
+                REQUIRE(std::stoull(fields[9]) < 4950);
+                REQUIRE(std::stod(fields[22]) > 0);
+                REQUIRE(std::stod(fields[22]) <= 100);
+            } else {
+                REQUIRE(fields[9] == "4950");
+                REQUIRE(std::stod(fields[19]) == 0);
+                REQUIRE(std::stod(fields[22]) == 0);
+            }
+        }
+    }
 }
