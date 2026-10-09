@@ -8,7 +8,7 @@
 
 int main(int argc, char** argv) {
     try {
-        constexpr auto usage = "Usage: coresim_layout_benchmark --layout lookup|dense|aos|soa [--bodies 1..1000000] [--steps 1..10000] [--warmup 0..10000] [--order ordered|shuffled]\n";
+        constexpr auto usage = "Usage: coresim_layout_benchmark --layout lookup|dense|aos|soa|physics-lookup|physics-dense [--bodies 1..1000000] [--steps 1..10000] [--warmup 0..10000] [--order ordered|shuffled]\n";
         coresim::IntegrationLayout layout = coresim::IntegrationLayout::lookup;
         std::string_view name = "lookup", order = "ordered";
         unsigned bodies = 10000, steps = 100, warmup = 10, seen = 0;
@@ -27,6 +27,8 @@ int main(int argc, char** argv) {
                 else if (value == "dense") { layout = coresim::IntegrationLayout::dense; }
                 else if (value == "aos") { layout = coresim::IntegrationLayout::aos; }
                 else if (value == "soa") { layout = coresim::IntegrationLayout::soa; }
+                else if (value == "physics-lookup") { layout = coresim::IntegrationLayout::physics_lookup; }
+                else if (value == "physics-dense") { layout = coresim::IntegrationLayout::physics_dense; }
                 else { throw std::invalid_argument(usage); }
             } else if (key == "--order") {
                 order = value;

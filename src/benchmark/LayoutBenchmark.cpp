@@ -21,6 +21,12 @@ void check(glm::vec3 value) {
 LayoutTiming LayoutExperiment::step(World& world, IntegrationLayout layout, float dt) {
     if (!std::isfinite(dt) || dt <= 0) { throw std::invalid_argument("Invalid layout timestep"); }
     const auto start = Clock::now();
+    if (layout == IntegrationLayout::physics_lookup || layout == IntegrationLayout::physics_dense) {
+        auto& physics = layout == IntegrationLayout::physics_lookup ? lookup_physics_ : dense_physics_;
+        physics.step(world, dt);
+        const auto end = Clock::now();
+        return {0, ms(start,end), 0, ms(start,end)};
+    }
     if (layout == IntegrationLayout::lookup || layout == IntegrationLayout::dense) {
         integrate_bodies(world, gravity, dt, layout == IntegrationLayout::lookup ? BodyIteration::lookup : BodyIteration::dense);
         const auto end = Clock::now();

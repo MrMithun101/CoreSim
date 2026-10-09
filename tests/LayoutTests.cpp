@@ -54,3 +54,25 @@ TEST_CASE("Integration variants reject invalid inputs and dynamic planes") {
         REQUIRE_THROWS_AS(experiment.step(world, layout, 1.0F/120), std::runtime_error);
     }
 }
+TEST_CASE("Dense production physics agrees exactly with lookup traversal during contacts") {
+    World lookup, dense;
+    for (World* world : {&lookup, &dense}) {
+        for (int i = 0; i < 20; ++i) {
+            const auto e = world->create();
+            world->set_transform(e).position = {static_cast<float>(i%5)*1.5F, static_cast<float>(i/5)*1.5F,0};
+            world->set_collider(e, SphereCollider(1)); world->set_rigid_body(e);
+        }
+        const auto plane = world->create(); world->set_transform(plane).position = {0,-2,0};
+        world->set_collider(plane, PlaneCollider{}); world->set_rigid_body(plane, RigidBody(0));
+    }
+    PhysicsSystem a({0,-9.81F,0}, BroadPhase::spatial_hash,3,BodyIteration::lookup);
+    PhysicsSystem b;
+    for (int tick = 0; tick < 120; ++tick) {
+        a.step(lookup,1.0F/120); b.step(dense,1.0F/120);
+        const auto aa = lookup.rigid_bodies(), bb = dense.rigid_bodies();
+        for (std::size_t i = 0; i < aa.size(); ++i) {
+            REQUIRE(aa[i].value.velocity == bb[i].value.velocity);
+            REQUIRE(lookup.transform(aa[i].entity)->position == dense.transform(bb[i].entity)->position);
+        }
+    }
+}

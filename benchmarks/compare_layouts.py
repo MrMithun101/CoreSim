@@ -11,16 +11,18 @@ import subprocess
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('executable', type=pathlib.Path)
 parser.add_argument('output', type=pathlib.Path, help='new output directory')
+parser.add_argument('--physics', action='store_true', help='compare full physics ticks with lookup/dense integration')
 args = parser.parse_args()
 args.output.mkdir(parents=True, exist_ok=False)
-layouts = ['lookup', 'dense', 'aos', 'soa']
+layouts = ['physics-lookup', 'physics-dense'] if args.physics else ['lookup', 'dense', 'aos', 'soa']
 commands, summary = [], []
-for bodies in [10000, 100000]:
+for bodies in ([1000, 10000] if args.physics else [10000, 100000]):
     for order in ['ordered', 'shuffled']:
         samples = {layout: [] for layout in layouts}
         reference = None
         for trial in range(4):
-            for layout in layouts[trial:] + layouts[:trial]:
+            offset = trial % len(layouts)
+            for layout in layouts[offset:] + layouts[:offset]:
                 command = [str(args.executable.resolve()), '--layout', layout, '--bodies', str(bodies),
                            '--steps', '100', '--warmup', '10', '--order', order]
                 filename = f'{order}-{bodies}-{layout}-{trial+1}.csv'

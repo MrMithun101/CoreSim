@@ -1,10 +1,11 @@
 #pragma once
 #include <coresim/scene/World.hpp>
+#include <coresim/physics/PhysicsSystem.hpp>
 #include <array>
 #include <cstddef>
 #include <vector>
 namespace coresim {
-enum class IntegrationLayout { lookup, dense, aos, soa };
+enum class IntegrationLayout { lookup, dense, aos, soa, physics_lookup, physics_dense };
 struct LayoutTiming { double gather_ms{}, kernel_ms{}, scatter_ms{}, total_ms{}; };
 // Experimental per-tick packing; buffers retain capacity. Not the production storage owner.
 class LayoutExperiment {
@@ -13,6 +14,8 @@ public:
     static constexpr glm::vec3 gravity{0,-9.81F,0};
     struct PackedBody { glm::vec3 position, velocity, acceleration, force; float inverse_mass; };
 private:
+    PhysicsSystem lookup_physics_{gravity, BroadPhase::spatial_hash, 3, BodyIteration::lookup};
+    PhysicsSystem dense_physics_{gravity, BroadPhase::spatial_hash, 3, BodyIteration::dense};
     struct Target { RigidBody* body; Transform* transform; };
     std::vector<Target> targets_;
     std::vector<PackedBody> aos_;
