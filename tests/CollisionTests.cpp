@@ -180,3 +180,53 @@ TEST_CASE("Mixed demo supports one hundred bodies and two-body stacks over ten s
     scene.reset_physics();
     REQUIRE(scene.world().transform(scene.world().rigid_bodies()[0].entity)->position.y == 2.0F);
 }
+
+TEST_CASE("Naive metrics enumerate all pairs across batch boundaries and reset each tick") {
+    World world;
+    CollisionSystem collisions;
+    CollisionStats stats;
+    collisions.solve(world, &stats);
+    REQUIRE(stats.candidate_pairs == 0);
+    for (int i = 0; i < 93; ++i) {
+        const auto entity = world.create();
+        world.set_transform(entity).position = {static_cast<float>(i) * 3, 0, 0};
+        world.set_collider(entity, SphereCollider(1));
+        world.set_rigid_body(entity);
+    }
+    for (int tick = 0; tick < 2; ++tick) {
+        collisions.solve(world, &stats);
+        REQUIRE(stats.candidate_pairs == 4278);
+        REQUIRE(stats.collision_checks == 4278);
+        REQUIRE(stats.contacts == 0);
+        REQUIRE(stats.correction_checks == 0);
+        REQUIRE(std::isfinite(stats.broad_phase_ms));
+        REQUIRE(stats.broad_phase_ms >= 0);
+        REQUIRE(std::isfinite(stats.narrow_phase_ms));
+        REQUIRE(stats.narrow_phase_ms >= 0);
+        REQUIRE(std::isfinite(stats.solver_ms));
+        REQUIRE(stats.solver_ms >= 0);
+    }
+}
+TEST_CASE("Naive metrics distinguish candidates initial tests and correction retests") {
+    World world;
+    const auto a = world.create();
+    const auto b = world.create();
+    const auto missing = world.create();
+    const auto fixed = world.create();
+    for (const auto entity : {a, b, missing, fixed}) {
+        world.set_collider(entity, SphereCollider(1));
+    }
+    world.set_transform(a);
+    world.set_transform(b).position = {1.5F, 0, 0};
+    world.set_transform(fixed).position = {20, 0, 0};
+    world.set_rigid_body(a);
+    // b and fixed have no rigid body, so they are static. missing has no transform.
+    CollisionSystem collisions;
+    CollisionStats stats;
+    collisions.solve(world, &stats);
+    REQUIRE(stats.candidate_pairs == 6);
+    REQUIRE(stats.collision_checks == 2);
+    REQUIRE(stats.contacts == 1);
+    REQUIRE(stats.correction_checks == 4);
+    REQUIRE(world.transform(a)->position.x < -0.49F);
+}

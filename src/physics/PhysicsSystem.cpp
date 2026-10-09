@@ -14,7 +14,7 @@ PhysicsSystem::PhysicsSystem(glm::vec3 gravity) : gravity_(gravity) {
         throw std::invalid_argument("Gravity must be finite");
     }
 }
-void PhysicsSystem::step(World& world, float delta_seconds) {
+void PhysicsSystem::step(World& world, float delta_seconds, CollisionStats* stats) {
     if (!std::isfinite(delta_seconds) || delta_seconds <= 0.0F) {
         throw std::invalid_argument("Physics timestep must be positive and finite");
     }
@@ -40,6 +40,6 @@ void PhysicsSystem::step(World& world, float delta_seconds) {
         // Forces belong to one physics tick, including on static/incomplete entities.
         body.clear_forces();
     }
-    collisions_.solve(world);
+    collisions_.solve(world, stats);
 }
 } // namespace coresim

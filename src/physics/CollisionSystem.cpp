@@ -1,6 +1,8 @@
 #include <coresim/physics/CollisionSystem.hpp>
 #include <coresim/scene/World.hpp>
 #include <algorithm>
+#include <array>
+#include <chrono>
 
 namespace coresim {
 namespace {
@@ -17,28 +19,55 @@ float restitution(const World& world, Entity entity) {
     return body ? body->restitution() : 1.0F;
 }
 } // namespace
-void CollisionSystem::solve(World& world) {
+void CollisionSystem::solve(World& world, CollisionStats* stats) {
+    using Clock = std::chrono::steady_clock;
+    const auto now = [&] { return stats ? Clock::now() : Clock::time_point{}; };
+    const auto milliseconds = [](auto start, auto end) {
+        return std::chrono::duration<double, std::milli>(end - start).count();
+    };
+    if (stats) { *stats = {}; }
     contacts_.clear();
     const auto colliders = world.colliders();
-    // Deliberately straightforward all-pairs baseline; spatial acceleration comes later.
-    for (std::size_t i = 0; i < colliders.size(); ++i) {
-        const auto& a = colliders[i];
-        const auto* ta = world.transform(a.entity);
-        if (!ta) { continue; }
-        for (std::size_t j = i + 1; j < colliders.size(); ++j) {
-            const auto& b = colliders[j];
+    // Bounded storage, but still enumerate every unordered pair, without spatial pruning.
+    struct Pair { std::size_t a, b; };
+    std::array<Pair, 4096> pairs{};
+    std::size_t count = 0;
+    auto broad_start = now();
+    const auto flush = [&] {
+        const auto narrow_start = now();
+        if (stats) {
+            stats->broad_phase_ms += milliseconds(broad_start, narrow_start);
+            stats->candidate_pairs += count;
+        }
+        for (std::size_t index = 0; index < count; ++index) {
+            const auto& a = colliders[pairs[index].a];
+            const auto& b = colliders[pairs[index].b];
+            const auto* ta = world.transform(a.entity);
             const auto* tb = world.transform(b.entity);
-            if (!tb || inverse_mass(world, a.entity) + inverse_mass(world, b.entity) == 0) { continue; }
+            if (!ta || !tb || inverse_mass(world, a.entity) + inverse_mass(world, b.entity) == 0) { continue; }
+            if (stats) { ++stats->collision_checks; }
             const auto geometry = detect_contact(a.value, ta->position, b.value, tb->position);
             if (!geometry) { continue; }
             const float closing = glm::dot(velocity(world, b.entity) - velocity(world, a.entity),
                                            geometry->normal);
             const float bounce = std::min(restitution(world, a.entity), restitution(world, b.entity));
-            // Suppress tiny repeated restitution bounces at resting contacts.
             const float target = closing < -1.0F ? -bounce * closing : 0.0F;
             contacts_.push_back({{a.entity, b.entity, *geometry}, target, 0});
         }
+        const auto narrow_end = now();
+        if (stats) { stats->narrow_phase_ms += milliseconds(narrow_start, narrow_end); }
+        count = 0;
+        broad_start = now();
+    };
+    for (std::size_t i = 0; i < colliders.size(); ++i) {
+        for (std::size_t j = i + 1; j < colliders.size(); ++j) {
+            pairs[count++] = {i, j};
+            if (count == pairs.size()) { flush(); }
+        }
     }
+    flush();
+    if (stats) { stats->contacts = contacts_.size(); }
+    const auto solver_start = now();
     // Sequential impulses accumulate only within this tick; there is no warm starting yet.
     for (int iteration = 0; iteration < 8; ++iteration) {
         for (auto& constraint : contacts_) {
@@ -60,6 +89,7 @@ void CollisionSystem::solve(World& world) {
             const auto& contact = constraint.contact;
             auto& ta = *world.transform(contact.a);
             auto& tb = *world.transform(contact.b);
+            if (stats) { ++stats->correction_checks; }
             const auto geometry = detect_contact(*world.collider(contact.a), ta.position,
                                                   *world.collider(contact.b), tb.position);
             if (!geometry) { continue; }
@@ -70,5 +100,6 @@ void CollisionSystem::solve(World& world) {
             tb.position += geometry->normal * (correction * ib);
         }
     }
+    if (stats) { stats->solver_ms = milliseconds(solver_start, now()); }
 }
 } // namespace coresim
