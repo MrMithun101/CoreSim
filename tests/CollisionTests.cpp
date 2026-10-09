@@ -1,3 +1,7 @@
+#include <coresim/physics/PhysicsSystem.hpp>
+#include <coresim/core/FixedStepper.hpp>
+#include <coresim/scene/DemoScene.hpp>
+#include <cmath>
 #include <coresim/physics/Contact.hpp>
 #include <coresim/scene/World.hpp>
 #include <catch2/catch_approx.hpp>
@@ -73,8 +77,6 @@ TEST_CASE("Collider shape validation and component lifecycle") {
     REQUIRE_THROWS_AS(world.set_collider(entity, SphereCollider{}), std::invalid_argument);
 }
 
-#include <coresim/physics/PhysicsSystem.hpp>
-#include <coresim/core/FixedStepper.hpp>
 
 namespace {
 Entity body(World& world, Collider collider, glm::vec3 position, float mass = 1, float bounce = 0) {
@@ -160,4 +162,21 @@ TEST_CASE("One hundred AABB bodies remain finite and supported on a floor") {
         REQUIRE(world.transform(entity)->position.y < 0.51F);
         REQUIRE(std::abs(world.rigid_body(entity)->velocity.y) < 0.01F);
     }
+}
+
+TEST_CASE("Mixed demo supports one hundred bodies and two-body stacks over ten seconds") {
+    DemoScene scene;
+    PhysicsSystem physics;
+    for (int tick = 0; tick < 1200; ++tick) {
+        physics.step(scene.world(), static_cast<float>(FixedStepper::step_seconds));
+    }
+    for (const auto& entry : scene.world().rigid_bodies()) {
+        if (entry.value.inverse_mass() == 0) { continue; }
+        const float height = scene.world().transform(entry.entity)->position.y;
+        REQUIRE(height > 0.62F);
+        REQUIRE(height < 2.0F);
+        REQUIRE(glm::length(entry.value.velocity) < 0.05F);
+    }
+    scene.reset_physics();
+    REQUIRE(scene.world().transform(scene.world().rigid_bodies()[0].entity)->position.y == 2.0F);
 }

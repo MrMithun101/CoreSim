@@ -61,10 +61,10 @@ TEST_CASE("Transform scales then rotates then translates independently") {
 }
 
 
-TEST_CASE("Demo scene has 64 deterministic independent transforms with stable rotations") {
+TEST_CASE("Collision demo has deterministic transforms and stable orientations") {
     DemoScene scene;
     const DemoScene copy;
-    REQUIRE(scene.world().transforms().size() == 64);
+    REQUIRE(scene.world().transforms().size() == 102);
     for (std::size_t i = 0; i < scene.world().transforms().size(); ++i) {
         REQUIRE(scene.world().transforms()[i].value.position == copy.world().transforms()[i].value.position);
         if (i > 0) {
@@ -78,16 +78,18 @@ TEST_CASE("Demo scene has 64 deterministic independent transforms with stable ro
         REQUIRE(scene.world().transforms()[i].value.position == copy.world().transforms()[i].value.position);
         REQUIRE(glm::length(scene.world().transforms()[i].value.rotation) == Catch::Approx(1.0F));
     }
-    REQUIRE(scene.world().transforms()[0].value.rotation != scene.world().transforms()[1].value.rotation);
+    REQUIRE(scene.world().transforms()[0].value.position != scene.world().transforms()[1].value.position);
     REQUIRE_THROWS_AS(scene.update(-1), std::invalid_argument);
 }
 
 TEST_CASE("Demo updates survive entity deletion and incomplete component combinations") {
     DemoScene scene;
     auto& world = scene.world();
-    const auto removed = world.spins().front().entity;
+    const auto removed = world.transforms()[0].entity;
+    const auto missing_transform = world.transforms()[1].entity;
+    world.set_spin(removed, {{0, 1, 0}, 1});
+    world.set_spin(missing_transform, {{0, 1, 0}, 1});
     REQUIRE(world.destroy(removed));
-    const auto missing_transform = world.spins().front().entity;
     REQUIRE(world.remove_transform(missing_transform));
     const auto static_entity = world.create();
     const auto initial = world.set_transform(static_entity).rotation;
@@ -96,5 +98,5 @@ TEST_CASE("Demo updates survive entity deletion and incomplete component combina
     REQUIRE(world.transform(static_entity)->rotation == initial);
     REQUIRE_FALSE(world.alive(removed));
     REQUIRE(world.transform(missing_transform) == nullptr);
-    REQUIRE(world.size() == 64);
+    REQUIRE(world.size() == 102);
 }

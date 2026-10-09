@@ -341,3 +341,24 @@ TEST_CASE("Renderer observes fixed-step body positions without owning physics st
     REQUIRE(target.center()[2] < 50);
     REQUIRE(glGetError() == GL_NO_ERROR);
 }
+
+TEST_CASE("Sphere mesh has curved coverage unlike its bounding cube") {
+    Context context;
+    Target target;
+    Renderer renderer(shaders);
+    World world;
+    const auto entity = world.create();
+    world.set_transform(entity).scale = glm::vec3(0.7F);
+    world.set_mesh(entity);
+    renderer.draw(Target::size, Target::size, glm::mat4(1), world);
+    const auto cube = target.pixels();
+    world.set_mesh(entity, {MeshKind::sphere});
+    renderer.draw(Target::size, Target::size, glm::mat4(1), world);
+    const auto sphere = target.pixels();
+    // This sample lies within the bounding square but outside the circular silhouette.
+    const auto edge = static_cast<std::size_t>((Target::size * 3 / 4 * Target::size + Target::size * 3 / 4) * 4);
+    REQUIRE(cube[edge + 2] > 100);
+    REQUIRE(sphere[edge + 2] < 50);
+    REQUIRE(target.center()[2] > 100);
+    REQUIRE(glGetError() == GL_NO_ERROR);
+}

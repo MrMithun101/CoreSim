@@ -2,9 +2,9 @@
 
 **High-Performance 3D Physics Simulation Engine**
 
-A C++20 systems and performance engineering project developed one measured milestone at a time. Current scope: **Milestone 5 — Physics V1**. It provides custom fixed-step translational physics, generation-checked entity IDs, packed component storage, a movable perspective camera and 64 cubes, move-aware RAII GPU resources, file-based shaders, depth testing, frame timing, and tests. Collision detection/response, angular dynamics, profiling, and GPU compute are future milestones. No performance claims are made yet.
+A C++20 systems and performance engineering project developed one measured milestone at a time. Current scope: **Milestone 6 — Collision Detection V1**. It provides custom fixed-step translational physics, generation-checked entity IDs, packed component storage, primitive collision detection and impulse response, a movable perspective camera and a 100-body sphere/box demo, move-aware RAII GPU resources, file-based shaders, depth testing, frame timing, and tests. Spatial acceleration, angular dynamics, profiling, and GPU compute are future milestones. No performance claims are made yet.
 
-![64-cube scene rendered by CoreSim](docs/images/scene.png)
+![Sphere and box collision scene rendered by CoreSim](docs/images/collisions.png)
 
 ## Build and run
 
@@ -24,7 +24,7 @@ ctest --test-dir build --output-on-failure
 ./build/coresim
 ```
 
-A grid of 32 dynamic cubes and 32 static reference cubes appears. Dynamic cubes launch upward and then fall under gravity; static cubes retain demo spin. There is no floor yet. Press **R** to reset motion after the falling bodies leave view. Use **WASD** to move, **Q/E** to descend/ascend, and **hold right mouse** to look. Release right mouse to restore the cursor. Escape or the close button exits. Its title updates twice per second with simulation time, dropped physics time, average FPS, delta time, and the last completed frame duration. A shutdown summary appears on standard output. Vertical synchronization is enabled; frame duration includes presentation waiting and is not a rendering benchmark.
+The scene contains 50 spheres and 50 axis-aligned boxes falling onto static floor supports. They bounce and settle into two-body stacks. Press **R** to reset the dynamic bodies. Use **WASD** to move, **Q/E** to descend/ascend, and **hold right mouse** to look. Release right mouse to restore the cursor. Escape or the close button exits. Its title updates twice per second with simulation time, dropped physics time, average FPS, delta time, and the last completed frame duration. A shutdown summary appears on standard output. Vertical synchronization is enabled; frame duration includes presentation waiting and is not a rendering benchmark.
 
 ```sh
 cmake -S . -B build-release -DCMAKE_BUILD_TYPE=Release
@@ -52,7 +52,7 @@ Initial configuration requires network access. Alternatively, use installed CMak
 
 ## Tests
 
-Default CTest checks timing, camera/transform/scene math, entity lifecycle and component storage, fixed-step physics, and CLI handling without opening a window. The CPU tests use explicit time inputs and never sleep. GLM is required even for headless scene tests. A build without any GLFW/OpenGL dependency is available:
+Default CTest checks timing, camera/transform/scene math, entity lifecycle and component storage, fixed-step physics, primitive contacts, collision response, resting stability, and CLI handling without opening a window. The CPU tests use explicit time inputs and never sleep. GLM is required even for headless scene tests. A build without any GLFW/OpenGL dependency is available:
 
 ```sh
 cmake -S . -B build-headless -DCORESIM_BUILD_APP=OFF
@@ -84,12 +84,12 @@ ctest --preset asan
 - `Application` owns `GlfwRuntime`, `Window`, `Renderer`, camera, and scene. Reverse destruction releases GPU resources before the context and runtime.
 - `Window` handles native events, context setup, framebuffer size, and presentation. OpenGL rendering lives in `coresim_renderer`.
 - `VertexBuffer`, `IndexBuffer`, `VertexArray`, and `Shader` are noncopyable, movable RAII owners. Shader compilation/link failures include file paths and driver diagnostics.
-- `World` owns stable entity IDs and packed transform, mesh-reference, demo-spin, and rigid-body components. Destruction invalidates stale IDs and removes components.
+- `World` owns stable entity IDs and packed transform, mesh-reference, demo-spin, rigid-body, and collider components. Destruction invalidates stale IDs and removes components.
 - `Renderer` borrows a const World and draws entities with both mesh and transform components. It owns shared GPU geometry; camera and CPU scene state remain outside the renderer.
-- `PhysicsSystem` integrates gravity, acceleration, and forces using semi-implicit Euler. `FixedStepper` runs at 120 Hz with bounded catch-up; renderer and physics borrow World without owning each other’s state.
+- `PhysicsSystem` integrates gravity, acceleration, and forces using semi-implicit Euler, then resolves supported contacts using normal impulses and penetration correction. `FixedStepper` runs at 120 Hz with bounded catch-up; renderer and physics borrow World without owning each other’s state.
 - `FrameTimer` uses a steady clock. Delta is start-to-start; frame duration covers event processing through buffer swap. FPS averages completed frames over elapsed runtime.
 
-See [physics and timestep policy](docs/physics.md), [entity storage and lifecycle](docs/entities.md), [camera/scene design and controls](docs/scene.md) and [renderer design](docs/renderer.md) for ownership contracts, the draw pipeline, shader paths, and testing rationale. Format C++ files with the checked-in `.clang-format` configuration.
+See [collision geometry and solver limits](docs/collisions.md), [physics and timestep policy](docs/physics.md), [entity storage and lifecycle](docs/entities.md), [camera/scene design and controls](docs/scene.md) and [renderer design](docs/renderer.md) for ownership contracts, the draw pipeline, shader paths, and testing rationale. Format C++ files with the checked-in `.clang-format` configuration.
 
 Shaders are copied into the build directory and found independently of the working directory. Rebuild and restart after changing them. For a relocated executable or custom shaders:
 
@@ -99,4 +99,4 @@ Shaders are copied into the build directory and found independently of the worki
 
 See [verification notes](docs/verification.md) for actual local results and commands. The screenshot above is an actual framebuffer capture, not an illustration or performance benchmark.
 
-**Next: Milestone 6 — Collision Detection V1**, only on explicit request: sphere/sphere, AABB/AABB, sphere/plane contacts, impulse response, and penetration correction.
+**Next: Milestone 7 — Naive Collision Benchmark**, only on explicit request: reproducible all-pairs baseline measurements and benchmark output before spatial optimization.

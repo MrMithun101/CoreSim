@@ -161,10 +161,10 @@ TEST_CASE("Falling-body demo uses static references and resets motion without re
     for (const auto& entry : world.rigid_bodies()) {
         if (entry.value.inverse_mass() > 0) { ++dynamic; } else { ++stationary; }
     }
-    REQUIRE(dynamic == 32);
-    REQUIRE(stationary == 32);
+    REQUIRE(dynamic == 100);
+    REQUIRE(stationary == 2);
     const auto moving = world.rigid_bodies()[0].entity;
-    const auto fixed = world.rigid_bodies()[1].entity;
+    const auto fixed = world.rigid_bodies()[100].entity;
     const auto initial_position = world.transform(moving)->position;
     const auto initial_velocity = world.rigid_body(moving)->velocity;
     const auto fixed_position = world.transform(fixed)->position;

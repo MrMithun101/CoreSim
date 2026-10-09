@@ -1,5 +1,15 @@
 # Verification
 
+## Milestone 6 — October 8, 2026
+
+Debug, Release, and ASan/UBSan builds passed all five local CTest entries without CoreSim compiler warnings or sanitizer diagnostics. The CPU suite passed 54,513 assertions in 30 cases. The renderer suite passed 67 assertions in eight cases (68 when optional scene-image output was enabled). Counts include earlier milestones and are not a coverage percentage.
+
+Primitive tests cover separated/touching/overlapping spheres and AABBs, contained boxes, coincident sphere centers, translated planes, reversed normals, unsupported pairs, constructor validation, and collider lifecycle. Response tests cover restitution, equal-mass momentum, separating contacts, inverse-mass correction, static and missing-body colliders, plane restrictions, and resting spheres. The 100-box floor workload ran five simulated seconds; the mixed 100-body two-layer demo ran ten seconds, with all dynamic bodies remaining supported and near rest within the recorded test tolerances. These are correctness workloads, not performance benchmarks or arbitrary-stack stability claims.
+
+OpenGL tests include curved sphere silhouette coverage, the existing depth/lifecycle checks, and the mixed scene capture. The actual capture was visually inspected and saved in `docs/images/collisions.png`. A separate 360-frame demo run was used for execution/shutdown verification. UI keyboard/mouse/reset limitations remain as documented for earlier milestones.
+
+The solver is discrete and all-pairs, with no friction, CCD, rotated boxes, sphere/box, or box/plane support. The visible AABB floor supports boxes; a colocated invisible plane supports spheres. Details are in `collisions.md`.
+
 ## Milestone 5 — October 8, 2026
 
 Commits `b920e44` (CPU physics) and `204cf3d` (application integration) passed Linux CI. Both integration runs completed successfully; the [recorded run](https://github.com/MrMithun101/CoreSim/actions/runs/37834311413) covers GCC/Clang Debug/Release with software-rendered display tests plus headless ASan/UBSan.

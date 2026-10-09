@@ -36,7 +36,7 @@ if(CORESIM_BUILD_APP)
     coresim_target_options(coresim_platform)
 
     add_library(coresim_renderer src/renderer/Buffers.cpp src/renderer/Shader.cpp
-                                 src/renderer/Renderer.cpp)
+                                 src/renderer/Renderer.cpp src/renderer/Mesh.cpp)
     target_include_directories(coresim_renderer PUBLIC include)
     target_link_libraries(coresim_renderer PUBLIC coresim_scene PRIVATE coresim_glad)
     coresim_target_options(coresim_renderer)

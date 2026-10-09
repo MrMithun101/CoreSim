@@ -5,6 +5,9 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <algorithm>
 #include <array>
+#include <vector>
+#include <cmath>
+#include <numbers>
 
 namespace coresim {
 namespace {
@@ -27,12 +30,36 @@ constexpr std::array<std::uint32_t, 36> cube_indices{
     0,1,2, 2,3,0, 4,5,6, 6,7,4, 8,9,10, 10,11,8,
     12,13,14, 14,15,12, 16,17,18, 18,19,16, 20,21,22, 22,23,20
 };
+Mesh make_sphere() {
+    constexpr std::uint32_t rings = 16, sectors = 24;
+    std::vector<float> vertices;
+    std::vector<std::uint32_t> indices;
+    vertices.reserve((rings + 1) * (sectors + 1) * 6);
+    indices.reserve(rings * sectors * 6);
+    for (std::uint32_t ring = 0; ring <= rings; ++ring) {
+        const float latitude = std::numbers::pi_v<float> * static_cast<float>(ring) / rings;
+        for (std::uint32_t sector = 0; sector <= sectors; ++sector) {
+            const float longitude = 2 * std::numbers::pi_v<float> * static_cast<float>(sector) / sectors;
+            const float x = std::sin(latitude) * std::cos(longitude);
+            const float y = std::cos(latitude);
+            const float z = std::sin(latitude) * std::sin(longitude);
+            vertices.insert(vertices.end(), {x, y, z, 0.35F + 0.3F * x, 0.55F + 0.3F * y, 0.7F + 0.25F * z});
+        }
+    }
+    for (std::uint32_t ring = 0; ring < rings; ++ring) {
+        for (std::uint32_t sector = 0; sector < sectors; ++sector) {
+            const auto a = ring * (sectors + 1) + sector;
+            const auto b = a + sectors + 1;
+            indices.insert(indices.end(), {a, b, a + 1, a + 1, b, b + 1});
+        }
+    }
+    return Mesh(vertices, indices);
+}
 } // namespace
 
 Renderer::Renderer(const std::filesystem::path& shader_directory)
     : shader_(shader_directory / "cube.vert", shader_directory / "cube.frag"),
-      vertices_(cube_vertices), indices_(cube_indices) {
-    vertex_array_.configure_position_color(vertices_, indices_);
+      cube_(cube_vertices, cube_indices), sphere_(make_sphere()) {
     transform_location_ = shader_.uniform_location("u_transform");
 }
 
@@ -49,17 +76,19 @@ void Renderer::draw(int framebuffer_width, int framebuffer_height,
     glClearColor(0.035F, 0.055F, 0.085F, 1.0F);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     shader_.bind();
-    vertex_array_.bind();
     for (const auto& entry : world.meshes()) {
         const auto* object = world.transform(entry.entity);
-        if (!object || entry.value.kind != MeshKind::cube) {
+        if (!object) {
             continue;
         }
         const auto transform = view_projection * object->matrix();
         std::array<float, 16> matrix{};
         std::copy_n(glm::value_ptr(transform), matrix.size(), matrix.begin());
         shader_.set_matrix(transform_location_, matrix);
-        glDrawElements(GL_TRIANGLES, indices_.count(), GL_UNSIGNED_INT, nullptr);
+        switch (entry.value.kind) {
+        case MeshKind::cube: cube_.draw(); break;
+        case MeshKind::sphere: sphere_.draw(); break;
+        }
     }
     glBindVertexArray(0);
     glUseProgram(0);

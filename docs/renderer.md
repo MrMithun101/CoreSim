@@ -1,6 +1,6 @@
 # Rendering foundation
 
-The renderer draws indexed cubes with six flat face colors; milestone 4 supplies 64 entities through component storage. It uses an OpenGL 3.3 core context and GLSL 330 shaders. The camera and demo scene live in the CPU-only scene module; the renderer borrows a view-projection matrix and const World, joining mesh and transform components by entity ID.
+The renderer draws shared indexed cubes and procedural spheres; milestone 6 supplies 100 dynamic bodies and a visible floor through component storage. It uses an OpenGL 3.3 core context and GLSL 330 shaders. The camera and demo scene live in the CPU-only scene module; the renderer borrows a view-projection matrix and const World, joining mesh and transform components by entity ID.
 
 ## Ownership and context lifetime
 
@@ -8,7 +8,7 @@ The renderer draws indexed cubes with six flat face colors; milestone 4 supplies
 
 1. `GlfwRuntime`: process-wide GLFW initialization and error reporting.
 2. `Window`: native window and OpenGL context; loads GLAD after making the context current.
-3. `Renderer`: program, vertex buffer, index buffer, and vertex array.
+3. `Renderer`: shader program and two shared meshes, each owning a vertex buffer, index buffer, and vertex array.
 
 Destruction reverses that order. Every GPU owner's construction, use, move assignment, and destruction requires the owning OpenGL context to be current on the main thread. The application maintains that invariant. The wrappers do not manage context switching or cross-thread resource sharing.
 
@@ -18,9 +18,9 @@ Destruction reverses that order. Every GPU owner's construction, use, move assig
 
 The cube contains 24 vertices and 36 unsigned 32-bit indices. Vertices contain interleaved position and color (six floats). Each face has its own four vertices so adjacent faces do not interpolate each other's colors. The VAO captures the attribute layout and element-buffer binding. Index data is initially uploaded through `GL_ARRAY_BUFFER` to avoid accidentally modifying an unrelated VAO's element binding.
 
-Each frame sets the viewport from actual framebuffer pixels, enables `GL_DEPTH_TEST` with `GL_LESS`, enables depth writes, and clears both color and depth. The CPU constructs `projection * view * model` with GLM and uploads a column-major matrix. One indexed triangle draw renders each cube using shared geometry. The program and VAO are unbound afterward. There is no per-frame mesh allocation or shader compilation. The renderer owns the relevant OpenGL state; it does not save and restore arbitrary external state.
+Each frame sets the viewport from actual framebuffer pixels, enables `GL_DEPTH_TEST` with `GL_LESS`, enables depth writes, and clears both color and depth. The CPU constructs `projection * view * model` with GLM and uploads a column-major matrix. One indexed triangle draw renders each mesh instance using shared geometry. The program and VAO are unbound afterward. There is no per-frame mesh allocation or shader compilation. The renderer owns the relevant OpenGL state; it does not save and restore arbitrary external state.
 
-The application advances static reference objects with demo spin and dynamic objects through fixed-step translational physics. Zero-size framebuffers skip rendering to avoid division by zero when minimized. Resizing recomputes aspect ratio and viewport each frame. GLM handles matrix math; camera movement is described in `scene.md`.
+The application advances dynamic objects through fixed-step translational physics and contact resolution; boxes remain axis-aligned. Zero-size framebuffers skip rendering to avoid division by zero when minimized. Resizing recomputes aspect ratio and viewport each frame. GLM handles matrix math; camera movement is described in `scene.md`.
 
 ## Shaders and loader
 

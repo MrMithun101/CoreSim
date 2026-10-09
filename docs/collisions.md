@@ -17,3 +17,11 @@ Eight sequential-impulse iterations enforce a nonnegative accumulated normal imp
 Four position-correction iterations recompute geometry for the detected pairs and remove 80% of penetration beyond 0.001 world units, weighted by inverse mass. Position correction does not change velocity. New pairs created by correction are considered on the next tick. The representative contact point is retained for future visualization; this solver applies only linear impulses.
 
 This is discrete collision detection, so sufficiently fast bodies can tunnel through boxes/spheres. There is no friction, CCD, angular response, rotated-box support, or guarantee for tall stacks. The all-pairs baseline is intentionally unoptimized; milestone 7 will benchmark it before spatial acceleration is added.
+
+## Demo and validation scope
+
+The default scene contains 100 dynamic bodies: 50 spheres on the left and 50 axis-aligned boxes on the right, arranged in two layers. All have radius/half extents 0.65, restitution 0.25, and varying mass. There are two static support entities: a visible box slab with its top at Y=0 for boxes and an invisible plane at Y=0 for spheres. Unsupported sphere/box and box/plane pairs mean these supports cannot apply two responses to the same body. The sphere plane is infinite; the visual slab and box support are finite.
+
+Sphere meshes are generated once during renderer initialization with 16 latitude rings and 24 longitude sectors. Shared cube/sphere meshes reuse the existing RAII buffers, VAOs, and shader. Visual scales match collider dimensions, and demo boxes do not rotate. R restores the 100 original dynamic bodies; it does not recreate or reset the support entities.
+
+Tests verify restitution at 0/0.5/1, equal-mass momentum, separating pairs, inverse-mass separation, static bodies with nonzero stored velocity, missing-body static colliders, plane restrictions, and ten seconds of sphere resting. A 100-AABB floor test runs five simulated seconds; the mixed 100-body demo runs ten seconds with two-body stacks. These are specific correctness/stability workloads, not throughput benchmarks or guarantees for arbitrary stacks. No friction, high-speed tunneling fix, or unsupported shape interaction is implied.

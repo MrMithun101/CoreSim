@@ -18,6 +18,6 @@ private:
         glm::vec3 velocity;
     };
     World world_;
-    std::array<InitialMotion, 64> initial_motion_{};
+    std::array<InitialMotion, 100> initial_motion_{};
 };
 } // namespace coresim

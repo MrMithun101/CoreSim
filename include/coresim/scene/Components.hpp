@@ -4,7 +4,7 @@
 
 namespace coresim {
 // A mesh reference carries no GPU ownership; the renderer owns shared geometry.
-enum class MeshKind { cube };
+enum class MeshKind { cube, sphere };
 struct MeshComponent {
     MeshKind kind{MeshKind::cube};
 };

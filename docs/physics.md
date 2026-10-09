@@ -4,7 +4,7 @@
 
 ## State and integration
 
-Units are meters, seconds, kilograms, and newtons. Each body stores velocity, persistent user acceleration, a one-tick force accumulator, mass/inverse mass, and restitution. Setters keep mass and inverse mass consistent. Mass zero denotes a static body; it is not integrated, even if velocity is nonzero. Restitution is validated in [0,1] but is not used until collision response exists.
+Units are meters, seconds, kilograms, and newtons. Each body stores velocity, persistent user acceleration, a one-tick force accumulator, mass/inverse mass, and restitution. Setters keep mass and inverse mass consistent. Mass zero denotes a static body; it is not integrated, even if velocity is nonzero. Restitution is validated in [0,1] and used by collision response, with a low-speed bounce cutoff.
 
 For dynamic entities with transforms, a physics tick computes:
 
@@ -14,7 +14,7 @@ v = v + a * h
 position = position + v * h
 ```
 
-This is semi-implicit Euler. Gravity defaults to `(0, -9.81, 0)` and is independent of mass. Velocity and position use floats. There is no damping, collision, floor, sleeping, or angular physics. Demo quaternion animation is separate from physical angular dynamics.
+This is semi-implicit Euler. Gravity defaults to `(0, -9.81, 0)` and is independent of mass. Velocity and position use floats. The collision solver follows integration; see `collisions.md`. There is no damping, sleeping, or angular physics. Demo quaternion animation is separate from physical angular dynamics.
 
 Forces accumulate until the next physics tick and are then cleared, including for static bodies and entities missing transforms. No tick means no clearing. A continuous force must be applied inside the fixed-tick callback before every step; adding it once per render frame would make force duration depend on render FPS. Persistent user acceleration is not cleared.
 
@@ -34,10 +34,10 @@ The CPU suite checks semi-implicit integration against its known discrete soluti
 
 ## Demo and reset
 
-The default 8×8 grid alternates 32 dynamic cubes with 32 static reference cubes. Dynamic cubes start with a small upward velocity, then fall under gravity; their masses vary. Static cubes keep the earlier nonphysical spin animation as a visual reference. Dynamic orientations are held fixed: angular dynamics is a later milestone. There is deliberately no floor or collision response, so the falling cubes eventually leave the view.
+The default collision scene has 100 dynamic bodies (50 spheres and 50 axis-aligned boxes) above two static floor supports. Bodies begin at rest in two layers, fall, bounce, and settle. Orientations are fixed; demo spin remains available as a separate component but is not attached in this scene. Details and unsupported shape combinations are documented in `collisions.md`.
 
 Press **R** to restore the original entities' positions/velocities, clear their forces and user acceleration, and reset the accumulator, tick counter, and dropped-time counter. Reset uses generation-checked saved IDs and cannot modify replacement entities that reuse destroyed slots. It does not restore removed components, mass/restitution edits, or demo orientation. Holding R triggers only one reset until it is released.
 
-The application feeds actual frame elapsed time to FixedStepper (not the camera's 0.1-second movement clamp). Both physics and static demo spin update inside the fixed callback. The window title shows simulated seconds and dropped time; shutdown reports tick count and dropped seconds. No renderer changes are required to observe physical motion: it reads updated transforms from World. Rendering uses the latest state without interpolation, so slight 120 Hz stepping may be visible on high-refresh displays.
+The application feeds actual frame elapsed time to FixedStepper (not the camera's 0.1-second movement clamp). Physics and the optional demo-spin system update inside the fixed callback. The window title shows simulated seconds and dropped time; shutdown reports tick count and dropped seconds. No renderer changes are required to observe physical motion: it reads updated transforms from World. Rendering uses the latest state without interpolation, so slight 120 Hz stepping may be visible on high-refresh displays.
 
-Additional tests cover irregular frame durations, the 32/32 demo composition, gravity-driven motion relative to static references, reset and stale-ID safety, and framebuffer changes after real fixed physics ticks.
+Additional tests cover irregular frame durations, the 100-dynamic/2-static demo composition, gravity-driven motion relative to static references, reset and stale-ID safety, and framebuffer changes after real fixed physics ticks.
