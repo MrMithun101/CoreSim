@@ -1,5 +1,15 @@
 # Verification
 
+## Milestone 9 — October 9, 2026
+
+Profiler core checkpoint `97bce30` passed Linux CI. The [integration CI run](https://github.com/MrMithun101/CoreSim/actions/runs/37948569857) for `5afa810` passed all five jobs: GCC/Clang Debug/Release with the new ImGui display tests and headless ASan/UBSan. UI integration `5afa810` adds pinned Dear ImGui 1.91.9b with official GLFW/OpenGL3 backends, live inclusive CPU statistics, collection pause/resume, and reset. The headless configuration does not fetch or link ImGui.
+
+Debug, Release, and ASan/UBSan each passed all ten local CTest entries. The CPU suite passed 189,122 assertions across 42 cases. Final builds emitted no CoreSim compiler/linker warnings or sanitizer diagnostics. Deterministic tests cover aggregation, invalid samples, nested scopes, exception unwinding, reset/enable generation boundaries, clock-read avoidance when disabled, and unchanged profiled/unprofiled physics results.
+
+The display test passed 28 assertions (29 with optional image output), checking framebuffer content, GL errors, repeated context creation/destruction, and actual pause/resume/reset actions through ImGui input events. Its framebuffer capture was visually inspected and saved as `docs/images/profiler.png`; it uses synthetic timing samples, not benchmark results. Existing renderer and application smoke tests also passed. The interactive 120-frame diagnostic run recorded 120 Frame/Rendering/Presentation samples and 132 Physics/Broad Phase/Narrow Phase/Solver samples, matching its fixed-tick count, with zero dropped physics time. This was execution/instrumentation verification, not a controlled performance measurement.
+
+See [profiler design and timing boundaries](profiler.md). CPU wall time is inclusive; rendering reports CPU submission rather than GPU execution, and the separate presentation row includes VSync/driver waiting. Statistics are cumulative since reset and refreshed at 4 Hz. No worker-thread profiling or Milestone 10 layout optimization is included.
+
 ## Milestone 8 — October 9, 2026
 
 Spatial-hash implementation checkpoint `aa1de03` passed Linux CI. The [integration CI run](https://github.com/MrMithun101/CoreSim/actions/runs/37946921675) for `8bdfcee` also passed all five jobs: GCC/Clang Debug/Release with display tests and headless ASan/UBSan. Raw results are preserved in `7fbf018`. Integration checkpoint `8bdfcee` adds schema-2 metrics, explicit naive/spatial benchmark modes, configurable cell size, a paired-contact workload, and a reproducible comparison runner.

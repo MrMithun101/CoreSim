@@ -65,7 +65,7 @@ Initial configuration requires network access. Alternatively, use installed CMak
 
 ## Tests
 
-Default CTest checks timing, camera/transform/scene math, entity lifecycle and component storage, fixed-step physics, primitive contacts, collision response, resting stability, and CLI handling without opening a window. The CPU tests use explicit time inputs and never sleep. GLM is required even for headless scene tests. A build without any GLFW/OpenGL dependency is available:
+Default CTest checks frame/profiler timing, camera/transform/scene math, entity lifecycle and component storage, fixed-step physics, primitive contacts, collision response, resting stability, and CLI handling without opening a window. The CPU tests use explicit time inputs and never sleep. GLM is required even for headless scene tests. A build without any GLFW/OpenGL dependency is available:
 
 ```sh
 cmake -S . -B build-headless -DCORESIM_BUILD_APP=OFF
@@ -73,7 +73,7 @@ cmake --build build-headless --parallel
 ctest --test-dir build-headless --output-on-failure
 ```
 
-To run the OpenGL ownership, shader-failure, pixel/depth, and bounded window lifecycle tests:
+To run the ImGui profiler rendering/control tests, OpenGL ownership, shader-failure, pixel/depth, and bounded window lifecycle tests:
 
 ```sh
 cmake -S . -B build -DCORESIM_WINDOW_TESTS=ON
