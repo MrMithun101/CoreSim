@@ -54,6 +54,10 @@ public:
         sparse_[entity.index] = missing;
         return true;
     }
+    // The callback may edit values but must not structurally modify this pool.
+    template <class Visitor> void for_each(Visitor&& visitor) {
+        for (auto& entry : dense_) { visitor(entry.entity, entry.value); }
+    }
     [[nodiscard]] std::span<const ComponentEntry<T>> entries() const noexcept { return dense_; }
 private:
     static constexpr auto missing = std::numeric_limits<std::size_t>::max();

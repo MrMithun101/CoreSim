@@ -34,6 +34,11 @@ public:
     bool remove_rigid_body(Entity entity) noexcept;
     [[nodiscard]] auto rigid_bodies() const noexcept { return rigid_bodies_.entries(); }
 
+    // Direct packed-value traversal. No create/destroy/set/remove during the callback.
+    template <class Visitor> void for_each_rigid_body(Visitor&& visitor) {
+        rigid_bodies_.for_each(std::forward<Visitor>(visitor));
+    }
+
     Transform& set_transform(Entity entity, const Transform& value = {});
     MeshComponent& set_mesh(Entity entity, const MeshComponent& value = {});
     SpinComponent& set_spin(Entity entity, const SpinComponent& value = {});
