@@ -1,5 +1,13 @@
 # Verification
 
+## Milestone 8 — October 9, 2026
+
+Spatial-hash implementation checkpoint `aa1de03` passed Linux CI. Integration checkpoint `8bdfcee` adds schema-2 metrics, explicit naive/spatial benchmark modes, configurable cell size, a paired-contact workload, and a reproducible comparison runner.
+
+Debug, Release, and ASan/UBSan each passed all nine local CTest entries, including renderer and window smoke tests. The CPU suite passed 189,098 assertions in 39 cases. Builds emitted no CoreSim compiler/linker warnings or sanitizer diagnostics. New tests cover exhaustive-contact containment for seeded mixed primitives, negative coordinates and touching boundaries, three cell sizes, unique sorted candidates, repeated queries, planes, large/huge-coordinate fallbacks, missing transforms, and rebuilds after component mutation. A 600-tick mixed demo comparison requires exact agreement between naive and spatial contact counts, positions, and velocities. Benchmark tests validate both modes, CSV fields, cell-size parsing, candidate reduction, and paired contacts.
+
+The Release comparison ran 24 invocations (three trials per mode across four workloads), two warmup and ten measured ticks each. All 240 measured rows passed the runner's workload/counter checks. Actual results, untrimmed raw CSV, metadata, methodology and limits are in [BENCHMARKS.md](../BENCHMARKS.md). No performance thresholds are asserted in unit tests.
+
 ## Milestone 7 — October 8, 2026
 
 The [integration CI run](https://github.com/MrMithun101/CoreSim/actions/runs/37869015935) for `33fc965` passed all five jobs: GCC/Clang Debug/Release with software-rendered display tests, and headless ASan/UBSan including the standalone benchmark. Implementation checkpoints are `ac328fc` (batched enumeration/metrics) and `33fc965` (CLI/CSV); `8cca3cd` preserves the actual raw measurement results.

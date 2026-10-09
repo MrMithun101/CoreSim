@@ -1,0 +1,526 @@
+[
+  {
+    "scene": "separated-spheres",
+    "bodies": 1000,
+    "algorithms": {
+      "collision-naive": {
+        "candidate_pairs": {
+          "median": 499500.0,
+          "min": 499500.0,
+          "max": 499500.0
+        },
+        "collision_checks": {
+          "median": 499500.0,
+          "min": 499500.0,
+          "max": 499500.0
+        },
+        "contacts": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "broad_phase_ms": {
+          "median": 1.0126635,
+          "min": 0.995789,
+          "max": 1.070789
+        },
+        "narrow_phase_ms": {
+          "median": 4.813665,
+          "min": 4.743173,
+          "max": 5.181255
+        },
+        "solver_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.000167
+        },
+        "physics_step_ms": {
+          "median": 5.8357085,
+          "min": 5.749833,
+          "max": 6.263917
+        },
+        "total_frame_ms": {
+          "median": 5.835729000000001,
+          "min": 5.749875,
+          "max": 6.263917
+        },
+        "hash_build_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "query_ms": {
+          "median": 1.0126635,
+          "min": 0.995789,
+          "max": 1.070789
+        },
+        "total_collision_ms": {
+          "median": 5.8278125,
+          "min": 5.742041,
+          "max": 6.255708
+        },
+        "pair_reduction_percent": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        }
+      },
+      "collision-spatial": {
+        "candidate_pairs": {
+          "median": 10476.0,
+          "min": 10476.0,
+          "max": 10476.0
+        },
+        "collision_checks": {
+          "median": 10476.0,
+          "min": 10476.0,
+          "max": 10476.0
+        },
+        "contacts": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "broad_phase_ms": {
+          "median": 0.410041,
+          "min": 0.396875,
+          "max": 0.452791
+        },
+        "narrow_phase_ms": {
+          "median": 0.09898000000000001,
+          "min": 0.095916,
+          "max": 0.110333
+        },
+        "solver_ms": {
+          "median": 4.1e-05,
+          "min": 0.0,
+          "max": 4.2e-05
+        },
+        "physics_step_ms": {
+          "median": 0.5186455000000001,
+          "min": 0.501416,
+          "max": 0.563
+        },
+        "total_frame_ms": {
+          "median": 0.5186455000000001,
+          "min": 0.501416,
+          "max": 0.563042
+        },
+        "hash_build_ms": {
+          "median": 0.26268800000000003,
+          "min": 0.253875,
+          "max": 0.273291
+        },
+        "query_ms": {
+          "median": 0.14725,
+          "min": 0.141625,
+          "max": 0.179791
+        },
+        "total_collision_ms": {
+          "median": 0.5109170000000001,
+          "min": 0.493792,
+          "max": 0.555041
+        },
+        "pair_reduction_percent": {
+          "median": 97.902703,
+          "min": 97.902703,
+          "max": 97.902703
+        }
+      }
+    },
+    "physics_speedup": 11.251825186953322
+  },
+  {
+    "scene": "separated-spheres",
+    "bodies": 5000,
+    "algorithms": {
+      "collision-naive": {
+        "candidate_pairs": {
+          "median": 12497500.0,
+          "min": 12497500.0,
+          "max": 12497500.0
+        },
+        "collision_checks": {
+          "median": 12497500.0,
+          "min": 12497500.0,
+          "max": 12497500.0
+        },
+        "contacts": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "broad_phase_ms": {
+          "median": 25.898663,
+          "min": 25.265414,
+          "max": 28.937096
+        },
+        "narrow_phase_ms": {
+          "median": 123.1230305,
+          "min": 120.384994,
+          "max": 137.801421
+        },
+        "solver_ms": {
+          "median": 0.000125,
+          "min": 0.0,
+          "max": 0.000208
+        },
+        "physics_step_ms": {
+          "median": 149.13345800000002,
+          "min": 145.844208,
+          "max": 165.163041
+        },
+        "total_frame_ms": {
+          "median": 149.1334995,
+          "min": 145.84425,
+          "max": 165.163083
+        },
+        "hash_build_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "query_ms": {
+          "median": 25.898663,
+          "min": 25.265414,
+          "max": 28.937096
+        },
+        "total_collision_ms": {
+          "median": 149.090729,
+          "min": 145.802625,
+          "max": 165.096458
+        },
+        "pair_reduction_percent": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        }
+      },
+      "collision-spatial": {
+        "candidate_pairs": {
+          "median": 57354.0,
+          "min": 57354.0,
+          "max": 57354.0
+        },
+        "collision_checks": {
+          "median": 57354.0,
+          "min": 57354.0,
+          "max": 57354.0
+        },
+        "contacts": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "broad_phase_ms": {
+          "median": 2.107794,
+          "min": 2.03675,
+          "max": 2.447206
+        },
+        "narrow_phase_ms": {
+          "median": 0.5389584999999999,
+          "min": 0.525333,
+          "max": 0.570626
+        },
+        "solver_ms": {
+          "median": 4.1e-05,
+          "min": 0.0,
+          "max": 0.000125
+        },
+        "physics_step_ms": {
+          "median": 2.6923125,
+          "min": 2.60275,
+          "max": 3.068417
+        },
+        "total_frame_ms": {
+          "median": 2.6923335,
+          "min": 2.602792,
+          "max": 3.068417
+        },
+        "hash_build_ms": {
+          "median": 1.2522920000000002,
+          "min": 1.212875,
+          "max": 1.428334
+        },
+        "query_ms": {
+          "median": 0.8521045,
+          "min": 0.82325,
+          "max": 1.05979
+        },
+        "total_collision_ms": {
+          "median": 2.650875,
+          "min": 2.562917,
+          "max": 3.01925
+        },
+        "pair_reduction_percent": {
+          "median": 99.541076,
+          "min": 99.541076,
+          "max": 99.541076
+        }
+      }
+    },
+    "physics_speedup": 55.39232834227083
+  },
+  {
+    "scene": "separated-spheres",
+    "bodies": 10000,
+    "algorithms": {
+      "collision-naive": {
+        "candidate_pairs": {
+          "median": 49995000.0,
+          "min": 49995000.0,
+          "max": 49995000.0
+        },
+        "collision_checks": {
+          "median": 49995000.0,
+          "min": 49995000.0,
+          "max": 49995000.0
+        },
+        "contacts": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "broad_phase_ms": {
+          "median": 101.993109,
+          "min": 101.058386,
+          "max": 108.66384
+        },
+        "narrow_phase_ms": {
+          "median": 485.57137550000004,
+          "min": 480.728309,
+          "max": 531.102524
+        },
+        "solver_ms": {
+          "median": 0.0001455,
+          "min": 0.0,
+          "max": 0.000375
+        },
+        "physics_step_ms": {
+          "median": 587.895542,
+          "min": 582.15775,
+          "max": 638.556708
+        },
+        "total_frame_ms": {
+          "median": 587.8955834999999,
+          "min": 582.157792,
+          "max": 638.556708
+        },
+        "hash_build_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "query_ms": {
+          "median": 101.993109,
+          "min": 101.058386,
+          "max": 108.66384
+        },
+        "total_collision_ms": {
+          "median": 587.813312,
+          "min": 582.07625,
+          "max": 638.47575
+        },
+        "pair_reduction_percent": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        }
+      },
+      "collision-spatial": {
+        "candidate_pairs": {
+          "median": 117845.0,
+          "min": 117845.0,
+          "max": 117845.0
+        },
+        "collision_checks": {
+          "median": 117845.0,
+          "min": 117845.0,
+          "max": 117845.0
+        },
+        "contacts": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "broad_phase_ms": {
+          "median": 4.0931435,
+          "min": 4.048127,
+          "max": 4.273915
+        },
+        "narrow_phase_ms": {
+          "median": 1.08179,
+          "min": 1.076793,
+          "max": 1.118293
+        },
+        "solver_ms": {
+          "median": 4.1e-05,
+          "min": 0.0,
+          "max": 8.4e-05
+        },
+        "physics_step_ms": {
+          "median": 5.263729,
+          "min": 5.207166,
+          "max": 5.47425
+        },
+        "total_frame_ms": {
+          "median": 5.263771,
+          "min": 5.207208,
+          "max": 5.47425
+        },
+        "hash_build_ms": {
+          "median": 2.3900835000000002,
+          "min": 2.37025,
+          "max": 2.4495
+        },
+        "query_ms": {
+          "median": 1.698271,
+          "min": 1.677877,
+          "max": 1.824415
+        },
+        "total_collision_ms": {
+          "median": 5.1833955,
+          "min": 5.127208,
+          "max": 5.39375
+        },
+        "pair_reduction_percent": {
+          "median": 99.764286,
+          "min": 99.764286,
+          "max": 99.764286
+        }
+      }
+    },
+    "physics_speedup": 111.68803371146197
+  },
+  {
+    "scene": "paired-spheres",
+    "bodies": 10000,
+    "algorithms": {
+      "collision-naive": {
+        "candidate_pairs": {
+          "median": 49995000.0,
+          "min": 49995000.0,
+          "max": 49995000.0
+        },
+        "collision_checks": {
+          "median": 49995000.0,
+          "min": 49995000.0,
+          "max": 49995000.0
+        },
+        "contacts": {
+          "median": 5000.0,
+          "min": 5000.0,
+          "max": 5000.0
+        },
+        "broad_phase_ms": {
+          "median": 102.376847,
+          "min": 101.32796,
+          "max": 120.457135
+        },
+        "narrow_phase_ms": {
+          "median": 487.807828,
+          "min": 482.26412,
+          "max": 550.396002
+        },
+        "solver_ms": {
+          "median": 0.800209,
+          "min": 0.78375,
+          "max": 0.862875
+        },
+        "physics_step_ms": {
+          "median": 591.4142915,
+          "min": 585.001541,
+          "max": 672.047584
+        },
+        "total_frame_ms": {
+          "median": 591.4143329999999,
+          "min": 585.001583,
+          "max": 672.047584
+        },
+        "hash_build_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "query_ms": {
+          "median": 102.376847,
+          "min": 101.32796,
+          "max": 120.457135
+        },
+        "total_collision_ms": {
+          "median": 591.3297295,
+          "min": 584.921125,
+          "max": 671.963375
+        },
+        "pair_reduction_percent": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        }
+      },
+      "collision-spatial": {
+        "candidate_pairs": {
+          "median": 5000.0,
+          "min": 5000.0,
+          "max": 5000.0
+        },
+        "collision_checks": {
+          "median": 5000.0,
+          "min": 5000.0,
+          "max": 5000.0
+        },
+        "contacts": {
+          "median": 5000.0,
+          "min": 5000.0,
+          "max": 5000.0
+        },
+        "broad_phase_ms": {
+          "median": 4.317876,
+          "min": 4.193543,
+          "max": 4.643208
+        },
+        "narrow_phase_ms": {
+          "median": 0.10922899999999999,
+          "min": 0.106874,
+          "max": 0.159084
+        },
+        "solver_ms": {
+          "median": 0.7894375,
+          "min": 0.780833,
+          "max": 0.834542
+        },
+        "physics_step_ms": {
+          "median": 5.3055625,
+          "min": 5.165125,
+          "max": 5.668833
+        },
+        "total_frame_ms": {
+          "median": 5.3055835,
+          "min": 5.165125,
+          "max": 5.668833
+        },
+        "hash_build_ms": {
+          "median": 3.5485625,
+          "min": 3.477542,
+          "max": 3.864542
+        },
+        "query_ms": {
+          "median": 0.7492705,
+          "min": 0.716001,
+          "max": 1.018541
+        },
+        "total_collision_ms": {
+          "median": 5.224563,
+          "min": 5.085958,
+          "max": 5.588917
+        },
+        "pair_reduction_percent": {
+          "median": 99.989999,
+          "min": 99.989999,
+          "max": 99.989999
+        }
+      }
+    },
+    "physics_speedup": 111.47061060914842
+  }
+]

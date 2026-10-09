@@ -1,0 +1,434 @@
+[
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim",
+      "--benchmark",
+      "collision-naive",
+      "--bodies",
+      "1000",
+      "--steps",
+      "10",
+      "--warmup",
+      "2",
+      "--scene",
+      "separated-spheres",
+      "--cell-size",
+      "3"
+    ],
+    "stdout": "separated-spheres-1000-collision-naive-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim",
+      "--benchmark",
+      "collision-spatial",
+      "--bodies",
+      "1000",
+      "--steps",
+      "10",
+      "--warmup",
+      "2",
+      "--scene",
+      "separated-spheres",
+      "--cell-size",
+      "3"
+    ],
+    "stdout": "separated-spheres-1000-collision-spatial-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim",
+      "--benchmark",
+      "collision-spatial",
+      "--bodies",
+      "1000",
+      "--steps",
+      "10",
+      "--warmup",
+      "2",
+      "--scene",
+      "separated-spheres",
+      "--cell-size",
+      "3"
+    ],
+    "stdout": "separated-spheres-1000-collision-spatial-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim",
+      "--benchmark",
+      "collision-naive",
+      "--bodies",
+      "1000",
+      "--steps",
+      "10",
+      "--warmup",
+      "2",
+      "--scene",
+      "separated-spheres",
+      "--cell-size",
+      "3"
+    ],
+    "stdout": "separated-spheres-1000-collision-naive-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim",
+      "--benchmark",
+      "collision-naive",
+      "--bodies",
+      "1000",
+      "--steps",
+      "10",
+      "--warmup",
+      "2",
+      "--scene",
+      "separated-spheres",
+      "--cell-size",
+      "3"
+    ],
+    "stdout": "separated-spheres-1000-collision-naive-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim",
+      "--benchmark",
+      "collision-spatial",
+      "--bodies",
+      "1000",
+      "--steps",
+      "10",
+      "--warmup",
+      "2",
+      "--scene",
+      "separated-spheres",
+      "--cell-size",
+      "3"
+    ],
+    "stdout": "separated-spheres-1000-collision-spatial-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim",
+      "--benchmark",
+      "collision-naive",
+      "--bodies",
+      "5000",
+      "--steps",
+      "10",
+      "--warmup",
+      "2",
+      "--scene",
+      "separated-spheres",
+      "--cell-size",
+      "3"
+    ],
+    "stdout": "separated-spheres-5000-collision-naive-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim",
+      "--benchmark",
+      "collision-spatial",
+      "--bodies",
+      "5000",
+      "--steps",
+      "10",
+      "--warmup",
+      "2",
+      "--scene",
+      "separated-spheres",
+      "--cell-size",
+      "3"
+    ],
+    "stdout": "separated-spheres-5000-collision-spatial-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim",
+      "--benchmark",
+      "collision-spatial",
+      "--bodies",
+      "5000",
+      "--steps",
+      "10",
+      "--warmup",
+      "2",
+      "--scene",
+      "separated-spheres",
+      "--cell-size",
+      "3"
+    ],
+    "stdout": "separated-spheres-5000-collision-spatial-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim",
+      "--benchmark",
+      "collision-naive",
+      "--bodies",
+      "5000",
+      "--steps",
+      "10",
+      "--warmup",
+      "2",
+      "--scene",
+      "separated-spheres",
+      "--cell-size",
+      "3"
+    ],
+    "stdout": "separated-spheres-5000-collision-naive-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim",
+      "--benchmark",
+      "collision-naive",
+      "--bodies",
+      "5000",
+      "--steps",
+      "10",
+      "--warmup",
+      "2",
+      "--scene",
+      "separated-spheres",
+      "--cell-size",
+      "3"
+    ],
+    "stdout": "separated-spheres-5000-collision-naive-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim",
+      "--benchmark",
+      "collision-spatial",
+      "--bodies",
+      "5000",
+      "--steps",
+      "10",
+      "--warmup",
+      "2",
+      "--scene",
+      "separated-spheres",
+      "--cell-size",
+      "3"
+    ],
+    "stdout": "separated-spheres-5000-collision-spatial-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim",
+      "--benchmark",
+      "collision-naive",
+      "--bodies",
+      "10000",
+      "--steps",
+      "10",
+      "--warmup",
+      "2",
+      "--scene",
+      "separated-spheres",
+      "--cell-size",
+      "3"
+    ],
+    "stdout": "separated-spheres-10000-collision-naive-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim",
+      "--benchmark",
+      "collision-spatial",
+      "--bodies",
+      "10000",
+      "--steps",
+      "10",
+      "--warmup",
+      "2",
+      "--scene",
+      "separated-spheres",
+      "--cell-size",
+      "3"
+    ],
+    "stdout": "separated-spheres-10000-collision-spatial-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim",
+      "--benchmark",
+      "collision-spatial",
+      "--bodies",
+      "10000",
+      "--steps",
+      "10",
+      "--warmup",
+      "2",
+      "--scene",
+      "separated-spheres",
+      "--cell-size",
+      "3"
+    ],
+    "stdout": "separated-spheres-10000-collision-spatial-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim",
+      "--benchmark",
+      "collision-naive",
+      "--bodies",
+      "10000",
+      "--steps",
+      "10",
+      "--warmup",
+      "2",
+      "--scene",
+      "separated-spheres",
+      "--cell-size",
+      "3"
+    ],
+    "stdout": "separated-spheres-10000-collision-naive-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim",
+      "--benchmark",
+      "collision-naive",
+      "--bodies",
+      "10000",
+      "--steps",
+      "10",
+      "--warmup",
+      "2",
+      "--scene",
+      "separated-spheres",
+      "--cell-size",
+      "3"
+    ],
+    "stdout": "separated-spheres-10000-collision-naive-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim",
+      "--benchmark",
+      "collision-spatial",
+      "--bodies",
+      "10000",
+      "--steps",
+      "10",
+      "--warmup",
+      "2",
+      "--scene",
+      "separated-spheres",
+      "--cell-size",
+      "3"
+    ],
+    "stdout": "separated-spheres-10000-collision-spatial-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim",
+      "--benchmark",
+      "collision-naive",
+      "--bodies",
+      "10000",
+      "--steps",
+      "10",
+      "--warmup",
+      "2",
+      "--scene",
+      "paired-spheres",
+      "--cell-size",
+      "3"
+    ],
+    "stdout": "paired-spheres-10000-collision-naive-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim",
+      "--benchmark",
+      "collision-spatial",
+      "--bodies",
+      "10000",
+      "--steps",
+      "10",
+      "--warmup",
+      "2",
+      "--scene",
+      "paired-spheres",
+      "--cell-size",
+      "3"
+    ],
+    "stdout": "paired-spheres-10000-collision-spatial-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim",
+      "--benchmark",
+      "collision-spatial",
+      "--bodies",
+      "10000",
+      "--steps",
+      "10",
+      "--warmup",
+      "2",
+      "--scene",
+      "paired-spheres",
+      "--cell-size",
+      "3"
+    ],
+    "stdout": "paired-spheres-10000-collision-spatial-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim",
+      "--benchmark",
+      "collision-naive",
+      "--bodies",
+      "10000",
+      "--steps",
+      "10",
+      "--warmup",
+      "2",
+      "--scene",
+      "paired-spheres",
+      "--cell-size",
+      "3"
+    ],
+    "stdout": "paired-spheres-10000-collision-naive-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim",
+      "--benchmark",
+      "collision-naive",
+      "--bodies",
+      "10000",
+      "--steps",
+      "10",
+      "--warmup",
+      "2",
+      "--scene",
+      "paired-spheres",
+      "--cell-size",
+      "3"
+    ],
+    "stdout": "paired-spheres-10000-collision-naive-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim",
+      "--benchmark",
+      "collision-spatial",
+      "--bodies",
+      "10000",
+      "--steps",
+      "10",
+      "--warmup",
+      "2",
+      "--scene",
+      "paired-spheres",
+      "--cell-size",
+      "3"
+    ],
+    "stdout": "paired-spheres-10000-collision-spatial-3.csv"
+  }
+]

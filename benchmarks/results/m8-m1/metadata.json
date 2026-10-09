@@ -1,0 +1,22 @@
+{
+  "date": "2026-10-09",
+  "revision": "8bdfceee24193f03bb9e51f59c7f5bc2e214a5db",
+  "cpu": "Apple M1",
+  "logical_cpu_cores": 8,
+  "ram_bytes": 8589934592,
+  "gpu": "Apple M1 integrated 8 cores (unused)",
+  "os": "macOS 26.3.1(a), 25D771280a",
+  "architecture": "arm64",
+  "compiler": "AppleClang 21.0.0 (clang-2100.1.1.101)",
+  "cmake": "3.31.6",
+  "configuration": "Release",
+  "optimization_flags": "-O3 -DNDEBUG",
+  "sanitizers": false,
+  "cell_size": 3,
+  "trials": 3,
+  "warmup_per_trial": 2,
+  "measured_ticks_per_trial": 10,
+  "runner": "python3 benchmarks/compare.py build-release/coresim benchmarks/results/m8-m1",
+  "commands": "commands.json",
+  "environment": "Sequential trials after local builds/tests completed. Ordinary desktop session; CPU affinity, thermal state and background load uncontrolled. All ticks retained."
+}

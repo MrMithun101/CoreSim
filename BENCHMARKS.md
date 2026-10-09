@@ -70,3 +70,33 @@ Current output uses **schema 2**, preserving the first 18 columns and appending 
 `--scene paired-spheres` places groups of two spheres 1.5 units apart on a lattice of spacing 6, using ceil(N/2) sites and leaving the final sphere unpaired for odd N. All bodies remain dynamic with zero gravity, velocity and restitution. Positional correction separates each pair toward the solver's penetration tolerance. Unlike the default separated scene, positions evolve during warmup; both modes execute the same ticks from the same initial state. This scene exercises N/2 independent contacts, not dense piles or arbitrary stacks. For even N, the expected initial contact count is N/2 per tick and correction rechecks are 2N. Cell size affects false positives and cost. Globally large shapes, planes, or dense occupancy can reduce or eliminate the grid's advantage; worst-case work remains quadratic.
 
 Measurements below use three independent invocations per mode/workload, with two warmup and ten measured ticks each. Algorithm order alternates naive/hash, hash/naive, naive/hash to reduce a fixed ordering bias. Runs are sequential after test/build jobs finish. All 30 ticks per algorithm/workload are retained; summaries use their median and min/max. Speedup is median naive physics time divided by median hash physics time, not an average of per-frame ratios. Candidate reduction is measured independently of runtime improvement.
+
+### Measured comparison — October 9, 2026
+
+Revision `8bdfceee24193f03bb9e51f59c7f5bc2e214a5db`, Apple M1 (8 logical CPU cores), 8 GiB unified RAM, macOS 26.3.1(a) build 25D771280a, Apple Clang 21.0.0, CMake 3.31.6, arm64 Release `-O3 -DNDEBUG`, no sanitizers. The integrated GPU is unused. Default cell size 3. CPU affinity, thermal state, and ordinary desktop background load were uncontrolled. These are observed local results for the specified workloads, not general engine throughput guarantees.
+
+| Scene | Bodies | Naive median physics (ms) | Hash median physics (ms) | Physics speedup | Hash candidates/tick | Candidate reduction |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| separated-spheres | 1,000 | 5.836 | 0.519 | 11.25× | 10,476 | 97.902703% |
+| separated-spheres | 5,000 | 149.133 | 2.692 | 55.39× | 57,354 | 99.541076% |
+| separated-spheres | 10,000 | 587.896 | 5.264 | 111.69× | 117,845 | 99.764286% |
+| paired-spheres | 10,000 | 591.414 | 5.306 | 111.47× | 5,000 | 99.989999% |
+
+| Scene / bodies | Naive physics min–max (ms) | Hash physics min–max (ms) | Median hash build (ms) | Median hash query (ms) | Median hash total collision (ms) |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| separated-spheres / 1,000 | 5.750–6.264 | 0.501–0.563 | 0.263 | 0.147 | 0.511 |
+| separated-spheres / 5,000 | 145.844–165.163 | 2.603–3.068 | 1.252 | 0.852 | 2.651 |
+| separated-spheres / 10,000 | 582.158–638.557 | 5.207–5.474 | 2.390 | 1.698 | 5.183 |
+| paired-spheres / 10,000 | 585.002–672.048 | 5.165–5.669 | 3.549 | 0.749 | 5.225 |
+
+Every one of the 240 measured rows passed workload/counter validation. The separated scene had zero contacts in both modes. The paired scene retained 5,000 contacts and 20,000 correction rechecks per tick in both modes. The naive reference performed 49,995,000 initial checks at 10,000 bodies. Grid candidates also equal initial checks in these scenes, since every body is dynamic with a transform. Median component times do not necessarily sum to the median total.
+
+The roughly 112× improvement at 10,000 bodies includes rebuilding the hash each tick. It demonstrates the benefit of rejecting distant pairs; it does not establish a speedup for densely overlapping bodies, large global shapes, plane-heavy scenes, or rendering. The measured hash physics tick fits an 8.33 ms budget in these two synthetic workloads, but that budget excludes rendering and other application work.
+
+Reproduce the full comparison with the standard-library-only runner, choosing a new output directory:
+
+```sh
+python3 benchmarks/compare.py build-release/coresim benchmarks/results/my-comparison
+```
+
+The runner rejects an existing output directory, saves every raw CSV, validates expected counters, records the exact command order, and computes summary statistics without trimming samples. [Raw trials](benchmarks/results/m8-m1/), [machine metadata](benchmarks/results/m8-m1/metadata.json), [commands](benchmarks/results/m8-m1/commands.json), and [full statistics](benchmarks/results/m8-m1/summary.json) are checked in. Historical Milestone 7 results are retained separately above.
