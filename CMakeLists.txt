@@ -22,7 +22,7 @@ add_library(coresim_scene src/scene/Camera.cpp src/scene/Transform.cpp src/scene
 target_include_directories(coresim_scene PUBLIC include)
 target_link_libraries(coresim_scene PUBLIC glm::glm)
 coresim_target_options(coresim_scene)
-add_library(coresim_physics src/physics/PhysicsSystem.cpp src/physics/Contact.cpp)
+add_library(coresim_physics src/physics/PhysicsSystem.cpp src/physics/Contact.cpp src/physics/CollisionSystem.cpp)
 target_include_directories(coresim_physics PUBLIC include)
 target_link_libraries(coresim_physics PUBLIC coresim_scene)
 coresim_target_options(coresim_physics)

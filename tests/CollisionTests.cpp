@@ -72,3 +72,92 @@ TEST_CASE("Collider shape validation and component lifecycle") {
     REQUIRE(world.collider(replacement) == nullptr);
     REQUIRE_THROWS_AS(world.set_collider(entity, SphereCollider{}), std::invalid_argument);
 }
+
+#include <coresim/physics/PhysicsSystem.hpp>
+#include <coresim/core/FixedStepper.hpp>
+
+namespace {
+Entity body(World& world, Collider collider, glm::vec3 position, float mass = 1, float bounce = 0) {
+    const auto entity = world.create();
+    world.set_transform(entity).position = position;
+    world.set_collider(entity, collider);
+    world.set_rigid_body(entity, RigidBody(mass, bounce));
+    return entity;
+}
+}
+TEST_CASE("Equal-mass sphere impulse preserves momentum and follows restitution") {
+    for (const float bounce : {0.0F, 0.5F, 1.0F}) {
+        World world;
+        const auto a = body(world, SphereCollider(1), {-1,0,0}, 1, bounce);
+        const auto b = body(world, SphereCollider(1), {1,0,0}, 1, bounce);
+        world.rigid_body(a)->velocity.x = 2;
+        world.rigid_body(b)->velocity.x = -2;
+        PhysicsSystem physics({0,0,0});
+        physics.step(world, 0.01F);
+        REQUIRE(world.rigid_body(a)->velocity.x == Catch::Approx(-2 * bounce).margin(0.00001));
+        REQUIRE(world.rigid_body(b)->velocity.x == Catch::Approx(2 * bounce).margin(0.00001));
+        REQUIRE(world.rigid_body(a)->velocity.x + world.rigid_body(b)->velocity.x == Catch::Approx(0).margin(0.00001));
+    }
+}
+TEST_CASE("Separating contacts are not pulled together and static bodies remain immovable") {
+    World world;
+    const auto a = body(world, BoxCollider{}, {0,0,0});
+    const auto b = body(world, BoxCollider{}, {1.5F,0,0}, 0);
+    world.rigid_body(a)->velocity = {-2,0,0};
+    world.rigid_body(b)->velocity = {-100,0,0}; // Ignored for a static body.
+    PhysicsSystem physics({0,0,0});
+    physics.step(world, 0.01F);
+    REQUIRE(world.rigid_body(a)->velocity.x == -2);
+    REQUIRE(world.transform(b)->position == glm::vec3(1.5F,0,0));
+    REQUIRE(world.transform(a)->position.x < -0.49F);
+    world.rigid_body(a)->set_mass(0);
+    REQUIRE_NOTHROW(physics.step(world, 0.01F));
+}
+TEST_CASE("Sphere floor bounce uses restitution and resting spheres settle without sinking") {
+    World world;
+    body(world, PlaneCollider{}, {0,0,0}, 0, 1);
+    const auto sphere = body(world, SphereCollider(1), {0,1,0}, 1, 0.5F);
+    world.rigid_body(sphere)->velocity.y = -4;
+    PhysicsSystem no_gravity({0,0,0});
+    no_gravity.step(world, 0.01F);
+    REQUIRE(world.rigid_body(sphere)->velocity.y == Catch::Approx(2));
+    PhysicsSystem gravity;
+    for (int i = 0; i < 1200; ++i) { gravity.step(world, static_cast<float>(FixedStepper::step_seconds)); }
+    REQUIRE(world.transform(sphere)->position.y >= 0.998F);
+    REQUIRE(world.transform(sphere)->position.y < 1.01F);
+    REQUIRE(std::abs(world.rigid_body(sphere)->velocity.y) < 0.01F);
+}
+TEST_CASE("Inverse mass weights separation and missing-body colliders are static") {
+    World world;
+    const auto a = body(world, SphereCollider(1), {0,0,0}, 1);
+    const auto b = body(world, SphereCollider(1), {1,0,0}, 3);
+    PhysicsSystem physics({0,0,0});
+    physics.step(world, 0.01F);
+    const float moved_a = -world.transform(a)->position.x;
+    const float moved_b = world.transform(b)->position.x - 1;
+    REQUIRE(moved_a == Catch::Approx(3 * moved_b));
+    REQUIRE(world.remove_rigid_body(b));
+    const auto before = world.transform(b)->position;
+    physics.step(world, 0.01F);
+    REQUIRE(world.transform(b)->position == before);
+    const auto invalid = body(world, PlaneCollider{}, {0,-5,0}, 1);
+    REQUIRE_THROWS_AS(physics.step(world, 0.01F), std::invalid_argument);
+    REQUIRE(world.destroy(invalid));
+}
+TEST_CASE("One hundred AABB bodies remain finite and supported on a floor") {
+    World world;
+    body(world, BoxCollider({20,0.5F,20}), {0,-0.5F,0}, 0);
+    std::vector<Entity> cubes;
+    for (int i = 0; i < 100; ++i) {
+        cubes.push_back(body(world, BoxCollider(glm::vec3(0.5F)),
+            {static_cast<float>(i % 10) * 2 - 9, 2 + static_cast<float>(i % 3),
+             static_cast<float>(i / 10) * 2 - 9}));
+    }
+    PhysicsSystem physics;
+    for (int tick = 0; tick < 600; ++tick) { physics.step(world, static_cast<float>(FixedStepper::step_seconds)); }
+    for (const auto entity : cubes) {
+        REQUIRE(world.transform(entity)->position.y > 0.498F);
+        REQUIRE(world.transform(entity)->position.y < 0.51F);
+        REQUIRE(std::abs(world.rigid_body(entity)->velocity.y) < 0.01F);
+    }
+}
