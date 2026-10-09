@@ -2,13 +2,13 @@
 
 **High-Performance 3D Physics Simulation Engine**
 
-A C++20 systems and performance engineering project developed one measured milestone at a time. Current scope: **Milestone 6 — Collision Detection V1**. It provides custom fixed-step translational physics, generation-checked entity IDs, packed component storage, primitive collision detection and impulse response, a movable perspective camera and a 100-body sphere/box demo, move-aware RAII GPU resources, file-based shaders, depth testing, frame timing, and tests. Spatial acceleration, angular dynamics, profiling, and GPU compute are future milestones. No performance claims are made yet.
+A C++20 systems and performance engineering project developed one measured milestone at a time. Current scope: **Milestone 7 — Naive Collision Benchmark**. It provides custom fixed-step translational physics, generation-checked entity IDs, packed component storage, primitive collision detection and impulse response, a movable perspective camera and a 100-body sphere/box demo, move-aware RAII GPU resources, file-based shaders, depth testing, frame timing, and tests. Spatial acceleration, angular dynamics, profiling, and GPU compute are future milestones. A headless CSV benchmark records the unoptimized all-pairs baseline; see [measurements and methodology](BENCHMARKS.md).
 
 ![Sphere and box collision scene rendered by CoreSim](docs/images/collisions.png)
 
 ## Build and run
 
-Requires CMake 3.25+, Git, GCC or Clang with C++20 support, and OpenGL 3.3. Linux is the primary target; macOS is also supported by the foundation. A graphical session is required to run the application.
+Requires CMake 3.25+, Git, GCC or Clang with C++20 support, and OpenGL 3.3. Linux is the primary target; macOS is also supported by the foundation. A graphical session is required for the interactive demo; benchmarks run headlessly.
 
 Ubuntu/Debian dependencies:
 
@@ -43,6 +43,14 @@ cmake --build --preset debug --parallel
 ctest --preset debug
 ./build/debug/coresim
 ```
+
+## Naive collision benchmark
+
+```sh
+./build-release/coresim --benchmark collision-naive --bodies 10000 --steps 10 --warmup 2 > naive-10000.csv
+```
+
+The standalone `coresim_benchmark` accepts the same arguments and is available with `CORESIM_BUILD_APP=OFF`. See [BENCHMARKS.md](BENCHMARKS.md) for counter definitions, timing boundaries, workload limits, and measured results.
 
 ## Dependencies
 
@@ -99,4 +107,4 @@ Shaders are copied into the build directory and found independently of the worki
 
 See [verification notes](docs/verification.md) for actual local results and commands. The screenshot above is an actual framebuffer capture, not an illustration or performance benchmark.
 
-**Next: Milestone 7 — Naive Collision Benchmark**, only on explicit request: reproducible all-pairs baseline measurements and benchmark output before spatial optimization.
+**Next: Milestone 8 — Spatial Hash Broad Phase**, only on explicit request.
