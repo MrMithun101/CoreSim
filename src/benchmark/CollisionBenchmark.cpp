@@ -60,7 +60,7 @@ void run_collision_benchmark(const BenchmarkOptions& options, std::ostream& outp
         world.set_collider(entity, SphereCollider(1));
         world.set_rigid_body(entity, RigidBody(1, 0));
     }
-    PhysicsSystem physics(glm::vec3(0));
+    PhysicsSystem physics(glm::vec3(0), BroadPhase::naive);
     CollisionStats stats;
     constexpr float timestep = 1.0F / 120.0F;
     for (std::uint32_t i = 0; i < options.warmup; ++i) { physics.step(world, timestep, &stats); }

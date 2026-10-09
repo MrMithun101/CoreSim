@@ -26,6 +26,7 @@ void CollisionSystem::solve(World& world, CollisionStats* stats) {
         return std::chrono::duration<double, std::milli>(end - start).count();
     };
     if (stats) { *stats = {}; }
+    const auto collision_start = now();
     contacts_.clear();
     const auto colliders = world.colliders();
     // Bounded storage, but still enumerate every unordered pair, without spatial pruning.
@@ -59,14 +60,36 @@ void CollisionSystem::solve(World& world, CollisionStats* stats) {
         count = 0;
         broad_start = now();
     };
-    for (std::size_t i = 0; i < colliders.size(); ++i) {
-        for (std::size_t j = i + 1; j < colliders.size(); ++j) {
-            pairs[count++] = {i, j};
-            if (count == pairs.size()) { flush(); }
+    if (mode_ == BroadPhase::spatial_hash) {
+        const auto build_start = now();
+        spatial_.build(world);
+        const auto build_end = now();
+        if (stats) { stats->hash_build_ms = milliseconds(build_start, build_end); }
+        broad_start = now();
+        for (std::size_t i = 0; i < colliders.size(); ++i) {
+            for (const auto j : spatial_.query(i)) {
+                pairs[count++] = {i, j};
+                if (count == pairs.size()) { flush(); }
+            }
+        }
+    } else {
+        for (std::size_t i = 0; i < colliders.size(); ++i) {
+            for (std::size_t j = i + 1; j < colliders.size(); ++j) {
+                pairs[count++] = {i, j};
+                if (count == pairs.size()) { flush(); }
+            }
         }
     }
     flush();
-    if (stats) { stats->contacts = contacts_.size(); }
+    if (stats) {
+        stats->contacts = contacts_.size();
+        stats->query_ms = stats->broad_phase_ms;
+        stats->broad_phase_ms += stats->hash_build_ms;
+        const auto n = static_cast<std::uint64_t>(colliders.size());
+        const auto all_pairs = n > 0 ? n * (n - 1) / 2 : 0;
+        stats->pair_reduction_percent = all_pairs == 0 ? 0.0 :
+            100.0 * (1.0 - static_cast<double>(stats->candidate_pairs) / static_cast<double>(all_pairs));
+    }
     const auto solver_start = now();
     // Sequential impulses accumulate only within this tick; there is no warm starting yet.
     for (int iteration = 0; iteration < 8; ++iteration) {
@@ -100,6 +123,9 @@ void CollisionSystem::solve(World& world, CollisionStats* stats) {
             tb.position += geometry->normal * (correction * ib);
         }
     }
-    if (stats) { stats->solver_ms = milliseconds(solver_start, now()); }
+    if (stats) {
+        stats->solver_ms = milliseconds(solver_start, now());
+        stats->total_collision_ms = milliseconds(collision_start, now());
+    }
 }
 } // namespace coresim

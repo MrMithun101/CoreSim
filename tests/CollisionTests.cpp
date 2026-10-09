@@ -183,7 +183,7 @@ TEST_CASE("Mixed demo supports one hundred bodies and two-body stacks over ten s
 
 TEST_CASE("Naive metrics enumerate all pairs across batch boundaries and reset each tick") {
     World world;
-    CollisionSystem collisions;
+    CollisionSystem collisions(BroadPhase::naive);
     CollisionStats stats;
     collisions.solve(world, &stats);
     REQUIRE(stats.candidate_pairs == 0);
@@ -221,7 +221,7 @@ TEST_CASE("Naive metrics distinguish candidates initial tests and correction ret
     world.set_transform(fixed).position = {20, 0, 0};
     world.set_rigid_body(a);
     // b and fixed have no rigid body, so they are static. missing has no transform.
-    CollisionSystem collisions;
+    CollisionSystem collisions(BroadPhase::naive);
     CollisionStats stats;
     collisions.solve(world, &stats);
     REQUIRE(stats.candidate_pairs == 6);

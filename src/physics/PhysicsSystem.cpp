@@ -9,7 +9,8 @@ bool finite(glm::vec3 value) {
     return std::isfinite(value.x) && std::isfinite(value.y) && std::isfinite(value.z);
 }
 } // namespace
-PhysicsSystem::PhysicsSystem(glm::vec3 gravity) : gravity_(gravity) {
+PhysicsSystem::PhysicsSystem(glm::vec3 gravity, BroadPhase mode, float cell_size)
+    : gravity_(gravity), collisions_(mode, cell_size) {
     if (!finite(gravity)) {
         throw std::invalid_argument("Gravity must be finite");
     }
