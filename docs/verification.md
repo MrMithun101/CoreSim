@@ -2,7 +2,7 @@
 
 ## Milestone 8 — October 9, 2026
 
-Spatial-hash implementation checkpoint `aa1de03` passed Linux CI. Integration checkpoint `8bdfcee` adds schema-2 metrics, explicit naive/spatial benchmark modes, configurable cell size, a paired-contact workload, and a reproducible comparison runner.
+Spatial-hash implementation checkpoint `aa1de03` passed Linux CI. The [integration CI run](https://github.com/MrMithun101/CoreSim/actions/runs/37946921675) for `8bdfcee` also passed all five jobs: GCC/Clang Debug/Release with display tests and headless ASan/UBSan. Raw results are preserved in `7fbf018`. Integration checkpoint `8bdfcee` adds schema-2 metrics, explicit naive/spatial benchmark modes, configurable cell size, a paired-contact workload, and a reproducible comparison runner.
 
 Debug, Release, and ASan/UBSan each passed all nine local CTest entries, including renderer and window smoke tests. The CPU suite passed 189,098 assertions in 39 cases. Builds emitted no CoreSim compiler/linker warnings or sanitizer diagnostics. New tests cover exhaustive-contact containment for seeded mixed primitives, negative coordinates and touching boundaries, three cell sizes, unique sorted candidates, repeated queries, planes, large/huge-coordinate fallbacks, missing transforms, and rebuilds after component mutation. A 600-tick mixed demo comparison requires exact agreement between naive and spatial contact counts, positions, and velocities. Benchmark tests validate both modes, CSV fields, cell-size parsing, candidate reduction, and paired contacts.
 
