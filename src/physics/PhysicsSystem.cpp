@@ -1,5 +1,6 @@
 #include <coresim/physics/PhysicsSystem.hpp>
 #include <coresim/scene/World.hpp>
+#include <coresim/core/Profiler.hpp>
 #include <cmath>
 #include <stdexcept>
 
@@ -15,7 +16,11 @@ PhysicsSystem::PhysicsSystem(glm::vec3 gravity, BroadPhase mode, float cell_size
         throw std::invalid_argument("Gravity must be finite");
     }
 }
-void PhysicsSystem::step(World& world, float delta_seconds, CollisionStats* stats) {
+void PhysicsSystem::step(World& world, float delta_seconds, CollisionStats* stats, Profiler* profiler) {
+    ScopedProfiler timer(profiler, ProfileSection::physics);
+    CollisionStats local_stats;
+    const bool profiling = profiler && profiler->enabled();
+    if (profiling && !stats) { stats = &local_stats; }
     if (!std::isfinite(delta_seconds) || delta_seconds <= 0.0F) {
         throw std::invalid_argument("Physics timestep must be positive and finite");
     }
@@ -42,5 +47,10 @@ void PhysicsSystem::step(World& world, float delta_seconds, CollisionStats* stat
         body.clear_forces();
     }
     collisions_.solve(world, stats);
+    if (profiling) {
+        profiler->record(ProfileSection::broad_phase, stats->broad_phase_ms);
+        profiler->record(ProfileSection::narrow_phase, stats->narrow_phase_ms);
+        profiler->record(ProfileSection::solver, stats->solver_ms);
+    }
 }
 } // namespace coresim
