@@ -5,6 +5,7 @@
 #include <coresim/scene/detail/ComponentPool.hpp>
 #include <utility>
 #include <coresim/physics/RigidBody.hpp>
+#include <coresim/physics/Collider.hpp>
 
 namespace coresim {
 // A single-threaded owner of IDs and CPU component data. No graphics resources.
@@ -20,6 +21,12 @@ public:
     bool destroy(Entity entity) noexcept;
     [[nodiscard]] bool alive(Entity entity) const noexcept;
     [[nodiscard]] std::size_t size() const noexcept { return count_; }
+
+    Collider& set_collider(Entity entity, const Collider& value);
+    [[nodiscard]] Collider* collider(Entity entity) noexcept;
+    [[nodiscard]] const Collider* collider(Entity entity) const noexcept;
+    bool remove_collider(Entity entity) noexcept;
+    [[nodiscard]] auto colliders() const noexcept { return colliders_.entries(); }
 
     RigidBody& set_rigid_body(Entity entity, const RigidBody& value = RigidBody{});
     [[nodiscard]] RigidBody* rigid_body(Entity entity) noexcept;
@@ -54,6 +61,7 @@ private:
     std::vector<Slot> slots_;
     std::uint32_t free_head_{Entity::invalid_index};
     std::size_t count_{};
+    detail::ComponentPool<Collider> colliders_;
     detail::ComponentPool<RigidBody> rigid_bodies_;
     detail::ComponentPool<Transform> transforms_;
     detail::ComponentPool<MeshComponent> meshes_;

@@ -29,6 +29,7 @@ bool World::destroy(Entity entity) noexcept {
     if (!alive(entity)) {
         return false;
     }
+    colliders_.remove(entity);
     rigid_bodies_.remove(entity);
     transforms_.remove(entity);
     meshes_.remove(entity);
@@ -48,6 +49,19 @@ void World::require_alive(Entity entity) const {
     if (!alive(entity)) {
         throw std::invalid_argument("Component attachment requires a live entity from this World");
     }
+}
+Collider& World::set_collider(Entity entity, const Collider& value) {
+    require_alive(entity);
+    return colliders_.set(entity, value);
+}
+const Collider* World::collider(Entity entity) const noexcept {
+    return alive(entity) ? colliders_.get(entity) : nullptr;
+}
+Collider* World::collider(Entity entity) noexcept {
+    return const_cast<Collider*>(std::as_const(*this).collider(entity));
+}
+bool World::remove_collider(Entity entity) noexcept {
+    return alive(entity) && colliders_.remove(entity);
 }
 RigidBody& World::set_rigid_body(Entity entity, const RigidBody& value) {
     require_alive(entity);
