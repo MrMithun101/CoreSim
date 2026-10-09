@@ -2,6 +2,8 @@
 
 ## Milestone 7 — October 8, 2026
 
+The [integration CI run](https://github.com/MrMithun101/CoreSim/actions/runs/37869015935) for `33fc965` passed all five jobs: GCC/Clang Debug/Release with software-rendered display tests, and headless ASan/UBSan including the standalone benchmark. Implementation checkpoints are `ac328fc` (batched enumeration/metrics) and `33fc965` (CLI/CSV); `8cca3cd` preserves the actual raw measurement results.
+
 Debug, Release, and ASan/UBSan each passed all eight local CTest entries, including renderer and window smoke checks. The CPU suite passed 54,605 assertions across 34 cases. Final builds emitted no CoreSim compiler or linker warnings. New tests cover batch-boundary pair counts, per-tick counter reset, eligibility filtering, correction rechecks, strict benchmark CLI parsing, CSV row contents and timing validity, and output failures. CTest exercises both standalone and application benchmark entry points without opening a window.
 
 The actual Release benchmark ran 1,000, 5,000, and 10,000 bodies sequentially for two warmup and ten measured ticks each. Every measured row was checked against N(N−1)/2 candidates/checks and zero contacts. Raw CSV, machine metadata, timing definitions, limitations, and measured summaries are in [BENCHMARKS.md](../BENCHMARKS.md). Performance was measured separately from sanitizer/display test runs.
