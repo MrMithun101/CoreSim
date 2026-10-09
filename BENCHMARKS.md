@@ -39,4 +39,16 @@ Timings use `std::chrono::steady_clock`, serialized in milliseconds to six decim
 
 ## Recorded measurements
 
-Results and machine details are added after running the checked-in Release executable. These are a baseline, not a speedup claim. Spatial hashing belongs to Milestone 8.
+Measured October 8, 2026 at revision `33fc96520cbc97fc0ca7fd3d9f8799681eca7bf8` on Apple M1 (8 logical CPU cores), 8 GiB unified RAM, macOS 26.3.1(a), build 25D771280a. The 8-core integrated M1 GPU is unused. Apple Clang 21.0.0, CMake 3.31.6, Release `-O3 -DNDEBUG`, arm64, no sanitizers. Runs were sequential in ascending body count, each with two warmup ticks and ten measured ticks; no outliers were removed. Ordinary desktop session, no controlled CPU affinity, thermal state, or background load. These short runs establish a local baseline, not statistically portable throughput claims.
+
+| Bodies | Candidate pairs / checks per tick | Median broad phase (ms) | Median narrow phase (ms) | Median physics (ms) | Physics min–max (ms) | Median headless frame (ms) |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 1,000 | 499,500 | 1.021 | 4.810 | 5.847 | 5.767–6.235 | 5.847 |
+| 5,000 | 12,497,500 | 25.635 | 123.655 | 149.407 | 147.184–152.785 | 149.407 |
+| 10,000 | 49,995,000 | 102.020 | 488.723 | 591.119 | 585.925–601.070 | 591.119 |
+
+All 30 measured rows have the expected exact pair/check count and zero contacts/correction checks. Solver times are near clock resolution in this workload. Component medians need not sum to the median total.
+
+A tenfold body increase required about 101 times the physics time. At 10,000 bodies a tick took roughly 0.59 seconds, far beyond the 8.33 ms budget for 120 Hz physics. Even separated bodies incur all-pairs checks. This is the poor-performance baseline that spatial hashing in Milestone 8 must be compared against using the same scene and machine; no speedup has been implemented here.
+
+Raw rows: [1,000 bodies](benchmarks/results/naive-m1-1000.csv), [5,000 bodies](benchmarks/results/naive-m1-5000.csv), [10,000 bodies](benchmarks/results/naive-m1-10000.csv). [Machine and run metadata](benchmarks/results/naive-m1-metadata.json) records the exact commands. Each CSV includes all ten measured ticks. Repeat runs may differ.

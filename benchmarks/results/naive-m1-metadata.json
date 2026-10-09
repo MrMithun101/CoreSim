@@ -1,0 +1,26 @@
+{
+  "date": "2026-10-08",
+  "revision": "33fc96520cbc97fc0ca7fd3d9f8799681eca7bf8",
+  "cpu": "Apple M1",
+  "logical_cpu_cores": 8,
+  "ram_bytes": 8589934592,
+  "gpu": "Apple M1 integrated, 8 cores (unused)",
+  "os": "macOS 26.3.1(a), 25D771280a",
+  "architecture": "arm64",
+  "compiler": "AppleClang 21.0.0 (clang-2100.1.1.101)",
+  "cmake": "3.31.6",
+  "configuration": "Release",
+  "optimization_flags": "-O3 -DNDEBUG",
+  "sanitizers": false,
+  "run_order": [
+    1000,
+    5000,
+    10000
+  ],
+  "commands": [
+    "./build-release/coresim --benchmark collision-naive --bodies 1000 --steps 10 --warmup 2 > benchmarks/results/naive-m1-1000.csv",
+    "./build-release/coresim --benchmark collision-naive --bodies 5000 --steps 10 --warmup 2 > benchmarks/results/naive-m1-5000.csv",
+    "./build-release/coresim --benchmark collision-naive --bodies 10000 --steps 10 --warmup 2 > benchmarks/results/naive-m1-10000.csv"
+  ],
+  "environment": "Ordinary desktop session; affinity, thermal state and background load uncontrolled. Sequential runs; no outliers removed."
+}

@@ -1,0 +1,11 @@
+schema,benchmark,scene,build_type,compiler,bodies,step,warmup,timestep_s,candidate_pairs,collision_checks,contacts,correction_checks,broad_phase_ms,narrow_phase_ms,solver_ms,physics_step_ms,total_frame_ms
+1,collision-naive,separated-spheres,Release,AppleClang-21.0.0.21000101,1000,0,2,0.008333,499500,499500,0,0,1.077133,5.145037,0.000125,6.235333,6.235375
+1,collision-naive,separated-spheres,Release,AppleClang-21.0.0.21000101,1000,1,2,0.008333,499500,499500,0,0,1.026999,4.869459,0.000000,5.909792,5.909834
+1,collision-naive,separated-spheres,Release,AppleClang-21.0.0.21000101,1000,2,2,0.008333,499500,499500,0,0,1.013084,4.807249,0.000042,5.832750,5.832792
+1,collision-naive,separated-spheres,Release,AppleClang-21.0.0.21000101,1000,3,2,0.008333,499500,499500,0,0,1.050626,4.918877,0.000000,5.981500,5.981500
+1,collision-naive,separated-spheres,Release,AppleClang-21.0.0.21000101,1000,4,2,0.008333,499500,499500,0,0,1.041239,4.968961,0.000000,6.021791,6.021791
+1,collision-naive,separated-spheres,Release,AppleClang-21.0.0.21000101,1000,5,2,0.008333,499500,499500,0,0,1.011454,4.791923,0.000000,5.815167,5.815208
+1,collision-naive,separated-spheres,Release,AppleClang-21.0.0.21000101,1000,6,2,0.008333,499500,499500,0,0,1.003625,4.761741,0.000000,5.776709,5.776750
+1,collision-naive,separated-spheres,Release,AppleClang-21.0.0.21000101,1000,7,2,0.008333,499500,499500,0,0,1.036171,4.812704,0.000000,5.860542,5.860542
+1,collision-naive,separated-spheres,Release,AppleClang-21.0.0.21000101,1000,8,2,0.008333,499500,499500,0,0,1.015123,4.780460,0.000000,5.807875,5.807916
+1,collision-naive,separated-spheres,Release,AppleClang-21.0.0.21000101,1000,9,2,0.008333,499500,499500,0,0,1.006042,4.749211,0.000000,5.766625,5.766666

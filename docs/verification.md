@@ -1,5 +1,11 @@
 # Verification
 
+## Milestone 7 — October 8, 2026
+
+Debug, Release, and ASan/UBSan each passed all eight local CTest entries, including renderer and window smoke checks. The CPU suite passed 54,605 assertions across 34 cases. Final builds emitted no CoreSim compiler or linker warnings. New tests cover batch-boundary pair counts, per-tick counter reset, eligibility filtering, correction rechecks, strict benchmark CLI parsing, CSV row contents and timing validity, and output failures. CTest exercises both standalone and application benchmark entry points without opening a window.
+
+The actual Release benchmark ran 1,000, 5,000, and 10,000 bodies sequentially for two warmup and ten measured ticks each. Every measured row was checked against N(N−1)/2 candidates/checks and zero contacts. Raw CSV, machine metadata, timing definitions, limitations, and measured summaries are in [BENCHMARKS.md](../BENCHMARKS.md). Performance was measured separately from sanitizer/display test runs.
+
 ## Milestone 6 — October 8, 2026
 
 Commits `836b3f6` (detection), `250a4a7` (response), and `837571a` (demo/rendering) passed Linux CI. The [integration run](https://github.com/MrMithun101/CoreSim/actions/runs/37867746105) passed GCC/Clang Debug/Release with software-rendered display tests and the headless ASan/UBSan job.
