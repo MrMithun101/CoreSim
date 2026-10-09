@@ -56,7 +56,7 @@ public:
     }
     // The callback may edit values but must not structurally modify this pool.
     template <class Visitor> void for_each(Visitor&& visitor) {
-        for (auto& entry : dense_) { visitor(entry.entity, entry.value); }
+        for (auto& entry : dense_) { visitor(std::as_const(entry.entity), entry.value); }
     }
     [[nodiscard]] std::span<const ComponentEntry<T>> entries() const noexcept { return dense_; }
 private:

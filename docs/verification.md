@@ -1,5 +1,15 @@
 # Verification
 
+## Milestone 10 — October 9, 2026
+
+Experiment checkpoints `56eda63` and `ccac0f4` passed Linux CI. The final decision retains lookup traversal and the existing component layout in production: dense traversal improved isolated integration but did not show a consistent complete-physics benefit in two measured runs. AoS/SoA work buffers remain experimental because total gather/integrate/scatter costs exceeded the reference.
+
+Debug, Release, and ASan/UBSan each passed all 17 local CTest entries, including six layout/full-physics CLI modes, malformed-input handling, the existing collision benchmarks, profiler controls, renderer, and window smoke tests. The CPU suite passed 244,947 assertions in 46 cases. Final builds emitted no CoreSim compiler/linker warnings or sanitizer diagnostics. New coverage checks per-body integration equivalence across ordered/shuffled joins and structural churn, static and missing-transform bodies, invalid timesteps/nonfinite outputs/dynamic planes, exact full-physics agreement during contacts, and read-only entity identity with mutable values in the dense visitor.
+
+The integration comparison retained 6,400 measured rows. Initial and repeated complete-physics comparisons retained another 3,200 each; all 12,800 passed workload/state-checksum validation. Every raw row, command, compiler/machine/revision metadata, median/min/max summary, and the adoption decision is preserved in [the data-layout investigation](data-layout.md). These are synthetic mixed-body steady-state workloads, not general engine throughput guarantees. No samples or unsuccessful comparisons were discarded.
+
+This host is macOS and has no Linux perf tool. Cycles, instructions, cache misses and branch misses were not measured; the report documents reproducible Linux perf commands and their process-wide measurement limits without claiming hardware-counter improvements. No Milestone 11 threading work is included.
+
 ## Milestone 9 — October 9, 2026
 
 Profiler core checkpoint `97bce30` passed Linux CI. The [integration CI run](https://github.com/MrMithun101/CoreSim/actions/runs/37948569857) for `5afa810` passed all five jobs: GCC/Clang Debug/Release with the new ImGui display tests and headless ASan/UBSan. UI integration `5afa810` adds pinned Dear ImGui 1.91.9b with official GLFW/OpenGL3 backends, live inclusive CPU statistics, collection pause/resume, and reset. The headless configuration does not fetch or link ImGui.

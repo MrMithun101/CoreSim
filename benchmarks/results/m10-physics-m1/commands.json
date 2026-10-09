@@ -1,0 +1,514 @@
+[
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "physics-lookup",
+      "--bodies",
+      "1000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-1000-physics-lookup-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "physics-dense",
+      "--bodies",
+      "1000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-1000-physics-dense-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "physics-dense",
+      "--bodies",
+      "1000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-1000-physics-dense-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "physics-lookup",
+      "--bodies",
+      "1000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-1000-physics-lookup-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "physics-lookup",
+      "--bodies",
+      "1000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-1000-physics-lookup-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "physics-dense",
+      "--bodies",
+      "1000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-1000-physics-dense-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "physics-dense",
+      "--bodies",
+      "1000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-1000-physics-dense-4.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "physics-lookup",
+      "--bodies",
+      "1000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-1000-physics-lookup-4.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "physics-lookup",
+      "--bodies",
+      "1000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-1000-physics-lookup-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "physics-dense",
+      "--bodies",
+      "1000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-1000-physics-dense-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "physics-dense",
+      "--bodies",
+      "1000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-1000-physics-dense-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "physics-lookup",
+      "--bodies",
+      "1000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-1000-physics-lookup-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "physics-lookup",
+      "--bodies",
+      "1000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-1000-physics-lookup-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "physics-dense",
+      "--bodies",
+      "1000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-1000-physics-dense-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "physics-dense",
+      "--bodies",
+      "1000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-1000-physics-dense-4.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "physics-lookup",
+      "--bodies",
+      "1000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-1000-physics-lookup-4.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "physics-lookup",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-10000-physics-lookup-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "physics-dense",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-10000-physics-dense-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "physics-dense",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-10000-physics-dense-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "physics-lookup",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-10000-physics-lookup-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "physics-lookup",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-10000-physics-lookup-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "physics-dense",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-10000-physics-dense-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "physics-dense",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-10000-physics-dense-4.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "physics-lookup",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-10000-physics-lookup-4.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "physics-lookup",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-10000-physics-lookup-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "physics-dense",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-10000-physics-dense-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "physics-dense",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-10000-physics-dense-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "physics-lookup",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-10000-physics-lookup-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "physics-lookup",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-10000-physics-lookup-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "physics-dense",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-10000-physics-dense-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "physics-dense",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-10000-physics-dense-4.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "physics-lookup",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-10000-physics-lookup-4.csv"
+  }
+]

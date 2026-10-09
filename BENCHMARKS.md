@@ -100,3 +100,7 @@ python3 benchmarks/compare.py build-release/coresim benchmarks/results/my-compar
 ```
 
 The runner rejects an existing output directory, saves every raw CSV, validates expected counters, records the exact command order, and computes summary statistics without trimming samples. [Raw trials](benchmarks/results/m8-m1/), [machine metadata](benchmarks/results/m8-m1/metadata.json), [commands](benchmarks/results/m8-m1/commands.json), and [full statistics](benchmarks/results/m8-m1/summary.json) are checked in. Historical Milestone 7 results are retained separately above.
+
+## Milestone 10: component access and layout
+
+The [data-layout investigation](docs/data-layout.md) compares lookup versus direct body traversal and packed AoS/SoA integration buffers, including conversion costs. It also measures complete physics ticks and documents Linux hardware-counter collection. Existing collision measurements above remain historical results at their recorded revisions.

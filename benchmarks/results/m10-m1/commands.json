@@ -1,0 +1,1026 @@
+[
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "lookup",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-10000-lookup-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "dense",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-10000-dense-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "aos",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-10000-aos-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "soa",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-10000-soa-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "dense",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-10000-dense-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "aos",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-10000-aos-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "soa",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-10000-soa-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "lookup",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-10000-lookup-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "aos",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-10000-aos-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "soa",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-10000-soa-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "lookup",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-10000-lookup-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "dense",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-10000-dense-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "soa",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-10000-soa-4.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "lookup",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-10000-lookup-4.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "dense",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-10000-dense-4.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "aos",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-10000-aos-4.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "lookup",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-10000-lookup-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "dense",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-10000-dense-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "aos",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-10000-aos-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "soa",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-10000-soa-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "dense",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-10000-dense-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "aos",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-10000-aos-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "soa",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-10000-soa-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "lookup",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-10000-lookup-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "aos",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-10000-aos-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "soa",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-10000-soa-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "lookup",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-10000-lookup-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "dense",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-10000-dense-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "soa",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-10000-soa-4.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "lookup",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-10000-lookup-4.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "dense",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-10000-dense-4.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "aos",
+      "--bodies",
+      "10000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-10000-aos-4.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "lookup",
+      "--bodies",
+      "100000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-100000-lookup-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "dense",
+      "--bodies",
+      "100000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-100000-dense-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "aos",
+      "--bodies",
+      "100000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-100000-aos-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "soa",
+      "--bodies",
+      "100000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-100000-soa-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "dense",
+      "--bodies",
+      "100000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-100000-dense-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "aos",
+      "--bodies",
+      "100000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-100000-aos-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "soa",
+      "--bodies",
+      "100000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-100000-soa-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "lookup",
+      "--bodies",
+      "100000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-100000-lookup-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "aos",
+      "--bodies",
+      "100000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-100000-aos-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "soa",
+      "--bodies",
+      "100000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-100000-soa-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "lookup",
+      "--bodies",
+      "100000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-100000-lookup-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "dense",
+      "--bodies",
+      "100000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-100000-dense-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "soa",
+      "--bodies",
+      "100000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-100000-soa-4.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "lookup",
+      "--bodies",
+      "100000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-100000-lookup-4.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "dense",
+      "--bodies",
+      "100000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-100000-dense-4.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "aos",
+      "--bodies",
+      "100000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "ordered"
+    ],
+    "stdout": "ordered-100000-aos-4.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "lookup",
+      "--bodies",
+      "100000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-100000-lookup-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "dense",
+      "--bodies",
+      "100000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-100000-dense-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "aos",
+      "--bodies",
+      "100000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-100000-aos-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "soa",
+      "--bodies",
+      "100000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-100000-soa-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "dense",
+      "--bodies",
+      "100000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-100000-dense-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "aos",
+      "--bodies",
+      "100000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-100000-aos-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "soa",
+      "--bodies",
+      "100000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-100000-soa-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "lookup",
+      "--bodies",
+      "100000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-100000-lookup-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "aos",
+      "--bodies",
+      "100000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-100000-aos-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "soa",
+      "--bodies",
+      "100000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-100000-soa-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "lookup",
+      "--bodies",
+      "100000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-100000-lookup-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "dense",
+      "--bodies",
+      "100000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-100000-dense-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "soa",
+      "--bodies",
+      "100000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-100000-soa-4.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "lookup",
+      "--bodies",
+      "100000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-100000-lookup-4.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "dense",
+      "--bodies",
+      "100000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-100000-dense-4.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_layout_benchmark",
+      "--layout",
+      "aos",
+      "--bodies",
+      "100000",
+      "--steps",
+      "100",
+      "--warmup",
+      "10",
+      "--order",
+      "shuffled"
+    ],
+    "stdout": "shuffled-100000-aos-4.csv"
+  }
+]

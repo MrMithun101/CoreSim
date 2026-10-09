@@ -1,0 +1,378 @@
+[
+  {
+    "bodies": 10000,
+    "order": "ordered",
+    "layouts": {
+      "lookup": {
+        "gather_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "kernel_ms": {
+          "median": 0.099875,
+          "min": 0.093,
+          "max": 0.202375
+        },
+        "scatter_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "total_ms": {
+          "median": 0.099875,
+          "min": 0.093,
+          "max": 0.202375
+        }
+      },
+      "dense": {
+        "gather_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "kernel_ms": {
+          "median": 0.0769165,
+          "min": 0.070625,
+          "max": 0.185208
+        },
+        "scatter_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "total_ms": {
+          "median": 0.0769165,
+          "min": 0.070625,
+          "max": 0.185208
+        }
+      },
+      "aos": {
+        "gather_ms": {
+          "median": 0.083375,
+          "min": 0.077583,
+          "max": 0.273208
+        },
+        "kernel_ms": {
+          "median": 0.027875,
+          "min": 0.025959,
+          "max": 0.051667
+        },
+        "scatter_ms": {
+          "median": 0.029083,
+          "min": 0.027125,
+          "max": 0.086042
+        },
+        "total_ms": {
+          "median": 0.140333,
+          "min": 0.131042,
+          "max": 0.34975
+        }
+      },
+      "soa": {
+        "gather_ms": {
+          "median": 0.388125,
+          "min": 0.370458,
+          "max": 0.733041
+        },
+        "kernel_ms": {
+          "median": 0.055396,
+          "min": 0.05275,
+          "max": 0.100459
+        },
+        "scatter_ms": {
+          "median": 0.0329375,
+          "min": 0.031208,
+          "max": 0.076625
+        },
+        "total_ms": {
+          "median": 0.4775005,
+          "min": 0.455041,
+          "max": 0.832875
+        }
+      }
+    }
+  },
+  {
+    "bodies": 10000,
+    "order": "shuffled",
+    "layouts": {
+      "lookup": {
+        "gather_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "kernel_ms": {
+          "median": 0.1010415,
+          "min": 0.09425,
+          "max": 1.207375
+        },
+        "scatter_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "total_ms": {
+          "median": 0.1010415,
+          "min": 0.09425,
+          "max": 1.207375
+        }
+      },
+      "dense": {
+        "gather_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "kernel_ms": {
+          "median": 0.0741455,
+          "min": 0.073208,
+          "max": 0.110583
+        },
+        "scatter_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "total_ms": {
+          "median": 0.0741455,
+          "min": 0.073208,
+          "max": 0.110583
+        }
+      },
+      "aos": {
+        "gather_ms": {
+          "median": 0.0844995,
+          "min": 0.080875,
+          "max": 1.117667
+        },
+        "kernel_ms": {
+          "median": 0.027875,
+          "min": 0.026,
+          "max": 0.338042
+        },
+        "scatter_ms": {
+          "median": 0.0286665,
+          "min": 0.027417,
+          "max": 0.157083
+        },
+        "total_ms": {
+          "median": 0.1409375,
+          "min": 0.1345,
+          "max": 1.350875
+        }
+      },
+      "soa": {
+        "gather_ms": {
+          "median": 0.3879165,
+          "min": 0.369416,
+          "max": 0.61575
+        },
+        "kernel_ms": {
+          "median": 0.05525,
+          "min": 0.052875,
+          "max": 0.246083
+        },
+        "scatter_ms": {
+          "median": 0.0327295,
+          "min": 0.031375,
+          "max": 0.382375
+        },
+        "total_ms": {
+          "median": 0.476417,
+          "min": 0.454333,
+          "max": 1.058083
+        }
+      }
+    }
+  },
+  {
+    "bodies": 100000,
+    "order": "ordered",
+    "layouts": {
+      "lookup": {
+        "gather_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "kernel_ms": {
+          "median": 1.0439790000000002,
+          "min": 0.967083,
+          "max": 4.225291
+        },
+        "scatter_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "total_ms": {
+          "median": 1.0439790000000002,
+          "min": 0.967083,
+          "max": 4.225291
+        }
+      },
+      "dense": {
+        "gather_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "kernel_ms": {
+          "median": 0.814292,
+          "min": 0.756084,
+          "max": 63.110833
+        },
+        "scatter_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "total_ms": {
+          "median": 0.814292,
+          "min": 0.756084,
+          "max": 63.110833
+        }
+      },
+      "aos": {
+        "gather_ms": {
+          "median": 0.9086665,
+          "min": 0.798792,
+          "max": 11.521583
+        },
+        "kernel_ms": {
+          "median": 0.298937,
+          "min": 0.279167,
+          "max": 8.250459
+        },
+        "scatter_ms": {
+          "median": 0.4311665,
+          "min": 0.294625,
+          "max": 48.258417
+        },
+        "total_ms": {
+          "median": 1.6458754999999998,
+          "min": 1.37675,
+          "max": 49.61925
+        }
+      },
+      "soa": {
+        "gather_ms": {
+          "median": 3.823583,
+          "min": 3.696959,
+          "max": 20.232208
+        },
+        "kernel_ms": {
+          "median": 0.5600415000000001,
+          "min": 0.530875,
+          "max": 3.662166
+        },
+        "scatter_ms": {
+          "median": 0.346438,
+          "min": 0.322459,
+          "max": 2.341917
+        },
+        "total_ms": {
+          "median": 4.7490000000000006,
+          "min": 4.554209,
+          "max": 21.572541
+        }
+      }
+    }
+  },
+  {
+    "bodies": 100000,
+    "order": "shuffled",
+    "layouts": {
+      "lookup": {
+        "gather_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "kernel_ms": {
+          "median": 1.8895624999999998,
+          "min": 1.413458,
+          "max": 66.251625
+        },
+        "scatter_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "total_ms": {
+          "median": 1.8895624999999998,
+          "min": 1.413458,
+          "max": 66.251625
+        }
+      },
+      "dense": {
+        "gather_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "kernel_ms": {
+          "median": 1.3548335,
+          "min": 1.163292,
+          "max": 34.772375
+        },
+        "scatter_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "total_ms": {
+          "median": 1.3548335,
+          "min": 1.163292,
+          "max": 34.772375
+        }
+      },
+      "aos": {
+        "gather_ms": {
+          "median": 1.844146,
+          "min": 1.54425,
+          "max": 32.745
+        },
+        "kernel_ms": {
+          "median": 0.28741649999999996,
+          "min": 0.27875,
+          "max": 7.433459
+        },
+        "scatter_ms": {
+          "median": 0.481167,
+          "min": 0.377417,
+          "max": 22.746458
+        },
+        "total_ms": {
+          "median": 2.617104,
+          "min": 2.209125,
+          "max": 39.3165
+        }
+      },
+      "soa": {
+        "gather_ms": {
+          "median": 3.9863745,
+          "min": 3.713125,
+          "max": 60.056083
+        },
+        "kernel_ms": {
+          "median": 0.5604165000000001,
+          "min": 0.531333,
+          "max": 17.940292
+        },
+        "scatter_ms": {
+          "median": 0.5713334999999999,
+          "min": 0.441584,
+          "max": 5.506875
+        },
+        "total_ms": {
+          "median": 5.1537500000000005,
+          "min": 4.694709,
+          "max": 62.931125
+        }
+      }
+    }
+  }
+]

@@ -1,0 +1,202 @@
+[
+  {
+    "bodies": 1000,
+    "order": "ordered",
+    "layouts": {
+      "physics-lookup": {
+        "gather_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "kernel_ms": {
+          "median": 0.265896,
+          "min": 0.252666,
+          "max": 0.656375
+        },
+        "scatter_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "total_ms": {
+          "median": 0.265896,
+          "min": 0.252666,
+          "max": 0.656375
+        }
+      },
+      "physics-dense": {
+        "gather_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "kernel_ms": {
+          "median": 0.268521,
+          "min": 0.250625,
+          "max": 5.044583
+        },
+        "scatter_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "total_ms": {
+          "median": 0.268521,
+          "min": 0.250625,
+          "max": 5.044583
+        }
+      }
+    }
+  },
+  {
+    "bodies": 1000,
+    "order": "shuffled",
+    "layouts": {
+      "physics-lookup": {
+        "gather_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "kernel_ms": {
+          "median": 0.274709,
+          "min": 0.256375,
+          "max": 0.763916
+        },
+        "scatter_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "total_ms": {
+          "median": 0.274709,
+          "min": 0.256375,
+          "max": 0.763916
+        }
+      },
+      "physics-dense": {
+        "gather_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "kernel_ms": {
+          "median": 0.27579149999999997,
+          "min": 0.252208,
+          "max": 0.611084
+        },
+        "scatter_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "total_ms": {
+          "median": 0.27579149999999997,
+          "min": 0.252208,
+          "max": 0.611084
+        }
+      }
+    }
+  },
+  {
+    "bodies": 10000,
+    "order": "ordered",
+    "layouts": {
+      "physics-lookup": {
+        "gather_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "kernel_ms": {
+          "median": 2.803834,
+          "min": 2.601875,
+          "max": 17.818333
+        },
+        "scatter_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "total_ms": {
+          "median": 2.803834,
+          "min": 2.601875,
+          "max": 17.818333
+        }
+      },
+      "physics-dense": {
+        "gather_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "kernel_ms": {
+          "median": 2.915083,
+          "min": 2.580042,
+          "max": 103.792458
+        },
+        "scatter_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "total_ms": {
+          "median": 2.915083,
+          "min": 2.580042,
+          "max": 103.792458
+        }
+      }
+    }
+  },
+  {
+    "bodies": 10000,
+    "order": "shuffled",
+    "layouts": {
+      "physics-lookup": {
+        "gather_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "kernel_ms": {
+          "median": 2.8720835,
+          "min": 2.646625,
+          "max": 32.957417
+        },
+        "scatter_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "total_ms": {
+          "median": 2.8720835,
+          "min": 2.646625,
+          "max": 32.957417
+        }
+      },
+      "physics-dense": {
+        "gather_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "kernel_ms": {
+          "median": 2.803229,
+          "min": 2.620334,
+          "max": 153.547458
+        },
+        "scatter_ms": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "total_ms": {
+          "median": 2.803229,
+          "min": 2.620334,
+          "max": 153.547458
+        }
+      }
+    }
+  }
+]

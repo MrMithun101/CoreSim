@@ -4,6 +4,7 @@
 #include <catch2/catch_approx.hpp>
 #include <limits>
 #include <stdexcept>
+#include <type_traits>
 using namespace coresim;
 TEST_CASE("Packed and dense integration preserve the lookup path across ticks and storage churn") {
     for (auto layout : {IntegrationLayout::dense, IntegrationLayout::aos, IntegrationLayout::soa}) {
@@ -54,7 +55,7 @@ TEST_CASE("Integration variants reject invalid inputs and dynamic planes") {
         REQUIRE_THROWS_AS(experiment.step(world, layout, 1.0F/120), std::runtime_error);
     }
 }
-TEST_CASE("Dense production physics agrees exactly with lookup traversal during contacts") {
+TEST_CASE("Dense candidate physics agrees exactly with lookup traversal during contacts") {
     World lookup, dense;
     for (World* world : {&lookup, &dense}) {
         for (int i = 0; i < 20; ++i) {
@@ -66,7 +67,7 @@ TEST_CASE("Dense production physics agrees exactly with lookup traversal during 
         world->set_collider(plane, PlaneCollider{}); world->set_rigid_body(plane, RigidBody(0));
     }
     PhysicsSystem a({0,-9.81F,0}, BroadPhase::spatial_hash,3,BodyIteration::lookup);
-    PhysicsSystem b;
+    PhysicsSystem b({0,-9.81F,0}, BroadPhase::spatial_hash,3,BodyIteration::dense);
     for (int tick = 0; tick < 120; ++tick) {
         a.step(lookup,1.0F/120); b.step(dense,1.0F/120);
         const auto aa = lookup.rigid_bodies(), bb = dense.rigid_bodies();
@@ -75,4 +76,19 @@ TEST_CASE("Dense production physics agrees exactly with lookup traversal during 
             REQUIRE(lookup.transform(aa[i].entity)->position == dense.transform(bb[i].entity)->position);
         }
     }
+}
+
+TEST_CASE("Dense visitor exposes mutable values with read-only entity identity") {
+    World world;
+    const auto entity = world.create();
+    world.set_rigid_body(entity);
+    unsigned visited = 0;
+    world.for_each_rigid_body([&](auto&& id, RigidBody& body) {
+        static_assert(std::is_const_v<std::remove_reference_t<decltype(id)>>);
+        REQUIRE(id == entity);
+        body.velocity = {1,2,3};
+        ++visited;
+    });
+    REQUIRE(visited == 1);
+    REQUIRE(world.rigid_body(entity)->velocity == glm::vec3(1,2,3));
 }
