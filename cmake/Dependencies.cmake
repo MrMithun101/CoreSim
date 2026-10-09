@@ -42,3 +42,30 @@ if(CORESIM_FETCH_DEPENDENCIES)
 else()
     find_package(glm 1.0 CONFIG REQUIRED)
 endif()
+
+# Dear ImGui and its official backends are needed only for the interactive application.
+if(CORESIM_BUILD_APP)
+    if(CORESIM_FETCH_DEPENDENCIES)
+        FetchContent_Declare(imgui
+            GIT_REPOSITORY https://github.com/ocornut/imgui.git
+            GIT_TAG f5befd2d29e66809cd1110a152e375a7f1981f06 # v1.91.9b
+            SYSTEM)
+        FetchContent_MakeAvailable(imgui)
+        set(CORESIM_IMGUI_SOURCE_DIR "${imgui_SOURCE_DIR}")
+    else()
+        set(CORESIM_IMGUI_SOURCE_DIR "" CACHE PATH "Dear ImGui source directory (v1.91.9b, including backends)")
+        if(NOT EXISTS "${CORESIM_IMGUI_SOURCE_DIR}/imgui.cpp")
+            message(FATAL_ERROR "Set CORESIM_IMGUI_SOURCE_DIR to Dear ImGui v1.91.9b sources")
+        endif()
+    endif()
+    add_library(coresim_imgui STATIC
+        ${CORESIM_IMGUI_SOURCE_DIR}/imgui.cpp
+        ${CORESIM_IMGUI_SOURCE_DIR}/imgui_draw.cpp
+        ${CORESIM_IMGUI_SOURCE_DIR}/imgui_tables.cpp
+        ${CORESIM_IMGUI_SOURCE_DIR}/imgui_widgets.cpp
+        ${CORESIM_IMGUI_SOURCE_DIR}/backends/imgui_impl_glfw.cpp
+        ${CORESIM_IMGUI_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp)
+    target_include_directories(coresim_imgui SYSTEM PUBLIC ${CORESIM_IMGUI_SOURCE_DIR})
+    target_compile_definitions(coresim_imgui PRIVATE GLFW_INCLUDE_NONE)
+    target_link_libraries(coresim_imgui PRIVATE glfw ${CMAKE_DL_LIBS})
+endif()

@@ -26,7 +26,8 @@ public:
     Window(Window&&) = delete;
     Window& operator=(Window&&) = delete;
     void process_events();
-    [[nodiscard]] InputState input();
+    [[nodiscard]] InputState input(bool keyboard_captured = false, bool mouse_captured = false);
+    [[nodiscard]] GLFWwindow* native_handle() const noexcept { return handle_.get(); }
     [[nodiscard]] bool should_close() const;
     void request_close();
     [[nodiscard]] std::pair<int, int> framebuffer_size() const;

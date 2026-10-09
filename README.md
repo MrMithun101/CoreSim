@@ -2,7 +2,7 @@
 
 **High-Performance 3D Physics Simulation Engine**
 
-A C++20 systems and performance engineering project developed one measured milestone at a time. Current scope: **Milestone 8 — Spatial Hash Broad Phase**. It provides custom fixed-step translational physics, generation-checked entity IDs, packed component storage, primitive collision detection and impulse response, a movable perspective camera and a 100-body sphere/box demo, move-aware RAII GPU resources, file-based shaders, depth testing, frame timing, and tests. A deterministic spatial hash accelerates broad-phase collision detection; angular dynamics, profiling, and GPU compute are future milestones. A headless CSV benchmark compares spatial hashing with the retained all-pairs baseline; see [measurements and methodology](BENCHMARKS.md).
+A C++20 systems and performance engineering project developed one measured milestone at a time. Current scope: **Milestone 9 — Built-in Profiler**. It provides custom fixed-step translational physics, generation-checked entity IDs, packed component storage, primitive collision detection and impulse response, a movable perspective camera and a 100-body sphere/box demo, move-aware RAII GPU resources, file-based shaders, depth testing, frame timing, and tests. A deterministic spatial hash accelerates broad-phase collision detection; a live ImGui CPU profiler exposes timing bottlenecks. Angular dynamics and GPU compute are future milestones. A headless CSV benchmark compares spatial hashing with the retained all-pairs baseline; see [measurements and methodology](BENCHMARKS.md).
 
 ![Sphere and box collision scene rendered by CoreSim](docs/images/collisions.png)
 
@@ -44,6 +44,10 @@ ctest --preset debug
 ./build/debug/coresim
 ```
 
+## Live CPU profiler
+
+The interactive app shows an ImGui table for Frame, Physics, Broad Phase, Narrow Phase, Solver, Rendering, and Presentation. Each row tracks calls, total, average, minimum, and maximum milliseconds. Use **Collect samples** to pause/resume and **Reset statistics** to clear measurements. See [profiler timing boundaries and design](docs/profiler.md); these are CPU wall timings, not GPU timings.
+
 ## Collision benchmarks
 
 ```sh
@@ -55,9 +59,9 @@ The standalone `coresim_benchmark` accepts the same arguments and is available w
 
 ## Dependencies
 
-CMake FetchContent downloads GLFW **3.4**, GLM **1.0.1**, and Catch2 **3.7.1**, pinned to verified immutable commits. GLFW provides window/context creation; Catch2 provides tests. GLM supplies matrix math; the generated GLAD loader is vendored with its license. OpenGL comes from the platform. Upstream dependencies retain their own licenses. No physics engine or prebuilt engine systems are used.
+CMake FetchContent downloads GLFW **3.4**, GLM **1.0.1**, Catch2 **3.7.1**, and Dear ImGui **1.91.9b**, pinned to verified immutable commits. GLFW provides window/context creation; Catch2 provides tests. GLM supplies matrix math; the generated GLAD loader is vendored with its license. Dear ImGui supplies the profiler panel and official GLFW/OpenGL backends. OpenGL comes from the platform. Upstream dependencies retain their own licenses. No physics engine or prebuilt engine systems are used.
 
-Initial configuration requires network access. Alternatively, use installed CMake packages with `-DCORESIM_FETCH_DEPENDENCIES=OFF` (GLFW >=3.4, GLM >=1.0, and Catch2 3), or predownloaded sources with `FETCHCONTENT_SOURCE_DIR_GLFW`, `FETCHCONTENT_SOURCE_DIR_GLM`, and `FETCHCONTENT_SOURCE_DIR_CATCH2`. Linux defaults to GLFW's X11 backend. Warnings apply only to CoreSim targets. `-DBUILD_TESTING=OFF` omits Catch2 and tests.
+Initial configuration requires network access. Alternatively, use installed CMake packages with `-DCORESIM_FETCH_DEPENDENCIES=OFF` (GLFW >=3.4, GLM >=1.0, and Catch2 3), plus `CORESIM_IMGUI_SOURCE_DIR` pointing to Dear ImGui 1.91.9b sources for application builds, or predownloaded sources with `FETCHCONTENT_SOURCE_DIR_GLFW`, `FETCHCONTENT_SOURCE_DIR_GLM`, `FETCHCONTENT_SOURCE_DIR_CATCH2`, and `FETCHCONTENT_SOURCE_DIR_IMGUI`. Linux defaults to GLFW's X11 backend. Warnings apply only to CoreSim targets. `-DBUILD_TESTING=OFF` omits Catch2 and tests.
 
 ## Tests
 
@@ -108,4 +112,4 @@ Shaders are copied into the build directory and found independently of the worki
 
 See [verification notes](docs/verification.md) for actual local results and commands. The screenshot above is an actual framebuffer capture, not an illustration or performance benchmark.
 
-**Next: Milestone 9 — Built-in Profiler**, only on explicit request.
+**Next: Milestone 10 — Data-Oriented Performance Work**, only on explicit request.

@@ -51,10 +51,10 @@ void Window::process_events() {
         request_close();
     }
 }
-InputState Window::input() {
+InputState Window::input(bool keyboard_captured, bool mouse_captured) {
     InputState state;
     const bool focused = glfwGetWindowAttrib(handle_.get(), GLFW_FOCUSED) == GLFW_TRUE;
-    const bool capture = focused && glfwGetMouseButton(handle_.get(), GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS;
+    const bool capture = focused && !mouse_captured && glfwGetMouseButton(handle_.get(), GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS;
     const bool changed = capture != mouse_captured_;
     if (changed) {
         glfwSetInputMode(handle_.get(), GLFW_CURSOR, capture ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
@@ -75,11 +75,13 @@ InputState Window::input() {
             return glfwGetKey(handle_.get(), key) == GLFW_PRESS ? 1.0F : 0.0F;
         };
         const bool reset_down = pressed(GLFW_KEY_R) > 0;
-        state.reset_physics = reset_down && !reset_was_down_;
+        state.reset_physics = !keyboard_captured && reset_down && !reset_was_down_;
         reset_was_down_ = reset_down;
-        state.right = pressed(GLFW_KEY_D) - pressed(GLFW_KEY_A);
-        state.forward = pressed(GLFW_KEY_W) - pressed(GLFW_KEY_S);
-        state.up = pressed(GLFW_KEY_E) - pressed(GLFW_KEY_Q);
+        if (!keyboard_captured) {
+            state.right = pressed(GLFW_KEY_D) - pressed(GLFW_KEY_A);
+            state.forward = pressed(GLFW_KEY_W) - pressed(GLFW_KEY_S);
+            state.up = pressed(GLFW_KEY_E) - pressed(GLFW_KEY_Q);
+        }
     } else {
         reset_was_down_ = false;
     }

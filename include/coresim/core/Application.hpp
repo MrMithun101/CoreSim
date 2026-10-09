@@ -1,6 +1,7 @@
 #pragma once
 #include <coresim/core/FrameTimer.hpp>
 #include <coresim/core/Window.hpp>
+#include <coresim/ui/ProfilerPanel.hpp>
 #include <cstdint>
 #include <coresim/renderer/Renderer.hpp>
 #include <coresim/scene/Camera.hpp>
@@ -21,6 +22,8 @@ private:
     GlfwRuntime runtime_;
     Window window_{runtime_};
     Renderer renderer_;
+    Profiler profiler_;
+    ProfilerPanel profiler_panel_{window_};
     Camera camera_{{16.0F, 18.0F, 27.0F}, -2.106F, -0.52F};
     DemoScene scene_;
     PhysicsSystem physics_;

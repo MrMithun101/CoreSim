@@ -20,7 +20,7 @@ class Profiler {
 public:
     using Clock = std::chrono::steady_clock;
     using Now = Clock::time_point (*)();
-    explicit Profiler(Now now = &Clock::now) noexcept : now_(now) {}
+    explicit Profiler(Now now = &Clock::now) noexcept : now_(now ? now : &Clock::now) {}
     void record(ProfileSection section, double milliseconds) noexcept;
     void reset() noexcept;
     void set_enabled(bool enabled) noexcept;
