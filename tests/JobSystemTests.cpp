@@ -135,3 +135,22 @@ TEST_CASE("Dropped group handles do not abandon work and worker lifecycle calls 
     REQUIRE_THROWS_AS(other.submit(original, [] {}), std::invalid_argument);
     moved.wait();
 }
+TEST_CASE("A group wait is independent of unrelated blocked work") {
+    std::latch entered(1), release(1);
+    std::atomic<bool> blocked_finished{};
+    JobSystem system(2);
+    struct UnblockOnExit {
+        std::latch& latch;
+        ~UnblockOnExit() { latch.count_down(); }
+    } unblock{release}; // Releases even if a test assertion throws, before joining workers.
+    auto blocked = system.submit([&] {
+        entered.count_down(); release.wait(); blocked_finished = true;
+    });
+    entered.wait();
+    int value = 0;
+    system.submit([&] { value = 42; }).wait();
+    REQUIRE(value == 42);
+    REQUIRE_FALSE(blocked_finished);
+    auto failure = system.submit([] { throw 17; });
+    REQUIRE_THROWS_AS(failure.wait(), int);
+}

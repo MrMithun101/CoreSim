@@ -2,6 +2,7 @@
 #include <coresim/core/FrameTimer.hpp>
 #include <coresim/core/Window.hpp>
 #include <coresim/ui/ProfilerPanel.hpp>
+#include <coresim/jobs/JobSystem.hpp>
 #include <cstdint>
 #include <coresim/renderer/Renderer.hpp>
 #include <coresim/scene/Camera.hpp>
@@ -31,5 +32,7 @@ private:
     std::uint64_t physics_ticks_{};
     double dropped_physics_seconds_{};
     double next_title_update_{};
+    // Destroy/join workers before any simulation or graphics resources.
+    JobSystem jobs_;
 };
 } // namespace coresim

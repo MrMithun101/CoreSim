@@ -1,5 +1,17 @@
 # Verification
 
+## Milestone 11 — October 12, 2026
+
+Core checkpoint `f43f12d` adds a fixed worker pool with blocking FIFO admission, sealed completion groups, shared state lifetime, exception propagation after sibling completion, and draining shutdown. The application owns a pool that joins before scene/graphics teardown; physics, rendering, and profiling remain single-threaded.
+
+All 18 CTest entries passed locally in Debug, Release, and ASan/UBSan. The final job suite passed 36,129 assertions in ten cases; its final added group-isolation/non-standard-exception case was rechecked in all three builds. The existing CPU suite remains 244,947 assertions in 46 cases. Final builds emitted no CoreSim compiler/linker warnings or sanitizer diagnostics.
+
+A separate headless Apple Clang ThreadSanitizer build instrumented both the jobs library and test executable. The final concurrency suite passed ten consecutive CTest runs with no race reports (log: `/tmp/coresim-m11-tsan-final.log`, temporary local evidence). CI adds the same repeated job suite on `macos-latest`, alongside the existing Linux compiler and ASan/UBSan matrix. Sanitizers exercise schedules rather than proving correctness.
+
+Stress cases include 12,000 unique jobs at each of one/two/four workers, six concurrent producers, multiple waiters, concurrent submit/shutdown and shutdown/shutdown races, group sealing races, exception propagation, queued-work destruction, repeated wakeups/pool lifecycles, blocked unrelated groups, worker blocking-call rejection, descendant submission, and completion after callable capture release. A 60-second test timeout bounds deadlock failures. Idle workers use a condition-variable predicate, with no polling or spin loop. Constructor resource-exhaustion cleanup is implemented but resource exhaustion was not deliberately induced.
+
+See [job-system contracts and usage](jobs.md). No parallel-physics throughput claim or Milestone 12 work is included.
+
 ## Milestone 10 — October 9, 2026
 
 Experiment checkpoints `56eda63` and `ccac0f4` passed Linux CI. The [final integration CI run](https://github.com/MrMithun101/CoreSim/actions/runs/37967997169) for `571db77` passed all five jobs: GCC/Clang Debug/Release with display tests and headless ASan/UBSan. The final decision retains lookup traversal and the existing component layout in production: dense traversal improved isolated integration but did not show a consistent complete-physics benefit in two measured runs. AoS/SoA work buffers remain experimental because total gather/integrate/scatter costs exceeded the reference.
