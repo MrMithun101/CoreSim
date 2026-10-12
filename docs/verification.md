@@ -4,6 +4,8 @@
 
 Core checkpoint `f43f12d` adds a fixed worker pool with blocking FIFO admission, sealed completion groups, shared state lifetime, exception propagation after sibling completion, and draining shutdown. The application owns a pool that joins before scene/graphics teardown; physics, rendering, and profiling remain single-threaded.
 
+The core checkpoint passed Linux CI. The [integration CI run](https://github.com/MrMithun101/CoreSim/actions/runs/38322238047) for `a83ca23` passed all six jobs: GCC/Clang Debug/Release with display tests, headless ASan/UBSan, and ten consecutive ThreadSanitizer stress runs on macOS.
+
 All 18 CTest entries passed locally in Debug, Release, and ASan/UBSan. The final job suite passed 36,129 assertions in ten cases; its final added group-isolation/non-standard-exception case was rechecked in all three builds. The existing CPU suite remains 244,947 assertions in 46 cases. Final builds emitted no CoreSim compiler/linker warnings or sanitizer diagnostics.
 
 A separate headless Apple Clang ThreadSanitizer build instrumented both the jobs library and test executable. The final concurrency suite passed ten consecutive CTest runs with no race reports (log: `/tmp/coresim-m11-tsan-final.log`, temporary local evidence). CI adds the same repeated job suite on `macos-latest`, alongside the existing Linux compiler and ASan/UBSan matrix. Sanitizers exercise schedules rather than proving correctness.

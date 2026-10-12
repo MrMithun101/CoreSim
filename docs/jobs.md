@@ -5,9 +5,9 @@ Milestone 11 adds `coresim_jobs`, a C++20 library using a fixed vector of `std::
 ```cpp
 #include <coresim/jobs/JobSystem.hpp>
 
+std::vector<int> output(10000); // Outlives the pool, including if submission throws.
 coresim::JobSystem jobs(4);
 coresim::JobGroup batch;
-std::vector<int> output(10000);
 for (std::size_t i = 0; i < output.size(); ++i) {
     jobs.submit(batch, [&, i] { output[i] = static_cast<int>(i * i); });
 }
