@@ -1,5 +1,15 @@
 # Verification
 
+## Milestone 14 — October 13, 2026
+
+Baseline checkpoint `c965703` adds an isolated rendering benchmark and serial comparison runner. Instancing checkpoint `2dfd015` adds streamed per-mesh matrix attributes, retained CPU/GPU capacities, one indexed instanced call per nonempty mesh type, actual submission counters and a selectable individual-draw reference. The interactive renderer defaults to instancing. GPU resources remain context-bound RAII owners; scene/physics ownership is unchanged.
+
+All 38 local CTest entries passed in Release, Debug and ASan/UBSan, including both benchmark modes with mixed geometry, invalid CLI inputs, renderer/UI tests and the window smoke test. The final added cross-batch depth regression was then rechecked in all three renderer builds: 148 assertions in 12 cases each. Builds emitted no CoreSim compiler/linker warnings or sanitizer diagnostics. GLM's existing upstream CMake deprecation warning remains. Renderer tests compare complete images and cover growth to 1,200 mixed objects, buffer moves, mutation, shrink, missing/destroyed components, mesh changes, zero-size targets, and overlapping meshes at distinct depths.
+
+On the Apple M1 host, the baseline retained 270 measured rows and the paired cube/mixed studies retained 1,080 rows across 36 comparison invocations. All counts, timings and exact final image checksums passed the runner's validation. Counts were 1,000, 10,000 and 25,000; each mode/count/geometry used three trials with ten warmup and thirty measured frames. See [all measurements, machine metadata and interpretation](rendering-scalability.md). These are completed offscreen rendering measurements with no physics, presentation or UI; derived FPS is not full-application FPS. No GPU timer-query or hardware-counter claim is made.
+
+No Milestone 15 demo-scene work is included.
+
 ## Milestone 13 — October 12–13, 2026
 
 Core checkpoint `0577bb7` adds shape-derived principal/world inertia tensors, torque and offset forces, normalized quaternion integration with world angular momentum, oriented box manifolds and rotated broad-phase bounds, angular normal impulses, and Coulomb contact friction. The [checkpoint CI run](https://github.com/MrMithun101/CoreSim/actions/runs/38341401469) passed all six compiler/display/sanitizer jobs. The final integration tilts/spins demo boxes, restores angular state on reset, prevents animation from overwriting rigid-body orientation, and extends concurrency/state checks to angular motion.

@@ -1,0 +1,334 @@
+{
+  "binary": "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-m14-release/coresim_render_benchmark",
+  "sha256": "e714c9daa7a27825066cabc46bd568e94e002eae7a1e26a9cfed5e3489cf0f19",
+  "revision": "2dfd015fd9df9ad7056408775e858eddc40604b1",
+  "dirty": "?? benchmarks/results/render-cubes-m14/",
+  "platform": "macOS-26.3.1-arm64-arm-64bit",
+  "machine": "arm64",
+  "hardware": "machdep.cpu.brand_string: Apple M1\nhw.memsize: 8589934592\nhw.model: MacBookPro17,1\nhw.physicalcpu: 8\nhw.logicalcpu: 8",
+  "options": {
+    "binary": "build-m14-release/coresim_render_benchmark",
+    "output": "benchmarks/results/render-mixed-m14",
+    "modes": [
+      "individual",
+      "instanced"
+    ],
+    "counts": [
+      1000,
+      10000,
+      25000
+    ],
+    "trials": 3,
+    "frames": 30,
+    "warmup": 10,
+    "geometry": "mixed"
+  },
+  "invocations": [
+    {
+      "command": [
+        "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-m14-release/coresim_render_benchmark",
+        "--mode",
+        "individual",
+        "--objects",
+        "1000",
+        "--frames",
+        "30",
+        "--warmup",
+        "10",
+        "--geometry",
+        "mixed"
+      ],
+      "returncode": 0,
+      "file": "mixed-1000-individual-0"
+    },
+    {
+      "command": [
+        "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-m14-release/coresim_render_benchmark",
+        "--mode",
+        "instanced",
+        "--objects",
+        "1000",
+        "--frames",
+        "30",
+        "--warmup",
+        "10",
+        "--geometry",
+        "mixed"
+      ],
+      "returncode": 0,
+      "file": "mixed-1000-instanced-0"
+    },
+    {
+      "command": [
+        "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-m14-release/coresim_render_benchmark",
+        "--mode",
+        "instanced",
+        "--objects",
+        "1000",
+        "--frames",
+        "30",
+        "--warmup",
+        "10",
+        "--geometry",
+        "mixed"
+      ],
+      "returncode": 0,
+      "file": "mixed-1000-instanced-1"
+    },
+    {
+      "command": [
+        "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-m14-release/coresim_render_benchmark",
+        "--mode",
+        "individual",
+        "--objects",
+        "1000",
+        "--frames",
+        "30",
+        "--warmup",
+        "10",
+        "--geometry",
+        "mixed"
+      ],
+      "returncode": 0,
+      "file": "mixed-1000-individual-1"
+    },
+    {
+      "command": [
+        "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-m14-release/coresim_render_benchmark",
+        "--mode",
+        "individual",
+        "--objects",
+        "1000",
+        "--frames",
+        "30",
+        "--warmup",
+        "10",
+        "--geometry",
+        "mixed"
+      ],
+      "returncode": 0,
+      "file": "mixed-1000-individual-2"
+    },
+    {
+      "command": [
+        "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-m14-release/coresim_render_benchmark",
+        "--mode",
+        "instanced",
+        "--objects",
+        "1000",
+        "--frames",
+        "30",
+        "--warmup",
+        "10",
+        "--geometry",
+        "mixed"
+      ],
+      "returncode": 0,
+      "file": "mixed-1000-instanced-2"
+    },
+    {
+      "command": [
+        "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-m14-release/coresim_render_benchmark",
+        "--mode",
+        "individual",
+        "--objects",
+        "10000",
+        "--frames",
+        "30",
+        "--warmup",
+        "10",
+        "--geometry",
+        "mixed"
+      ],
+      "returncode": 0,
+      "file": "mixed-10000-individual-0"
+    },
+    {
+      "command": [
+        "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-m14-release/coresim_render_benchmark",
+        "--mode",
+        "instanced",
+        "--objects",
+        "10000",
+        "--frames",
+        "30",
+        "--warmup",
+        "10",
+        "--geometry",
+        "mixed"
+      ],
+      "returncode": 0,
+      "file": "mixed-10000-instanced-0"
+    },
+    {
+      "command": [
+        "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-m14-release/coresim_render_benchmark",
+        "--mode",
+        "instanced",
+        "--objects",
+        "10000",
+        "--frames",
+        "30",
+        "--warmup",
+        "10",
+        "--geometry",
+        "mixed"
+      ],
+      "returncode": 0,
+      "file": "mixed-10000-instanced-1"
+    },
+    {
+      "command": [
+        "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-m14-release/coresim_render_benchmark",
+        "--mode",
+        "individual",
+        "--objects",
+        "10000",
+        "--frames",
+        "30",
+        "--warmup",
+        "10",
+        "--geometry",
+        "mixed"
+      ],
+      "returncode": 0,
+      "file": "mixed-10000-individual-1"
+    },
+    {
+      "command": [
+        "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-m14-release/coresim_render_benchmark",
+        "--mode",
+        "individual",
+        "--objects",
+        "10000",
+        "--frames",
+        "30",
+        "--warmup",
+        "10",
+        "--geometry",
+        "mixed"
+      ],
+      "returncode": 0,
+      "file": "mixed-10000-individual-2"
+    },
+    {
+      "command": [
+        "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-m14-release/coresim_render_benchmark",
+        "--mode",
+        "instanced",
+        "--objects",
+        "10000",
+        "--frames",
+        "30",
+        "--warmup",
+        "10",
+        "--geometry",
+        "mixed"
+      ],
+      "returncode": 0,
+      "file": "mixed-10000-instanced-2"
+    },
+    {
+      "command": [
+        "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-m14-release/coresim_render_benchmark",
+        "--mode",
+        "individual",
+        "--objects",
+        "25000",
+        "--frames",
+        "30",
+        "--warmup",
+        "10",
+        "--geometry",
+        "mixed"
+      ],
+      "returncode": 0,
+      "file": "mixed-25000-individual-0"
+    },
+    {
+      "command": [
+        "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-m14-release/coresim_render_benchmark",
+        "--mode",
+        "instanced",
+        "--objects",
+        "25000",
+        "--frames",
+        "30",
+        "--warmup",
+        "10",
+        "--geometry",
+        "mixed"
+      ],
+      "returncode": 0,
+      "file": "mixed-25000-instanced-0"
+    },
+    {
+      "command": [
+        "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-m14-release/coresim_render_benchmark",
+        "--mode",
+        "instanced",
+        "--objects",
+        "25000",
+        "--frames",
+        "30",
+        "--warmup",
+        "10",
+        "--geometry",
+        "mixed"
+      ],
+      "returncode": 0,
+      "file": "mixed-25000-instanced-1"
+    },
+    {
+      "command": [
+        "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-m14-release/coresim_render_benchmark",
+        "--mode",
+        "individual",
+        "--objects",
+        "25000",
+        "--frames",
+        "30",
+        "--warmup",
+        "10",
+        "--geometry",
+        "mixed"
+      ],
+      "returncode": 0,
+      "file": "mixed-25000-individual-1"
+    },
+    {
+      "command": [
+        "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-m14-release/coresim_render_benchmark",
+        "--mode",
+        "individual",
+        "--objects",
+        "25000",
+        "--frames",
+        "30",
+        "--warmup",
+        "10",
+        "--geometry",
+        "mixed"
+      ],
+      "returncode": 0,
+      "file": "mixed-25000-individual-2"
+    },
+    {
+      "command": [
+        "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-m14-release/coresim_render_benchmark",
+        "--mode",
+        "instanced",
+        "--objects",
+        "25000",
+        "--frames",
+        "30",
+        "--warmup",
+        "10",
+        "--geometry",
+        "mixed"
+      ],
+      "returncode": 0,
+      "file": "mixed-25000-instanced-2"
+    }
+  ]
+}

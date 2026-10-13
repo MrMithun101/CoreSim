@@ -2,13 +2,22 @@
 
 **High-Performance 3D Physics Simulation Engine**
 
-A C++20 systems and performance engineering project developed one measured milestone at a time. Current scope: **Milestone 13 — Angular Dynamics**. It provides custom fixed-step linear and angular physics, generation-checked entity IDs, packed component storage, primitive collision detection and impulse response, a movable perspective camera and a 100-body sphere/box demo, move-aware RAII GPU resources, file-based shaders, depth testing, frame timing, and tests. A deterministic spatial hash accelerates broad-phase collision detection; a live ImGui CPU profiler exposes timing bottlenecks. Bodies rotate under torque and off-center impulses; oriented-box manifolds and contact friction support the falling-body demo. GPU compute remains a future milestone. A headless CSV benchmark compares spatial hashing with the retained all-pairs baseline; see [measurements and methodology](BENCHMARKS.md).
+A C++20 systems and performance engineering project developed one measured milestone at a time. Current scope: **Milestone 14 — Rendering Scalability**. It provides custom fixed-step linear and angular physics, generation-checked entity IDs, packed component storage, primitive collision detection and impulse response, a movable perspective camera and a 100-body sphere/box demo, move-aware RAII GPU resources, file-based shaders, depth testing, frame timing, and tests. A deterministic spatial hash accelerates broad-phase collision detection; a live ImGui CPU profiler exposes timing bottlenecks. Bodies rotate under torque and off-center impulses; oriented-box manifolds and contact friction support the falling-body demo. The renderer batches repeated cubes and spheres with instancing, with a retained individual-draw path and measured comparisons up to 25,000 objects. GPU compute remains a future milestone. A headless CSV benchmark compares spatial hashing with the retained all-pairs baseline; see [measurements and methodology](BENCHMARKS.md).
 
 ![Sphere and box collision scene rendered by CoreSim](docs/images/angular.png)
 
+## Rendering scalability
+
+`Renderer` defaults to instanced rendering: one draw per nonempty mesh type. The retained individual path and deterministic 1,000/10,000/25,000-object benchmark compare draw counts, CPU submission, completed offscreen render time and derived FPS. See [the measured results and limits](docs/rendering-scalability.md); these exclude physics and presentation.
+
+```sh
+./build-release/coresim_render_benchmark --mode instanced --objects 25000
+python3 benchmarks/render.py --binary build-release/coresim_render_benchmark --output /tmp/render-study
+```
+
 ## Build and run
 
-Requires CMake 3.25+, Git, GCC or Clang with C++20 support, and OpenGL 3.3. Linux is the primary target; macOS is also supported by the foundation. A graphical session is required for the interactive demo; benchmarks run headlessly.
+Requires CMake 3.25+, Git, GCC or Clang with C++20 support, and OpenGL 3.3. Linux is the primary target; macOS is also supported by the foundation. A graphical session is required for the interactive demo; physics benchmarks run headlessly; rendering benchmarks require a display/OpenGL context.
 
 Ubuntu/Debian dependencies:
 
@@ -132,4 +141,4 @@ Shaders are copied into the build directory and found independently of the worki
 
 See [verification notes](docs/verification.md) for actual local results and commands. The screenshot above is an actual framebuffer capture, not an illustration or performance benchmark.
 
-**Next: Milestone 14 — Rendering Scalability**, only on explicit request.
+**Next: Milestone 15 — Reproducible Demo Scenes**, only on explicit request.

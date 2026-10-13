@@ -450,3 +450,28 @@ TEST_CASE("Streaming buffer ownership survives growth and moves") {
     REQUIRE(destination.id() == id);
     REQUIRE(glGetError() == GL_NO_ERROR);
 }
+
+TEST_CASE("Instanced mixed meshes preserve depth visibility across batch order") {
+    Context context;
+    Target target;
+    Renderer renderer(shaders);
+    World world;
+    const auto sphere=world.create();
+    const auto cube=world.create();
+    world.set_mesh(sphere,{MeshKind::sphere});
+    world.set_mesh(cube,{MeshKind::cube});
+    world.set_transform(sphere).scale=glm::vec3(0.35F);
+    world.set_transform(cube).scale=glm::vec3(0.35F);
+    std::vector<unsigned char> previous;
+    for (float depth : {-0.45F,0.45F}) {
+        world.transform(sphere)->position.z=depth;
+        renderer.draw(Target::size,Target::size,glm::mat4(1),world,RenderMode::individual);
+        const auto expected=target.pixels();
+        renderer.draw(Target::size,Target::size,glm::mat4(1),world,RenderMode::instanced);
+        REQUIRE((target.pixels() == expected));
+        REQUIRE(target.center()[0] > 20);
+        if (!previous.empty()) { REQUIRE((previous != expected)); }
+        previous=expected;
+    }
+    REQUIRE(glGetError() == GL_NO_ERROR);
+}

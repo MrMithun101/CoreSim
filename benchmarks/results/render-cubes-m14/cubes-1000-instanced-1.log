@@ -1,0 +1,4 @@
+build=Release compiler=AppleClang-21.0.0.21000101
+GL_VENDOR=Apple
+GL_RENDERER=Apple M1
+GL_VERSION=4.1 Metal - 90.5

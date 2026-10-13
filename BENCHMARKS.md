@@ -1,3 +1,7 @@
+# Benchmarks
+
+Milestone 14 adds [individual versus instanced rendering measurements](docs/rendering-scalability.md), including raw paired trials through 25,000 cubes and mixed meshes. Rendering needs a display/OpenGL context; the CPU physics benchmarks below remain headless.
+
 # Collision benchmarks
 
 Milestone 7 measures the deliberately naive all-pairs implementation. No spatial pruning is performed. Run a **Release** build without sanitizers for performance measurements:
