@@ -1,0 +1,17 @@
+{
+  "revision": "d3ce3dd34d99250c04c0a2794924d6ebb01d2977",
+  "platform": "macOS-26.3.1-arm64-arm-64bit",
+  "machine": "arm64",
+  "method": "Five trials; 10 warmup + 50 measured ticks per process; rotated configuration order.",
+  "date": "2026-10-12",
+  "cpu": "Apple M1",
+  "physical_cores": 8,
+  "logical_cores": 8,
+  "ram_bytes": 8589934592,
+  "os": "macOS 26.3.1 (25D771280a)",
+  "compiler": "AppleClang-21.0.0.21000101",
+  "build": "Release",
+  "background": "No concurrent CoreSim builds/tests; normal desktop services, no affinity/power controls.",
+  "executable_sha256": "f7eb61a4238673dc2d08db27594303e6cf7aa52e493780ac5aeb819e55c5b8b1",
+  "core_topology": "4 performance + 4 efficiency cores, confirmed by hw.perflevel sysctl; no affinity"
+}

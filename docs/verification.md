@@ -1,5 +1,15 @@
 # Verification
 
+## Milestone 12 — October 12, 2026
+
+Core checkpoint `d3ce3dd` adds synchronous parallel integration through the fixed worker pool, disjoint bounded body ranges, a configurable grain/inline fallback, admission-failure draining, and worker-side nesting rejection. The [checkpoint CI run](https://github.com/MrMithun101/CoreSim/actions/runs/38339137908) passed all six jobs: GCC/Clang Debug/Release with display tests, headless ASan/UBSan, and ten repetitions of both concurrency suites under ThreadSanitizer. The application now supplies its pool; its small demo remains inline.
+
+All 28 CTest entries passed locally in Debug, Release and ASan/UBSan, including the display suites and valid/invalid benchmark CLI cases. Final builds emitted no CoreSim compiler/linker warnings. The parallel suite passed 750,385 assertions in seven cases; the existing job suite passed 36,129 assertions in ten cases and the CPU suite passed 244,947 assertions in 46 cases. A separate local ThreadSanitizer build passed five repetitions of both concurrency suites with no race reports. Tests cover exact per-body equivalence across 1/2/4/8 workers and both traversal modes, supported contacts under both broad phases, structural churn between ticks, range bounds, missing/static bodies, exceptions, closed/concurrent shutdown, inline fallback and nested-worker rejection.
+
+The headless Release scaling studies retain 21,250 measured rows across 425 invocations, plus 60 pre-change baseline rows. Every formal scaling row passed workload/timing checks and exact serialized state-checksum/collision-counter comparison against other configurations. All trial medians, raw min/max values, commands, compiler/revision/binary metadata and machine details are retained in the [parallel-physics report](parallel-physics.md). Measured benefits apply to independent integration/free-flight workloads; collision-dominated ticks show little total improvement. The report includes small-scene overhead, grain-size tradeoffs, heterogeneous cores, observed variability and limits of cache/bandwidth/false-sharing inferences. No hardware-counter evidence or general frame-rate improvement is claimed.
+
+Physics still joins before serial collision solving, profiler updates and rendering. No Milestone 13 angular dynamics work is included.
+
 ## Milestone 11 — October 12, 2026
 
 Core checkpoint `f43f12d` adds a fixed worker pool with blocking FIFO admission, sealed completion groups, shared state lifetime, exception propagation after sibling completion, and draining shutdown. The application owns a pool that joins before scene/graphics teardown; physics, rendering, and profiling remain single-threaded.

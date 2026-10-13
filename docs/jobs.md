@@ -16,7 +16,7 @@ batch.wait(); // Seals the batch, waits for all jobs, and publishes their writes
 jobs.submit([] { /* one independent task */ }).wait();
 ```
 
-Zero workers in the constructor selects `hardware_concurrency()`, falling back to one if unavailable. Explicit positive counts are honored; `worker_count()` reports that configured size, including after shutdown. Pool creation and joining belong to an external coordinating thread. The application owns a default pool as its last member, so its destructor joins workers before scene/graphics resources are destroyed. This milestone intentionally leaves physics, rendering, GLFW, and the current profiler on the main thread; parallel physics is Milestone 12.
+Zero workers in the constructor selects `hardware_concurrency()`, falling back to one if unavailable. Explicit positive counts are honored; `worker_count()` reports that configured size, including after shutdown. Pool creation and joining belong to an external coordinating thread. The application owns a default pool as its last member, so its destructor joins workers before scene/graphics resources are destroyed. Milestone 12 now borrows this pool for [parallel integration](parallel-physics.md); collision solving, rendering, GLFW and profiler updates remain on the coordinator. `is_worker_thread()` lets synchronous clients reject worker-side calls before submitting borrowed work.
 
 ## Completion and failures
 
@@ -44,4 +44,4 @@ cmake --build build-tsan --target coresim_jobs_tests --parallel
 ctest --test-dir build-tsan -R '^coresim.jobs$' --repeat until-fail:10 --output-on-failure
 ```
 
-ThreadSanitizer is separate from ASan/UBSan. CI adds a macOS ThreadSanitizer job repeating the stress suite ten times, alongside Linux GCC/Clang Debug/Release and headless ASan/UBSan. Sanitizer success is evidence for exercised schedules, not a proof of race freedom. No throughput or parallel-physics speedup is claimed.
+ThreadSanitizer is separate from ASan/UBSan. CI adds a macOS ThreadSanitizer job repeating the stress suite ten times, alongside Linux GCC/Clang Debug/Release and headless ASan/UBSan. Sanitizer success is evidence for exercised schedules, not a proof of race freedom. Job-system stress tests assert correctness, not speed; physics scaling is measured separately in [the parallel-physics report](parallel-physics.md).

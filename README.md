@@ -2,7 +2,7 @@
 
 **High-Performance 3D Physics Simulation Engine**
 
-A C++20 systems and performance engineering project developed one measured milestone at a time. Current scope: **Milestone 11 — Multithreaded Job System**. It provides custom fixed-step translational physics, generation-checked entity IDs, packed component storage, primitive collision detection and impulse response, a movable perspective camera and a 100-body sphere/box demo, move-aware RAII GPU resources, file-based shaders, depth testing, frame timing, and tests. A deterministic spatial hash accelerates broad-phase collision detection; a live ImGui CPU profiler exposes timing bottlenecks. Angular dynamics and GPU compute are future milestones. A headless CSV benchmark compares spatial hashing with the retained all-pairs baseline; see [measurements and methodology](BENCHMARKS.md).
+A C++20 systems and performance engineering project developed one measured milestone at a time. Current scope: **Milestone 12 — Parallel Physics**. It provides custom fixed-step translational physics, generation-checked entity IDs, packed component storage, primitive collision detection and impulse response, a movable perspective camera and a 100-body sphere/box demo, move-aware RAII GPU resources, file-based shaders, depth testing, frame timing, and tests. A deterministic spatial hash accelerates broad-phase collision detection; a live ImGui CPU profiler exposes timing bottlenecks. Angular dynamics and GPU compute are future milestones. A headless CSV benchmark compares spatial hashing with the retained all-pairs baseline; see [measurements and methodology](BENCHMARKS.md).
 
 ![Sphere and box collision scene rendered by CoreSim](docs/images/collisions.png)
 
@@ -46,7 +46,15 @@ ctest --preset debug
 
 ## Worker pool
 
-A reusable fixed worker pool supports job submission, shared completion groups, exception propagation, and draining shutdown. Idle workers block on a condition variable. The app owns a pool, while physics and graphics remain on the main thread until Milestone 12. See [job-system API, lifetime rules, and stress tests](docs/jobs.md).
+A reusable fixed worker pool supports job submission, shared completion groups, exception propagation, and draining shutdown. Idle workers block on a condition variable. The app supplies its pool to physics integration. Large body sets run in disjoint ranges and join before serial collision solving; the 100-body demo stays inline below the dispatch threshold. Graphics and profiler updates remain on the main thread. See [job-system API, lifetime rules, and stress tests](docs/jobs.md).
+
+## Parallel physics
+
+Independent integration can use 1, 2, 4 or 8 workers with a configurable grain size and a retained serial baseline. The benchmark includes dispatch/wait costs, full free-flight ticks, shuffled storage and collision-dominated ticks. See [ownership rules, exact-equivalence tests and scaling results](docs/parallel-physics.md).
+
+```sh
+./build-release/coresim_parallel_benchmark --workload free-flight --bodies 100000 --workers 4
+```
 
 ## Data-layout investigation
 
@@ -120,4 +128,4 @@ Shaders are copied into the build directory and found independently of the worki
 
 See [verification notes](docs/verification.md) for actual local results and commands. The screenshot above is an actual framebuffer capture, not an illustration or performance benchmark.
 
-**Next: Milestone 12 — Parallel Physics**, only on explicit request.
+**Next: Milestone 13 — Angular Dynamics**, only on explicit request.

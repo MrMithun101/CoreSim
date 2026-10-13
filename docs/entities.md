@@ -1,6 +1,6 @@
 # Entity/component foundation
 
-`World` is the single-threaded CPU owner of entities and their components. It has explicit APIs for the components used now: `Transform`, `MeshComponent`, demo-only `SpinComponent`, `RigidBody`, and `Collider`. There is no runtime type registry, inheritance tree, scheduler, or third-party ECS. RigidBody was added in milestone 5 with the translational integrator; Collider was added in milestone 6 with primitive collision response.
+`World` owns entities and their CPU components. Structural changes require exclusive access. Milestone 12 permits disjoint body/transform value updates while component storage is frozen; the coordinator joins all workers before any other access. See [parallel ownership rules](parallel-physics.md). It has explicit APIs for the components used now: `Transform`, `MeshComponent`, demo-only `SpinComponent`, `RigidBody`, and `Collider`. There is no runtime type registry, inheritance tree, scheduler, or third-party ECS. RigidBody was added in milestone 5 with the translational integrator; Collider was added in milestone 6 with primitive collision response.
 
 ## IDs and lifecycle
 

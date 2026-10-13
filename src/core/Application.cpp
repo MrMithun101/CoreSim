@@ -54,7 +54,7 @@ void Application::update(const FrameStats& stats) {
         dropped_physics_seconds_ = 0;
     } else {
         const auto result = physics_clock_.advance(stats.delta_seconds, [this](float step) {
-            physics_.step(scene_.world(), step, nullptr, &profiler_);
+            physics_.step(scene_.world(), step, nullptr, &profiler_, &jobs_);
             scene_.update(step);
         });
         physics_ticks_ += result.steps;

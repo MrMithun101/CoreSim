@@ -41,3 +41,7 @@ Press **R** to restore the original entities' positions/velocities, clear their 
 The application feeds actual frame elapsed time to FixedStepper (not the camera's 0.1-second movement clamp). Physics and the optional demo-spin system update inside the fixed callback. The window title shows simulated seconds and dropped time; shutdown reports tick count and dropped seconds. No renderer changes are required to observe physical motion: it reads updated transforms from World. Rendering uses the latest state without interpolation, so slight 120 Hz stepping may be visible on high-refresh displays.
 
 Additional tests cover irregular frame durations, the 100-dynamic/2-static demo composition, gravity-driven motion relative to static references, reset and stale-ID safety, and framebuffer changes after real fixed physics ticks.
+
+## Parallel integration
+
+Milestone 12 adds an optional borrowed worker pool to `PhysicsSystem::step`. Independent body ranges finish before the serial collision pipeline begins. Small worlds use the inline path. See [concurrency contracts, failure semantics and measurements](parallel-physics.md).

@@ -3,6 +3,7 @@
 import argparse
 import csv
 import json
+import hashlib
 import math
 import pathlib
 import platform
@@ -12,19 +13,27 @@ import subprocess
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('executable', type=pathlib.Path)
 parser.add_argument('output', type=pathlib.Path, help='new output directory')
+study = parser.add_mutually_exclusive_group()
+study.add_argument('--grain-only', action='store_true', help='run just the small/medium scene grain study')
+study.add_argument('--collisions-only', action='store_true', help='run above-threshold collision workloads')
 args = parser.parse_args()
 args.output.mkdir(parents=True, exist_ok=False)
 metadata = {'revision': subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(),
             'platform': platform.platform(), 'machine': platform.machine(),
+            'executable_sha256': hashlib.sha256(args.executable.read_bytes()).hexdigest(),
             'method': 'Five trials; 10 warmup + 50 measured ticks per process; rotated configuration order.'}
 (args.output / 'metadata.json').write_text(json.dumps(metadata, indent=2) + '\n')
 commands, summary = [], []
 workloads = [('free-flight', n, order) for n in [1000, 10000, 100000, 1000000]
              for order in ['ordered', 'shuffled']]
 workloads += [('integration', 1000000, 'ordered')]
-workloads += [('collisions', 10000, order) for order in ['ordered', 'shuffled']]
-experiments = [(w,n,o,[(p,16384) for p in [0,1,2,4,8]]) for w,n,o in workloads]
-experiments += [('free-flight',100000,'ordered',[(4,g) for g in [1,1024,16384,65536,1000000]])]
+workloads += [('collisions', n, order) for n in [10000,100000] for order in ['ordered', 'shuffled']]
+experiments = [] if (args.grain_only or args.collisions_only) else [(w,n,o,[(p,16384) for p in [0,1,2,4,8]]) for w,n,o in workloads]
+if args.collisions_only:
+    experiments = [('collisions',100000,o,[(p,16384) for p in [0,1,2,4,8]]) for o in ['ordered','shuffled']]
+else:
+    experiments += [('free-flight',n,'ordered',[(4,g) for g in [1,1024,16384,65536,1000000]])
+                    for n in [1000,10000,100000]]
 for experiment, (workload, bodies, order, configs) in enumerate(experiments):
     samples = {config: [] for config in configs}
     reference = None

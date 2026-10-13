@@ -1,0 +1,1002 @@
+[
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "0",
+      "--grain",
+      "16384",
+      "--order",
+      "ordered",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "0-collisions-ordered-100000-w0-g16384-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "1",
+      "--grain",
+      "16384",
+      "--order",
+      "ordered",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "0-collisions-ordered-100000-w1-g16384-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "2",
+      "--grain",
+      "16384",
+      "--order",
+      "ordered",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "0-collisions-ordered-100000-w2-g16384-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "4",
+      "--grain",
+      "16384",
+      "--order",
+      "ordered",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "0-collisions-ordered-100000-w4-g16384-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "8",
+      "--grain",
+      "16384",
+      "--order",
+      "ordered",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "0-collisions-ordered-100000-w8-g16384-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "1",
+      "--grain",
+      "16384",
+      "--order",
+      "ordered",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "0-collisions-ordered-100000-w1-g16384-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "2",
+      "--grain",
+      "16384",
+      "--order",
+      "ordered",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "0-collisions-ordered-100000-w2-g16384-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "4",
+      "--grain",
+      "16384",
+      "--order",
+      "ordered",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "0-collisions-ordered-100000-w4-g16384-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "8",
+      "--grain",
+      "16384",
+      "--order",
+      "ordered",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "0-collisions-ordered-100000-w8-g16384-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "0",
+      "--grain",
+      "16384",
+      "--order",
+      "ordered",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "0-collisions-ordered-100000-w0-g16384-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "2",
+      "--grain",
+      "16384",
+      "--order",
+      "ordered",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "0-collisions-ordered-100000-w2-g16384-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "4",
+      "--grain",
+      "16384",
+      "--order",
+      "ordered",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "0-collisions-ordered-100000-w4-g16384-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "8",
+      "--grain",
+      "16384",
+      "--order",
+      "ordered",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "0-collisions-ordered-100000-w8-g16384-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "0",
+      "--grain",
+      "16384",
+      "--order",
+      "ordered",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "0-collisions-ordered-100000-w0-g16384-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "1",
+      "--grain",
+      "16384",
+      "--order",
+      "ordered",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "0-collisions-ordered-100000-w1-g16384-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "4",
+      "--grain",
+      "16384",
+      "--order",
+      "ordered",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "0-collisions-ordered-100000-w4-g16384-4.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "8",
+      "--grain",
+      "16384",
+      "--order",
+      "ordered",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "0-collisions-ordered-100000-w8-g16384-4.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "0",
+      "--grain",
+      "16384",
+      "--order",
+      "ordered",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "0-collisions-ordered-100000-w0-g16384-4.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "1",
+      "--grain",
+      "16384",
+      "--order",
+      "ordered",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "0-collisions-ordered-100000-w1-g16384-4.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "2",
+      "--grain",
+      "16384",
+      "--order",
+      "ordered",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "0-collisions-ordered-100000-w2-g16384-4.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "8",
+      "--grain",
+      "16384",
+      "--order",
+      "ordered",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "0-collisions-ordered-100000-w8-g16384-5.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "0",
+      "--grain",
+      "16384",
+      "--order",
+      "ordered",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "0-collisions-ordered-100000-w0-g16384-5.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "1",
+      "--grain",
+      "16384",
+      "--order",
+      "ordered",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "0-collisions-ordered-100000-w1-g16384-5.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "2",
+      "--grain",
+      "16384",
+      "--order",
+      "ordered",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "0-collisions-ordered-100000-w2-g16384-5.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "4",
+      "--grain",
+      "16384",
+      "--order",
+      "ordered",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "0-collisions-ordered-100000-w4-g16384-5.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "0",
+      "--grain",
+      "16384",
+      "--order",
+      "shuffled",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "1-collisions-shuffled-100000-w0-g16384-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "1",
+      "--grain",
+      "16384",
+      "--order",
+      "shuffled",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "1-collisions-shuffled-100000-w1-g16384-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "2",
+      "--grain",
+      "16384",
+      "--order",
+      "shuffled",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "1-collisions-shuffled-100000-w2-g16384-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "4",
+      "--grain",
+      "16384",
+      "--order",
+      "shuffled",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "1-collisions-shuffled-100000-w4-g16384-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "8",
+      "--grain",
+      "16384",
+      "--order",
+      "shuffled",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "1-collisions-shuffled-100000-w8-g16384-1.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "1",
+      "--grain",
+      "16384",
+      "--order",
+      "shuffled",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "1-collisions-shuffled-100000-w1-g16384-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "2",
+      "--grain",
+      "16384",
+      "--order",
+      "shuffled",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "1-collisions-shuffled-100000-w2-g16384-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "4",
+      "--grain",
+      "16384",
+      "--order",
+      "shuffled",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "1-collisions-shuffled-100000-w4-g16384-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "8",
+      "--grain",
+      "16384",
+      "--order",
+      "shuffled",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "1-collisions-shuffled-100000-w8-g16384-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "0",
+      "--grain",
+      "16384",
+      "--order",
+      "shuffled",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "1-collisions-shuffled-100000-w0-g16384-2.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "2",
+      "--grain",
+      "16384",
+      "--order",
+      "shuffled",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "1-collisions-shuffled-100000-w2-g16384-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "4",
+      "--grain",
+      "16384",
+      "--order",
+      "shuffled",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "1-collisions-shuffled-100000-w4-g16384-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "8",
+      "--grain",
+      "16384",
+      "--order",
+      "shuffled",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "1-collisions-shuffled-100000-w8-g16384-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "0",
+      "--grain",
+      "16384",
+      "--order",
+      "shuffled",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "1-collisions-shuffled-100000-w0-g16384-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "1",
+      "--grain",
+      "16384",
+      "--order",
+      "shuffled",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "1-collisions-shuffled-100000-w1-g16384-3.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "4",
+      "--grain",
+      "16384",
+      "--order",
+      "shuffled",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "1-collisions-shuffled-100000-w4-g16384-4.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "8",
+      "--grain",
+      "16384",
+      "--order",
+      "shuffled",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "1-collisions-shuffled-100000-w8-g16384-4.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "0",
+      "--grain",
+      "16384",
+      "--order",
+      "shuffled",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "1-collisions-shuffled-100000-w0-g16384-4.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "1",
+      "--grain",
+      "16384",
+      "--order",
+      "shuffled",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "1-collisions-shuffled-100000-w1-g16384-4.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "2",
+      "--grain",
+      "16384",
+      "--order",
+      "shuffled",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "1-collisions-shuffled-100000-w2-g16384-4.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "8",
+      "--grain",
+      "16384",
+      "--order",
+      "shuffled",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "1-collisions-shuffled-100000-w8-g16384-5.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "0",
+      "--grain",
+      "16384",
+      "--order",
+      "shuffled",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "1-collisions-shuffled-100000-w0-g16384-5.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "1",
+      "--grain",
+      "16384",
+      "--order",
+      "shuffled",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "1-collisions-shuffled-100000-w1-g16384-5.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "2",
+      "--grain",
+      "16384",
+      "--order",
+      "shuffled",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "1-collisions-shuffled-100000-w2-g16384-5.csv"
+  },
+  {
+    "argv": [
+      "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-release/coresim_parallel_benchmark",
+      "--workload",
+      "collisions",
+      "--bodies",
+      "100000",
+      "--workers",
+      "4",
+      "--grain",
+      "16384",
+      "--order",
+      "shuffled",
+      "--steps",
+      "50",
+      "--warmup",
+      "10"
+    ],
+    "stdout": "1-collisions-shuffled-100000-w4-g16384-5.csv"
+  }
+]

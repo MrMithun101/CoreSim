@@ -104,3 +104,7 @@ The runner rejects an existing output directory, saves every raw CSV, validates 
 ## Milestone 10: component access and layout
 
 The [data-layout investigation](docs/data-layout.md) compares lookup versus direct body traversal and packed AoS/SoA integration buffers, including conversion costs. It also measures complete physics ticks and documents Linux hardware-counter collection. Existing collision measurements above remain historical results at their recorded revisions.
+
+## Parallel physics (Milestone 12)
+
+See [worker scaling and task-grain measurements](docs/parallel-physics.md) for serial and 1/2/4/8-worker comparisons, including synchronization costs, exact state validation, full free-flight ticks and collision-dominated workloads.
