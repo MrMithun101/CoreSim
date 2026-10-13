@@ -76,6 +76,13 @@ if(CORESIM_BUILD_APP)
     file(MAKE_DIRECTORY "${CORESIM_SHADER_DIRECTORY}")
     configure_file(shaders/cube.vert shaders/cube.vert COPYONLY)
     configure_file(shaders/cube.frag shaders/cube.frag COPYONLY)
+    add_executable(coresim_render_benchmark src/benchmark/render_main.cpp)
+    target_link_libraries(coresim_render_benchmark PRIVATE coresim_renderer coresim_platform coresim_glad)
+    target_compile_definitions(coresim_render_benchmark PRIVATE
+        CORESIM_SHADER_DIR="${CORESIM_SHADER_DIRECTORY}"
+        CORESIM_BUILD_TYPE="$<CONFIG>"
+        CORESIM_COMPILER="${CMAKE_CXX_COMPILER_ID}-${CMAKE_CXX_COMPILER_VERSION}")
+    coresim_target_options(coresim_render_benchmark)
     add_executable(coresim src/main.cpp src/core/Application.cpp)
     target_link_libraries(coresim PRIVATE coresim_renderer coresim_benchmarks coresim_ui)
     target_compile_definitions(coresim PRIVATE CORESIM_SHADER_DIR="${CORESIM_SHADER_DIRECTORY}")
