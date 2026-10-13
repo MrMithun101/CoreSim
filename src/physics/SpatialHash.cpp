@@ -1,4 +1,5 @@
 #include <coresim/physics/SpatialHash.hpp>
+#include <coresim/physics/AngularDynamics.hpp>
 #include <coresim/scene/World.hpp>
 #include <algorithm>
 #include <cmath>
@@ -36,7 +37,8 @@ void SpatialHash::build(const World& world) {
         const auto& shape = colliders[i].value;
         glm::vec3 extent(0);
         if (const auto* sphere = std::get_if<SphereCollider>(&shape)) { extent = glm::vec3(sphere->radius); }
-        else if (const auto* box = std::get_if<BoxCollider>(&shape)) { extent = box->half_extents; }
+        else if (const auto* box = std::get_if<BoxCollider>(&shape)) { const auto r = glm::mat3_cast(unit_rotation(transform->rotation));
+            extent = glm::abs(r[0])*box->half_extents.x + glm::abs(r[1])*box->half_extents.y + glm::abs(r[2])*box->half_extents.z; }
         else { global_.push_back(i); continue; } // Infinite planes cannot occupy a finite grid.
         Range range{};
         std::int64_t low[3]{}, high[3]{};

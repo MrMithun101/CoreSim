@@ -3,7 +3,8 @@
 #include <variant>
 
 namespace coresim {
-// Dimensions are explicit world units. Only Transform::position affects collision geometry.
+// Dimensions are explicit world units; Transform position and rotation affect geometry.
+// Render scale is ignored. Box extents are in the local principal-axis frame.
 struct SphereCollider {
     explicit SphereCollider(float radius = 1.0F);
     float radius;

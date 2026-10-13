@@ -24,14 +24,13 @@ DemoScene::DemoScene() {
         world_.set_rigid_body(entity, body);
         initial_motion_[i] = {entity, transform.position, body.velocity};
     }
-    // Box floor supports boxes. A colocated plane supports spheres; box/plane and
-    // sphere/box remain unsupported, so these supports cannot double-resolve a pair.
+    // The floor mesh visualizes the plane, which now supports both boxes and spheres.
     const auto floor = world_.create();
     auto& floor_transform = world_.set_transform(floor);
     floor_transform.position = {0, -0.5F, 0};
     floor_transform.scale = {18, 0.5F, 12};
     world_.set_mesh(floor);
-    world_.set_collider(floor, BoxCollider(floor_transform.scale));
+
     world_.set_rigid_body(floor, RigidBody(0, 1));
     const auto plane = world_.create();
     world_.set_transform(plane);

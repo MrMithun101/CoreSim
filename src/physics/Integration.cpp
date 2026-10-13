@@ -1,4 +1,5 @@
 #include <coresim/physics/Integration.hpp>
+#include <coresim/physics/AngularDynamics.hpp>
 #include <coresim/scene/World.hpp>
 #include <cmath>
 #include <algorithm>
@@ -29,6 +30,9 @@ void integrate_bodies(World& world, glm::vec3 gravity, float delta_seconds, Body
             if (!finite(velocity) || !finite(position)) {
                 throw std::runtime_error("Non-finite rigid body integration result");
             }
+            const auto angular = integrate_angular(body, collider, transform->rotation, delta_seconds);
+            body.angular_velocity = angular.velocity;
+            transform->rotation = angular.rotation;
             // Semi-implicit Euler: the newly integrated velocity advances position.
             body.velocity = velocity;
             transform->position = position;
