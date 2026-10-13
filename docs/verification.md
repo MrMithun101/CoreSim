@@ -1,12 +1,16 @@
 # Verification
 
-## Milestone 13 — October 12, 2026
+## Milestone 13 — October 12–13, 2026
 
 Core checkpoint `0577bb7` adds shape-derived principal/world inertia tensors, torque and offset forces, normalized quaternion integration with world angular momentum, oriented box manifolds and rotated broad-phase bounds, angular normal impulses, and Coulomb contact friction. The [checkpoint CI run](https://github.com/MrMithun101/CoreSim/actions/runs/38341401469) passed all six compiler/display/sanitizer jobs. The final integration tilts/spins demo boxes, restores angular state on reset, prevents animation from overwriting rigid-body orientation, and extends concurrency/state checks to angular motion.
+
+The integration commit `a9854f6` also passed [all six CI jobs](https://github.com/MrMithun101/CoreSim/actions/runs/38342192117).
 
 All 28 local CTest entries passed in Debug, Release and ASan/UBSan. Final builds emitted no CoreSim compiler/linker warnings. The CPU suite passed 378,798 assertions in 58 cases; parallel physics passed 1,196,243 assertions in seven cases; the existing jobs suite passed 36,129 assertions in ten cases. The renderer passed 71 assertions across nine cases with image capture (70 without capture), including actual framebuffer changes from applied torque. The captured initial scene was visually inspected and saved as `docs/images/angular.png`; it is not a performance measurement.
 
 A separate headless ThreadSanitizer build passed five consecutive runs of each concurrency suite without race reports. Angular tests cover mass/shape inertia changes, rotated tensors, torque/force-at-offset response, normalized orientation, 20 seconds of asymmetric free rotation with bounded momentum/energy error, analytical frictionless corner impact, two-body momentum transfer, material validation, sliding/spin friction, tilted/skew box geometry, rotated planes, angular reset and invalid inputs. The existing five-second 100-box floor and ten-second mixed-demo stability checks pass. Seeded broad-phase tests now use rotated geometry, and serial/parallel plus naive/spatial checks compare angular state as well as linear state.
+
+A final regression covers the largest finite SAT overlap: the first valid axis must select a contact feature even when its depth equals the initial maximum. The updated Release CPU suite passed 378,802 assertions in 59 cases. Temporary dependency cleanup prevented rebuilding Debug/ASan locally for this final fix; fresh CI provides those checks.
 
 Current collision/layout/parallel CSV schemas (3/2/2) were exercised; historical packed experiments reject angular motion/torque. Earlier performance data remains historical. See [angular equations, ownership, numerical tolerances and limits](angular-dynamics.md). No Milestone 14 rendering-scalability work is included.
 

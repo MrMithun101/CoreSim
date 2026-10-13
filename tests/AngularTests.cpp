@@ -193,3 +193,13 @@ TEST_CASE("Rotated plane contacts and skew rods use oriented geometry") {
     REQUIRE(touching.count == 1); // Skew-edge contact, not a face patch.
     REQUIRE(glm::length(touching.points[0].normal) == Catch::Approx(1).margin(1e-5));
 }
+
+TEST_CASE("Largest finite SAT depth still selects a valid contact feature") {
+    const float half = std::numeric_limits<float>::max()*0.5F;
+    const Collider box = BoxCollider(glm::vec3(half));
+    const auto contact = detect_contact(box,{},box,{});
+    REQUIRE(contact);
+    REQUIRE(contact->normal == glm::vec3(1,0,0));
+    REQUIRE(contact->penetration == std::numeric_limits<float>::max());
+    REQUIRE(contact->point == glm::vec3(0));
+}

@@ -80,7 +80,7 @@ ContactManifold box_contacts(const BoxCollider& ca, glm::vec3 pa, glm::quat qa,
         if (!std::isfinite(overlap)) { throw std::invalid_argument("Box contact exceeds finite arithmetic range"); }
         if (overlap < 0) { return false; }
         // Keep earlier face axes on equal depths for stable face manifolds.
-        if (overlap < penetration && (index < 6 || overlap < penetration-1e-5F*(1+penetration))) { penetration = overlap; normal = distance < 0 ? -axis : axis; feature = index; }
+        if (feature < 0 || (overlap < penetration && (index < 6 || overlap < penetration-1e-5F*(1+penetration)))) { penetration = overlap; normal = distance < 0 ? -axis : axis; feature = index; }
         return true;
     };
     for (int i = 0; i < 3; ++i) { if (!test(a.axes[i],i) || !test(b.axes[i],i+3)) { return {}; } }
