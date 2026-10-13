@@ -16,13 +16,15 @@ DemoScene::DemoScene() {
         transform.position = {(sphere ? -13.0F : 2.0F) + column * 2.7F,
                               2.0F + layer * 2.5F, (row - 2.0F) * 2.7F};
         transform.scale = glm::vec3(0.65F);
+        if (!sphere) { transform.rotation = glm::angleAxis(0.12F,glm::normalize(glm::vec3(1,0,1))); }
         world_.set_transform(entity, transform);
         world_.set_mesh(entity, {sphere ? MeshKind::sphere : MeshKind::cube});
         world_.set_collider(entity, sphere ? Collider(SphereCollider(0.65F))
                                            : Collider(BoxCollider(glm::vec3(0.65F))));
         RigidBody body(1.0F + static_cast<float>(i % 4), 0.25F);
+        if (!sphere) { body.angular_velocity = {0.35F,0.2F,0.15F}; }
         world_.set_rigid_body(entity, body);
-        initial_motion_[i] = {entity, transform.position, body.velocity};
+        initial_motion_[i] = {entity, transform.position, body.velocity, transform.rotation, body.angular_velocity};
     }
     // The floor mesh visualizes the plane, which now supports both boxes and spheres.
     const auto floor = world_.create();
@@ -44,6 +46,8 @@ void DemoScene::reset_physics() {
         if (body && transform) {
             transform->position = initial.position;
             body->velocity = initial.velocity;
+            transform->rotation = initial.rotation;
+            body->angular_velocity = initial.angular_velocity;
             body->acceleration = glm::vec3(0);
             body->clear_forces();
         }
@@ -54,6 +58,7 @@ void DemoScene::update(float delta_seconds) {
         throw std::invalid_argument("Scene timestep must be finite and nonnegative");
     }
     for (const auto& entry : world_.spins()) {
+        if (world_.rigid_body(entry.entity)) { continue; } // Physics owns rigid-body orientation.
         if (auto* transform = world_.transform(entry.entity)) {
             const auto delta = glm::angleAxis(entry.value.radians_per_second * delta_seconds,
                                               entry.value.axis);

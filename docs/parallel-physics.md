@@ -81,3 +81,5 @@ Forcing four tasks at 1,000 bodies costs more than inline execution. At 10,000 b
 - **Task balance:** A single range per worker is simple and bounded, but cannot dynamically rebalance a slow core or an unusually expensive range. Missing/static-body distribution and heterogeneous cores can alter finish times. Smaller chunks/work stealing are future experiments, not part of this milestone.
 
 Retain the serial reference, configurable grain and existing component layout. The application supplies its persistent pool, while its small demo stays inline. Keep the collision pipeline serial to preserve exact ordering; no angular dynamics or additional physics parallelism is introduced here.
+
+Milestone 13 note: angular integration now uses the same disjoint ranges and completion barrier. The historical timings above predate that added work. Current benchmark CSV is schema 2, whose checksum also includes angular velocity and orientation.

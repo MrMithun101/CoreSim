@@ -33,7 +33,7 @@ void check_candidates(World& world, float cell_size) {
         for (std::size_t j = i + 1; j < colliders.size(); ++j) {
             const auto* a = world.transform(colliders[i].entity);
             const auto* b = world.transform(colliders[j].entity);
-            if (a && b && detect_contact(colliders[i].value, a->position, colliders[j].value, b->position)) {
+            if (a && b && detect_contact(colliders[i].value, a->position, colliders[j].value, b->position, a->rotation, b->rotation)) {
                 REQUIRE(std::binary_search(repeated.begin(), repeated.end(), j));
             }
         }
@@ -48,6 +48,9 @@ TEST_CASE("Grid candidates conservatively contain every supported primitive cont
         const glm::vec3 p(position(random), position(random), position(random));
         if (i % 2 == 0) { add(world, p, SphereCollider(extent(random))); }
         else { add(world, p, BoxCollider({extent(random), extent(random), extent(random)})); }
+    }
+    for (const auto& entry : world.colliders()) {
+        world.transform(entry.entity)->rotation = glm::angleAxis(position(random),glm::normalize(glm::vec3(1,2,3)));
     }
     add(world, {0, 0, 0}, PlaneCollider{}, 0);
     add(world, {-3, 2, 1}, PlaneCollider({1,2,3}, 2), 0);
@@ -103,9 +106,10 @@ TEST_CASE("Spatial and naive solvers preserve identical mixed scene trajectories
         REQUIRE(a.size() == b.size());
         for (std::size_t i = 0; i < a.size(); ++i) {
             REQUIRE(a[i].value.position == b[i].value.position);
+            REQUIRE(a[i].value.rotation == b[i].value.rotation);
             const auto* ab = naive_scene.world().rigid_body(a[i].entity);
             const auto* bb = hash_scene.world().rigid_body(b[i].entity);
-            if (ab && bb) { REQUIRE(ab->velocity == bb->velocity); }
+            if (ab && bb) { REQUIRE(ab->velocity == bb->velocity); REQUIRE(ab->angular_velocity == bb->angular_velocity); }
         }
     }
 }

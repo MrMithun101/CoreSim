@@ -55,7 +55,7 @@ for experiment, (workload, bodies, order, configs) in enumerate(experiments):
                 raise ValueError(f'Wrong row count: {filename}')
             states = []
             for tick, row in enumerate(rows):
-                expected = {'schema':'1', 'workload':workload, 'order':order, 'build_type':'Release',
+                expected = {'schema':'2', 'workload':workload, 'order':order, 'build_type':'Release',
                             'bodies':str(bodies), 'workers':str(workers), 'grain':str(grain),
                             'step':str(tick), 'warmup':'10'}
                 if any(row[key] != value for key,value in expected.items()):

@@ -68,7 +68,7 @@ int main(int argc, char** argv) {
             step();
             const double elapsed = std::chrono::duration<double,std::milli>(std::chrono::steady_clock::now()-start).count();
             const auto checksum = coresim::layout_checksum(world);
-            std::cout << "1," << workload << ',' << order << ',' << CORESIM_BUILD_TYPE << ',' << CORESIM_COMPILER
+            std::cout << "2," << workload << ',' << order << ',' << CORESIM_BUILD_TYPE << ',' << CORESIM_COMPILER
                       << ',' << bodies << ',' << workers << ',' << grain << ',' << tick << ',' << warmup
                       << ',' << elapsed << ',' << stats.total_collision_ms << ',' << stats.candidate_pairs
                       << ',' << stats.contacts << ',' << checksum << '\n';

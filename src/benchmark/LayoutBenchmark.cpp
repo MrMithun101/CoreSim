@@ -39,6 +39,9 @@ LayoutTiming LayoutExperiment::step(World& world, IntegrationLayout layout, floa
     for (std::size_t i = 0; i < count; ++i) {
         const auto entity = world.rigid_bodies()[i].entity;
         auto& body = *world.rigid_body(entity);
+        if (body.angular_velocity != glm::vec3(0) || body.accumulated_torque() != glm::vec3(0)) {
+            throw std::invalid_argument("Packed layout experiments are translational only");
+        }
         auto* transform = world.transform(entity);
         const auto* collider = world.collider(entity);
         if (collider && std::holds_alternative<PlaneCollider>(*collider) && body.inverse_mass() > 0) {
@@ -129,8 +132,10 @@ double layout_checksum(const World& world) {
         const auto* transform = world.transform(entry.entity);
         for (int axis = 0; axis < 3; ++axis) {
             sum += static_cast<double>(entry.value.velocity[axis]);
+            sum += static_cast<double>(entry.value.angular_velocity[axis]);
             if (transform) { sum += static_cast<double>(transform->position[axis]); }
         }
+        if (transform) { sum += transform->rotation.w + static_cast<double>(transform->rotation.x) + transform->rotation.y + transform->rotation.z; }
     }
     return sum;
 }

@@ -2,9 +2,9 @@
 
 **High-Performance 3D Physics Simulation Engine**
 
-A C++20 systems and performance engineering project developed one measured milestone at a time. Current scope: **Milestone 12 — Parallel Physics**. It provides custom fixed-step translational physics, generation-checked entity IDs, packed component storage, primitive collision detection and impulse response, a movable perspective camera and a 100-body sphere/box demo, move-aware RAII GPU resources, file-based shaders, depth testing, frame timing, and tests. A deterministic spatial hash accelerates broad-phase collision detection; a live ImGui CPU profiler exposes timing bottlenecks. Angular dynamics and GPU compute are future milestones. A headless CSV benchmark compares spatial hashing with the retained all-pairs baseline; see [measurements and methodology](BENCHMARKS.md).
+A C++20 systems and performance engineering project developed one measured milestone at a time. Current scope: **Milestone 13 — Angular Dynamics**. It provides custom fixed-step linear and angular physics, generation-checked entity IDs, packed component storage, primitive collision detection and impulse response, a movable perspective camera and a 100-body sphere/box demo, move-aware RAII GPU resources, file-based shaders, depth testing, frame timing, and tests. A deterministic spatial hash accelerates broad-phase collision detection; a live ImGui CPU profiler exposes timing bottlenecks. Bodies rotate under torque and off-center impulses; oriented-box manifolds and contact friction support the falling-body demo. GPU compute remains a future milestone. A headless CSV benchmark compares spatial hashing with the retained all-pairs baseline; see [measurements and methodology](BENCHMARKS.md).
 
-![Sphere and box collision scene rendered by CoreSim](docs/images/collisions.png)
+![Sphere and box collision scene rendered by CoreSim](docs/images/angular.png)
 
 ## Build and run
 
@@ -24,7 +24,7 @@ ctest --test-dir build --output-on-failure
 ./build/coresim
 ```
 
-The scene contains 50 spheres and 50 axis-aligned boxes falling onto static floor supports. They bounce and settle into two-body stacks. Press **R** to reset the dynamic bodies. Use **WASD** to move, **Q/E** to descend/ascend, and **hold right mouse** to look. Release right mouse to restore the cursor. Escape or the close button exits. Its title updates twice per second with simulation time, dropped physics time, average FPS, delta time, and the last completed frame duration. A shutdown summary appears on standard output. Vertical synchronization is enabled; frame duration includes presentation waiting and is not a rendering benchmark.
+The scene contains 50 spheres and 50 tilted, spinning boxes falling onto a static plane visualized by a slab. They bounce and settle from two initial layers. Press **R** to reset the dynamic bodies. Use **WASD** to move, **Q/E** to descend/ascend, and **hold right mouse** to look. Release right mouse to restore the cursor. Escape or the close button exits. Its title updates twice per second with simulation time, dropped physics time, average FPS, delta time, and the last completed frame duration. A shutdown summary appears on standard output. Vertical synchronization is enabled; frame duration includes presentation waiting and is not a rendering benchmark.
 
 ```sh
 cmake -S . -B build-release -DCMAKE_BUILD_TYPE=Release
@@ -47,6 +47,10 @@ ctest --preset debug
 ## Worker pool
 
 A reusable fixed worker pool supports job submission, shared completion groups, exception propagation, and draining shutdown. Idle workers block on a condition variable. The app supplies its pool to physics integration. Large body sets run in disjoint ranges and join before serial collision solving; the 100-body demo stays inline below the dispatch threshold. Graphics and profiler updates remain on the main thread. See [job-system API, lifetime rules, and stress tests](docs/jobs.md).
+
+## Angular dynamics
+
+World-space torque and angular velocity drive normalized quaternion orientations. Shape-derived inertia, oriented-box contacts and rotational/friction impulses use the same fixed-step pipeline. See [equations, solver limits and validation](docs/angular-dynamics.md).
 
 ## Parallel physics
 
@@ -115,7 +119,7 @@ ctest --preset asan
 - `VertexBuffer`, `IndexBuffer`, `VertexArray`, and `Shader` are noncopyable, movable RAII owners. Shader compilation/link failures include file paths and driver diagnostics.
 - `World` owns stable entity IDs and packed transform, mesh-reference, demo-spin, rigid-body, and collider components. Destruction invalidates stale IDs and removes components.
 - `Renderer` borrows a const World and draws entities with both mesh and transform components. It owns shared GPU geometry; camera and CPU scene state remain outside the renderer.
-- `PhysicsSystem` integrates gravity, acceleration, and forces using semi-implicit Euler, then resolves supported contacts using normal impulses and penetration correction. `FixedStepper` runs at 120 Hz with bounded catch-up; renderer and physics borrow World without owning each other’s state.
+- `PhysicsSystem` integrates gravity, acceleration, and forces using semi-implicit Euler, advances quaternion orientation from angular momentum, then resolves supported contacts using rotational normal/friction impulses and penetration correction. `FixedStepper` runs at 120 Hz with bounded catch-up; renderer and physics borrow World without owning each other’s state.
 - `FrameTimer` uses a steady clock. Delta is start-to-start; frame duration covers event processing through buffer swap. FPS averages completed frames over elapsed runtime.
 
 See [spatial-hash design](docs/spatial-hash.md), [collision geometry and solver limits](docs/collisions.md), [physics and timestep policy](docs/physics.md), [entity storage and lifecycle](docs/entities.md), [camera/scene design and controls](docs/scene.md) and [renderer design](docs/renderer.md) for ownership contracts, the draw pipeline, shader paths, and testing rationale. Format C++ files with the checked-in `.clang-format` configuration.
@@ -128,4 +132,4 @@ Shaders are copied into the build directory and found independently of the worki
 
 See [verification notes](docs/verification.md) for actual local results and commands. The screenshot above is an actual framebuffer capture, not an illustration or performance benchmark.
 
-**Next: Milestone 13 — Angular Dynamics**, only on explicit request.
+**Next: Milestone 14 — Rendering Scalability**, only on explicit request.

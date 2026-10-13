@@ -102,3 +102,5 @@ Raw data, metadata, ordered commands and full median/min/max summaries:
 - [Integration trials](../benchmarks/results/m10-m1/) · [metadata](../benchmarks/results/m10-m1/metadata.json) · [summary](../benchmarks/results/m10-m1/summary.json)
 - [Initial full physics trials](../benchmarks/results/m10-physics-m1/) · [metadata](../benchmarks/results/m10-physics-m1/metadata.json) · [summary](../benchmarks/results/m10-physics-m1/summary.json)
 - [Repeated full physics trials](../benchmarks/results/m10-physics-repeat-m1/) · [metadata](../benchmarks/results/m10-physics-repeat-m1/metadata.json) · [summary](../benchmarks/results/m10-physics-repeat-m1/summary.json)
+
+Milestone 13 note: these measurements describe the recorded translational implementation. Current layout CSV is schema 2 and includes angular state in its checksum. Packed AoS/SoA experiments reject angular motion/torque; production lookup/dense integration handles both.

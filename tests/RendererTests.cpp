@@ -362,3 +362,23 @@ TEST_CASE("Sphere mesh has curved coverage unlike its bounding cube") {
     REQUIRE(target.center()[2] > 100);
     REQUIRE(glGetError() == GL_NO_ERROR);
 }
+TEST_CASE("Torque-driven physical orientation changes the rendered box") {
+    Context context;
+    Target target;
+    Renderer renderer(shaders);
+    World world;
+    const auto e = world.create();
+    world.set_transform(e).scale = glm::vec3(0.45F);
+    world.set_mesh(e); world.set_collider(e,BoxCollider(glm::vec3(0.45F)));
+    world.set_rigid_body(e);
+    renderer.draw(Target::size,Target::size,glm::mat4(1),world);
+    const auto initial = target.pixels();
+    PhysicsSystem physics({0,0,0});
+    for (int tick = 0; tick < 12; ++tick) {
+        world.rigid_body(e)->add_torque({0,10,5}); physics.step(world,1.0F/120);
+    }
+    renderer.draw(Target::size,Target::size,glm::mat4(1),world);
+    REQUIRE(initial != target.pixels());
+    REQUIRE(world.transform(e)->position == glm::vec3(0));
+    REQUIRE(glGetError() == GL_NO_ERROR);
+}

@@ -14,11 +14,13 @@ void compare(const World& a, const World& b) {
     for (std::size_t i = 0; i < aa.size(); ++i) {
         REQUIRE(aa[i].entity == bb[i].entity);
         REQUIRE(aa[i].value.velocity == bb[i].value.velocity);
+        REQUIRE(aa[i].value.angular_velocity == bb[i].value.angular_velocity);
+        REQUIRE(aa[i].value.accumulated_torque() == bb[i].value.accumulated_torque());
         REQUIRE(aa[i].value.accumulated_force() == bb[i].value.accumulated_force());
         const auto* ta = a.transform(aa[i].entity);
         const auto* tb = b.transform(bb[i].entity);
         REQUIRE(bool(ta) == bool(tb));
-        if (ta) { REQUIRE(ta->position == tb->position); }
+        if (ta) { REQUIRE(ta->position == tb->position); REQUIRE(ta->rotation == tb->rotation); }
     }
 }
 }
@@ -28,6 +30,11 @@ TEST_CASE("Parallel ranges preserve exact integration through joins and structur
         for (const auto iteration : {BodyIteration::lookup, BodyIteration::dense}) {
             World reference, parallel;
             make_layout_world(reference, 2053, true); make_layout_world(parallel, 2053, true);
+            for (auto* world : {&reference,&parallel}) {
+                world->for_each_rigid_body([](Entity, RigidBody& body) {
+                    body.angular_velocity = {0.3F,0.5F,-0.2F}; body.add_torque({0.1F,-0.3F,0.2F});
+                });
+            }
             for (int tick = 0; tick < 8; ++tick) {
                 if (tick == 3) {
                     for (auto* world : {&reference, &parallel}) {

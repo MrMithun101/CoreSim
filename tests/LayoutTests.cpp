@@ -92,3 +92,10 @@ TEST_CASE("Dense visitor exposes mutable values with read-only entity identity")
     REQUIRE(visited == 1);
     REQUIRE(world.rigid_body(entity)->velocity == glm::vec3(1,2,3));
 }
+TEST_CASE("Historical packed experiments reject angular loads rather than discard them") {
+    World world; make_layout_world(world,16,false);
+    world.rigid_body(world.rigid_bodies()[1].entity)->add_torque({1,0,0});
+    LayoutExperiment experiment;
+    REQUIRE_THROWS_AS(experiment.step(world,IntegrationLayout::aos,1.0F/120),std::invalid_argument);
+    REQUIRE_THROWS_AS(experiment.step(world,IntegrationLayout::soa,1.0F/120),std::invalid_argument);
+}

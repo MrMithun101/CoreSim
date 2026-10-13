@@ -22,4 +22,12 @@ The normal impulse formulation is based on the contact equations in Baraff's [co
 
 ## Verification
 
-Initial tests cover solid-body moments, rotated tensors, torque/offset-force response, quaternion normalization, free-top momentum and energy drift, static/missing bodies, invalid inputs, rotated box geometry, face patches, an analytical frictionless corner impulse, and off-center two-body momentum transfer. The existing resting-box and 100-body/two-body-stack regressions pass with the new solver. Final integration and sanitizer results will be recorded in `verification.md`.
+Initial tests cover solid-body moments, rotated tensors, torque/offset-force response, quaternion normalization, free-top momentum and energy drift, static/missing bodies, invalid inputs, rotated box geometry, face patches, an analytical frictionless corner impulse, and off-center two-body momentum transfer. The existing resting-box and 100-body/two-body-stack regressions pass with the new solver. Expanded tests also cover frictional sliding/spin, skew-edge contacts, rotated-plane normals, angular reset and renderer output under torque. Rotated broad-phase bounds and both naive/spatial and serial/parallel execution preserve identical complete motion state in the tested workloads. See [verification results](verification.md).
+
+## Demo and compatibility
+
+The demo begins with boxes tilted by 0.12 radians and spinning at `(0.35, 0.2, 0.15)` radians/second. Their orientation evolves through physics and contacts. The visible slab has no collider; one infinite static plane supports both box and sphere regions. Reset restores saved rotation and angular velocity and clears both accumulators. Legacy `SpinComponent` animation skips any entity with a rigid body.
+
+Mass or collider edits immediately change derived inertia, but do not preserve momentum across such externally imposed changes. Invalid per-body angular integration fails before publishing that body's linear/orientation update; multi-body steps and contact solving are not transactional. World structure remains frozen throughout a step, with one active step per PhysicsSystem instance.
+
+Collision CSV schema 3 distinguishes the new contact-point counts and solver from historical results. Layout/parallel CSV schema 2 includes angular velocity and quaternion components in its state checksum. AoS/SoA experiments remain translational and reject angular loads/motion. This milestone makes no new performance claim; earlier measurements remain attached to their original revisions.

@@ -48,7 +48,7 @@ TEST_CASE("Benchmark CSV contains one complete measurable row per requested tick
         std::string field;
         while (std::getline(row, field, ',')) { fields.push_back(field); }
         REQUIRE(fields.size() == 23);
-        REQUIRE(fields[0] == "2");
+        REQUIRE(fields[0] == "3");
         REQUIRE(fields[1] == "collision-naive");
         REQUIRE(fields[2] == "separated-spheres");
         REQUIRE(fields[5] == "93");

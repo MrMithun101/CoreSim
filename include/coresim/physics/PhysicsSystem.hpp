@@ -12,7 +12,7 @@ public:
     explicit PhysicsSystem(glm::vec3 gravity = {0.0F, -9.81F, 0.0F},
                            BroadPhase mode = BroadPhase::spatial_hash, float cell_size = 3.0F,
                            BodyIteration iteration = BodyIteration::lookup);
-    // Caller supplies fixed ticks. No render state or angular integration.
+    // Caller supplies fixed ticks and exclusive world access. No graphics resources.
     void step(World& world, float delta_seconds, CollisionStats* stats = nullptr, Profiler* profiler = nullptr,
               JobSystem* jobs = nullptr, std::size_t grain = default_integration_grain);
 private:

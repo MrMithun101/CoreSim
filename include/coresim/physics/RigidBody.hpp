@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 
 namespace coresim {
-// Position belongs to Transform. Mass zero is an immovable body, not a zero-mass particle.
+// Position/orientation belong to Transform. Mass zero denotes an immovable body.
 class RigidBody {
 public:
     explicit RigidBody(float mass = 1.0F, float restitution = 0.5F, float friction = 0.5F);

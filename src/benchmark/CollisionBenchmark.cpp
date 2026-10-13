@@ -103,7 +103,7 @@ void run_collision_benchmark(const BenchmarkOptions& options, std::ostream& outp
         const auto ms = [](auto start, auto end) {
             return std::chrono::duration<double, std::milli>(end - start).count();
         };
-        output << "2," << (options.mode == BroadPhase::naive ? "collision-naive" : "collision-spatial")
+        output << "3," << (options.mode == BroadPhase::naive ? "collision-naive" : "collision-spatial")
                << ',' << (options.paired ? "paired-spheres" : "separated-spheres") << ',' << CORESIM_BUILD_TYPE << ','
                << CORESIM_COMPILER << ',' << options.bodies << ',' << i << ',' << options.warmup
                << ',' << timestep << ',' << stats.candidate_pairs << ',' << stats.collision_checks

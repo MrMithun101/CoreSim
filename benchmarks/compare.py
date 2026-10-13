@@ -35,7 +35,7 @@ for scene, bodies in [("separated-spheres", 1000), ("separated-spheres", 5000),
             all_pairs = bodies * (bodies - 1) // 2
             for tick, row in enumerate(rows):
                 expected_contacts = bodies // 2 if scene == "paired-spheres" else 0
-                if (int(row["schema"]) != 2 or int(row["step"]) != tick or
+                if (int(row["schema"]) != 3 or int(row["step"]) != tick or
                     int(row["bodies"]) != bodies or row["benchmark"] != mode or
                     row["scene"] != scene or int(row["contacts"]) != expected_contacts or
                     int(row["correction_checks"]) != expected_contacts * 4):

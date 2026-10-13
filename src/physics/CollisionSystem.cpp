@@ -140,6 +140,7 @@ void CollisionSystem::solve(World& world, CollisionStats* stats) {
             const float impulse = (constraint.target_speed - relative) / constraint.effective_inverse_mass;
             const float accumulated = std::max(0.0F, constraint.accumulated_impulse + impulse);
             const float magnitude = accumulated - constraint.accumulated_impulse;
+            if (!std::isfinite(accumulated)) { throw std::runtime_error("Normal impulse exceeds finite range"); }
             const auto change = magnitude * contact.geometry.normal;
             constraint.accumulated_impulse = accumulated;
             if (ia > 0) {
@@ -156,8 +157,9 @@ void CollisionSystem::solve(World& world, CollisionStats* stats) {
             const glm::vec2 tangential(glm::dot(slip,constraint.tangent_a),glm::dot(slip,constraint.tangent_b));
             auto candidate = constraint.tangent_impulse-constraint.tangent_mass*tangential;
             const float limit = constraint.friction*constraint.accumulated_impulse;
-            const float length = glm::length(candidate);
-            if (length > limit) { candidate *= limit/length; }
+            const double length = glm::length(glm::dvec2(candidate));
+            if (!std::isfinite(length)) { throw std::runtime_error("Friction impulse exceeds finite range"); }
+            if (length > limit) { candidate *= static_cast<float>(limit/length); }
             const auto delta = candidate-constraint.tangent_impulse;
             constraint.tangent_impulse = candidate;
             const auto tangent_change = constraint.tangent_a*delta.x+constraint.tangent_b*delta.y;

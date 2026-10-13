@@ -1,5 +1,15 @@
 # Verification
 
+## Milestone 13 — October 12, 2026
+
+Core checkpoint `0577bb7` adds shape-derived principal/world inertia tensors, torque and offset forces, normalized quaternion integration with world angular momentum, oriented box manifolds and rotated broad-phase bounds, angular normal impulses, and Coulomb contact friction. The [checkpoint CI run](https://github.com/MrMithun101/CoreSim/actions/runs/38341401469) passed all six compiler/display/sanitizer jobs. The final integration tilts/spins demo boxes, restores angular state on reset, prevents animation from overwriting rigid-body orientation, and extends concurrency/state checks to angular motion.
+
+All 28 local CTest entries passed in Debug, Release and ASan/UBSan. Final builds emitted no CoreSim compiler/linker warnings. The CPU suite passed 378,798 assertions in 58 cases; parallel physics passed 1,196,243 assertions in seven cases; the existing jobs suite passed 36,129 assertions in ten cases. The renderer passed 71 assertions across nine cases with image capture (70 without capture), including actual framebuffer changes from applied torque. The captured initial scene was visually inspected and saved as `docs/images/angular.png`; it is not a performance measurement.
+
+A separate headless ThreadSanitizer build passed five consecutive runs of each concurrency suite without race reports. Angular tests cover mass/shape inertia changes, rotated tensors, torque/force-at-offset response, normalized orientation, 20 seconds of asymmetric free rotation with bounded momentum/energy error, analytical frictionless corner impact, two-body momentum transfer, material validation, sliding/spin friction, tilted/skew box geometry, rotated planes, angular reset and invalid inputs. The existing five-second 100-box floor and ten-second mixed-demo stability checks pass. Seeded broad-phase tests now use rotated geometry, and serial/parallel plus naive/spatial checks compare angular state as well as linear state.
+
+Current collision/layout/parallel CSV schemas (3/2/2) were exercised; historical packed experiments reject angular motion/torque. Earlier performance data remains historical. See [angular equations, ownership, numerical tolerances and limits](angular-dynamics.md). No Milestone 14 rendering-scalability work is included.
+
 ## Milestone 12 — October 12, 2026
 
 Core checkpoint `d3ce3dd` adds synchronous parallel integration through the fixed worker pool, disjoint bounded body ranges, a configurable grain/inline fallback, admission-failure draining, and worker-side nesting rejection. The [checkpoint CI run](https://github.com/MrMithun101/CoreSim/actions/runs/38339137908) passed all six jobs: GCC/Clang Debug/Release with display tests, headless ASan/UBSan, and ten repetitions of both concurrency suites under ThreadSanitizer. The application now supplies its pool; its small demo remains inline. The [integration CI run](https://github.com/MrMithun101/CoreSim/actions/runs/38339935480) for `c807680` also passed all six jobs, including ten ThreadSanitizer repetitions of each concurrency suite.

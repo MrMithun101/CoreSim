@@ -100,3 +100,19 @@ TEST_CASE("Demo updates survive entity deletion and incomplete component combina
     REQUIRE(world.transform(missing_transform) == nullptr);
     REQUIRE(world.size() == 102);
 }
+TEST_CASE("Physics rotation owns rigid bodies and reset restores angular state") {
+    DemoScene scene; auto& world = scene.world();
+    const auto e = world.rigid_bodies()[50].entity;
+    const auto rotation = world.transform(e)->rotation;
+    const auto angular = world.rigid_body(e)->angular_velocity;
+    world.set_spin(e,{{0,1,0},10});
+    scene.update(0.5F);
+    REQUIRE(world.transform(e)->rotation == rotation);
+    world.transform(e)->rotation = glm::angleAxis(0.9F,glm::vec3(1,0,0));
+    world.rigid_body(e)->angular_velocity = {2,3,4};
+    world.rigid_body(e)->add_torque({1,2,3});
+    scene.reset_physics();
+    REQUIRE(world.transform(e)->rotation == rotation);
+    REQUIRE(world.rigid_body(e)->angular_velocity == angular);
+    REQUIRE(world.rigid_body(e)->accumulated_torque() == glm::vec3(0));
+}

@@ -160,3 +160,36 @@ TEST_CASE("Off-center box impacts conserve linear and angular momentum") {
     REQUIRE(std::abs(world.rigid_bodies()[0].value.angular_velocity.z) > 0.1F);
     REQUIRE(std::abs(world.rigid_bodies()[1].value.angular_velocity.z) > 0.1F);
 }
+TEST_CASE("Contact friction damps sliding and spin while zero friction preserves sliding") {
+    for (float friction : {0.0F,0.5F}) {
+        World world; const auto floor = world.create(); world.set_transform(floor);
+        world.set_collider(floor,PlaneCollider{}); world.set_rigid_body(floor,RigidBody(0,0,friction));
+        const auto box = world.create(); world.set_transform(box).position = {0,1,0};
+        world.set_collider(box,BoxCollider{});
+        auto& b = world.set_rigid_body(box,RigidBody(1,0,friction)); b.velocity = {2,0,0}; b.angular_velocity = {0,1,0};
+        PhysicsSystem physics;
+        for (int tick = 0; tick < 600; ++tick) { physics.step(world,1.0F/120); }
+        if (friction == 0) { REQUIRE(b.velocity.x == Catch::Approx(2).margin(1e-5)); }
+        else { REQUIRE(glm::length(b.velocity) < 0.02F); REQUIRE(glm::length(b.angular_velocity) < 0.02F); }
+        REQUIRE(world.transform(box)->position.y > 0.99F);
+    }
+    RigidBody body;
+    REQUIRE_THROWS_AS(body.set_friction(-0.1F),std::invalid_argument);
+    REQUIRE_THROWS_AS(body.set_friction(std::numeric_limits<float>::quiet_NaN()),std::invalid_argument);
+    REQUIRE(body.friction() == 0.5F);
+}
+TEST_CASE("Rotated plane contacts and skew rods use oriented geometry") {
+    const Collider box = BoxCollider(glm::vec3(1)), plane = PlaneCollider{};
+    const auto q = glm::angleAxis(1.57079632679F,glm::vec3(0,0,1));
+    const auto contact = detect_contact(box,{-0.9F,0,0},plane,{},glm::quat(1,0,0,0),q);
+    REQUIRE(contact);
+    REQUIRE(contact->normal.x == Catch::Approx(1).margin(1e-5));
+    const Collider rod = BoxCollider({2,0.1F,0.1F});
+    const auto a = glm::angleAxis(0.4F,glm::vec3(0,1,0))*glm::angleAxis(0.5F,glm::vec3(0,0,1));
+    const auto b = glm::angleAxis(0.6F,glm::vec3(1,0,0))*glm::angleAxis(-0.7F,glm::vec3(0,0,1));
+    const auto direction = glm::normalize(glm::cross(a*glm::vec3(1,0,0),b*glm::vec3(1,0,0)));
+    REQUIRE_FALSE(detect_contact(rod,{},rod,direction*0.4F,a,b));
+    const auto touching = detect_manifold(rod,{},rod,direction*0.1F,a,b);
+    REQUIRE(touching.count == 1); // Skew-edge contact, not a face patch.
+    REQUIRE(glm::length(touching.points[0].normal) == Catch::Approx(1).margin(1e-5));
+}

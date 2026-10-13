@@ -56,7 +56,7 @@ int main(int argc, char** argv) {
             const auto timing = experiment.step(world, layout, 1.0F/120);
             // Consume the updated state outside timing; never benchmark dead stores.
             const double checksum = coresim::layout_checksum(world);
-            std::cout << "1," << name << ',' << order << ',' << CORESIM_BUILD_TYPE << ',' << CORESIM_COMPILER
+            std::cout << "2," << name << ',' << order << ',' << CORESIM_BUILD_TYPE << ',' << CORESIM_COMPILER
                       << ',' << bodies << ',' << tick << ',' << warmup << ',' << timing.gather_ms << ','
                       << timing.kernel_ms << ',' << timing.scatter_ms << ',' << timing.total_ms << ',' << checksum << '\n';
         }

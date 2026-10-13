@@ -16,6 +16,8 @@ private:
         Entity entity;
         glm::vec3 position;
         glm::vec3 velocity;
+        glm::quat rotation;
+        glm::vec3 angular_velocity;
     };
     World world_;
     std::array<InitialMotion, 100> initial_motion_{};
