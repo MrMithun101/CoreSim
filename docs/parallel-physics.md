@@ -4,7 +4,7 @@ Milestone 12 parallelizes independent rigid-body integration through the Milesto
 
 ## API and ownership
 
-`PhysicsSystem::step(world, dt, stats, profiler, &jobs, grain)` borrows an existing pool synchronously. Omitting the pool preserves serial execution. `integrate_bodies` also accepts the pool and grain for isolated measurements. Lookup and dense traversal use the same arithmetic; parallelism changes only which thread visits each body.
+`PhysicsSystem::step(world, dt, stats, profiler, &jobs, grain)` borrows an existing pool synchronously. Omitting the pool preserves serial execution. A `PhysicsSystem` instance permits one step at a time because it retains collision scratch storage; different instances may use the same pool with separate worlds. `integrate_bodies` also accepts the pool and grain for isolated measurements. Lookup and dense traversal use the same arithmetic; parallelism changes only which thread visits each body.
 
 World remains the exclusive structural owner. While a step executes, no caller may create/destroy entities, set/remove components, change forces, or read/write values being integrated. Each worker owns a disjoint contiguous range of rigid-body entries. An entity has at most one body and transform, so those ranges also own distinct transform writes. Sparse indices, entity generations, collider values and container metadata are read-only. Shuffled transforms affect locality, not ownership. `for_each_rigid_body_range` exposes mutable body values with const entity IDs and checks range bounds.
 
