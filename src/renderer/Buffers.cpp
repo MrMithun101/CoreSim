@@ -2,6 +2,7 @@
 
 #include <glad/gl.h>
 #include <limits>
+#include <algorithm>
 #include <stdexcept>
 #include <utility>
 
@@ -25,13 +26,29 @@ unsigned int upload(std::span<const std::byte> bytes) {
 }
 } // namespace
 
+VertexBuffer::VertexBuffer() {
+    glGenBuffers(1, &id_);
+    if (id_ == 0) { throw std::runtime_error("Could not allocate streaming buffer"); }
+}
+void VertexBuffer::stream(std::span<const std::byte> bytes) {
+    if (bytes.empty() || bytes.size() > static_cast<std::size_t>(std::numeric_limits<GLsizeiptr>::max())) {
+        throw std::invalid_argument("Streaming buffer size is empty or exceeds GLsizeiptr");
+    }
+    capacity_ = std::max(capacity_, bytes.size());
+    bind();
+    // Orphaning lets the driver keep earlier draws alive without overwriting their data.
+    glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(capacity_), nullptr, GL_STREAM_DRAW);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, static_cast<GLsizeiptr>(bytes.size()), bytes.data());
+    if (glGetError() != GL_NO_ERROR) { throw std::runtime_error("Instance buffer upload failed"); }
+}
 VertexBuffer::VertexBuffer(std::span<const float> data) : id_(upload(std::as_bytes(data))) {}
 VertexBuffer::~VertexBuffer() { glDeleteBuffers(1, &id_); }
-VertexBuffer::VertexBuffer(VertexBuffer&& other) noexcept : id_(std::exchange(other.id_, 0)) {}
+VertexBuffer::VertexBuffer(VertexBuffer&& other) noexcept : id_(std::exchange(other.id_, 0)), capacity_(std::exchange(other.capacity_, 0)) {}
 VertexBuffer& VertexBuffer::operator=(VertexBuffer&& other) noexcept {
     if (this != &other) {
         glDeleteBuffers(1, &id_);
         id_ = std::exchange(other.id_, 0);
+        capacity_ = std::exchange(other.capacity_, 0);
     }
     return *this;
 }

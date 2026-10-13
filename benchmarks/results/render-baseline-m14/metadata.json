@@ -1,0 +1,180 @@
+{
+  "binary": "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-m14-release/coresim_render_benchmark",
+  "sha256": "dadcca65e0f797fc32c53915cff139483d1fda01e01950641f284ac0f2135449",
+  "revision": "c9657037068a8d9a835dedebc67fc783e3d1ebaa",
+  "dirty": "",
+  "platform": "macOS-26.3.1-arm64-arm-64bit",
+  "machine": "arm64",
+  "hardware": "machdep.cpu.brand_string: Apple M1\nhw.memsize: 8589934592\nhw.model: MacBookPro17,1\nhw.physicalcpu: 8\nhw.logicalcpu: 8",
+  "options": {
+    "binary": "build-m14-release/coresim_render_benchmark",
+    "output": "benchmarks/results/render-baseline-m14",
+    "modes": [
+      "individual"
+    ],
+    "counts": [
+      1000,
+      10000,
+      25000
+    ],
+    "trials": 3,
+    "frames": 30,
+    "warmup": 10,
+    "geometry": "cubes"
+  },
+  "invocations": [
+    {
+      "command": [
+        "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-m14-release/coresim_render_benchmark",
+        "--mode",
+        "individual",
+        "--objects",
+        "1000",
+        "--frames",
+        "30",
+        "--warmup",
+        "10",
+        "--geometry",
+        "cubes"
+      ],
+      "returncode": 0,
+      "file": "cubes-1000-individual-0"
+    },
+    {
+      "command": [
+        "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-m14-release/coresim_render_benchmark",
+        "--mode",
+        "individual",
+        "--objects",
+        "1000",
+        "--frames",
+        "30",
+        "--warmup",
+        "10",
+        "--geometry",
+        "cubes"
+      ],
+      "returncode": 0,
+      "file": "cubes-1000-individual-1"
+    },
+    {
+      "command": [
+        "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-m14-release/coresim_render_benchmark",
+        "--mode",
+        "individual",
+        "--objects",
+        "1000",
+        "--frames",
+        "30",
+        "--warmup",
+        "10",
+        "--geometry",
+        "cubes"
+      ],
+      "returncode": 0,
+      "file": "cubes-1000-individual-2"
+    },
+    {
+      "command": [
+        "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-m14-release/coresim_render_benchmark",
+        "--mode",
+        "individual",
+        "--objects",
+        "10000",
+        "--frames",
+        "30",
+        "--warmup",
+        "10",
+        "--geometry",
+        "cubes"
+      ],
+      "returncode": 0,
+      "file": "cubes-10000-individual-0"
+    },
+    {
+      "command": [
+        "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-m14-release/coresim_render_benchmark",
+        "--mode",
+        "individual",
+        "--objects",
+        "10000",
+        "--frames",
+        "30",
+        "--warmup",
+        "10",
+        "--geometry",
+        "cubes"
+      ],
+      "returncode": 0,
+      "file": "cubes-10000-individual-1"
+    },
+    {
+      "command": [
+        "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-m14-release/coresim_render_benchmark",
+        "--mode",
+        "individual",
+        "--objects",
+        "10000",
+        "--frames",
+        "30",
+        "--warmup",
+        "10",
+        "--geometry",
+        "cubes"
+      ],
+      "returncode": 0,
+      "file": "cubes-10000-individual-2"
+    },
+    {
+      "command": [
+        "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-m14-release/coresim_render_benchmark",
+        "--mode",
+        "individual",
+        "--objects",
+        "25000",
+        "--frames",
+        "30",
+        "--warmup",
+        "10",
+        "--geometry",
+        "cubes"
+      ],
+      "returncode": 0,
+      "file": "cubes-25000-individual-0"
+    },
+    {
+      "command": [
+        "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-m14-release/coresim_render_benchmark",
+        "--mode",
+        "individual",
+        "--objects",
+        "25000",
+        "--frames",
+        "30",
+        "--warmup",
+        "10",
+        "--geometry",
+        "cubes"
+      ],
+      "returncode": 0,
+      "file": "cubes-25000-individual-1"
+    },
+    {
+      "command": [
+        "/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/build-m14-release/coresim_render_benchmark",
+        "--mode",
+        "individual",
+        "--objects",
+        "25000",
+        "--frames",
+        "30",
+        "--warmup",
+        "10",
+        "--geometry",
+        "cubes"
+      ],
+      "returncode": 0,
+      "file": "cubes-25000-individual-2"
+    }
+  ]
+}

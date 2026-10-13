@@ -8,6 +8,7 @@ namespace coresim {
 // All GPU owners require a current context for construction, use, and destruction.
 class VertexBuffer {
 public:
+    VertexBuffer();
     explicit VertexBuffer(std::span<const float> data);
     ~VertexBuffer();
     VertexBuffer(const VertexBuffer&) = delete;
@@ -15,9 +16,12 @@ public:
     VertexBuffer(VertexBuffer&& other) noexcept;
     VertexBuffer& operator=(VertexBuffer&& other) noexcept;
     void bind() const;
+    // Orphan retained storage before replacing per-frame data. Requires nonempty bytes.
+    void stream(std::span<const std::byte> bytes);
     [[nodiscard]] unsigned int id() const noexcept { return id_; }
 private:
     unsigned int id_{};
+    std::size_t capacity_{};
 };
 
 class IndexBuffer {

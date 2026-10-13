@@ -382,3 +382,71 @@ TEST_CASE("Torque-driven physical orientation changes the rendered box") {
     REQUIRE(world.transform(e)->position == glm::vec3(0));
     REQUIRE(glGetError() == GL_NO_ERROR);
 }
+
+TEST_CASE("Instancing matches individual pixels through growth, mutation and shrink") {
+    Context context;
+    Target target;
+    Renderer renderer(shaders);
+    World world;
+    std::vector<Entity> entities;
+    const auto compare = [&](std::size_t count, std::size_t batches) {
+        renderer.draw(Target::size,Target::size,glm::mat4(1),world,RenderMode::individual);
+        const auto expected=target.pixels();
+        REQUIRE(renderer.stats().objects == count);
+        REQUIRE(renderer.stats().draw_calls == count);
+        REQUIRE(renderer.stats().uploaded_bytes == 0);
+        renderer.draw(Target::size,Target::size,glm::mat4(1),world,RenderMode::instanced);
+        REQUIRE((target.pixels() == expected));
+        REQUIRE(renderer.stats().objects == count);
+        REQUIRE(renderer.stats().draw_calls == batches);
+        REQUIRE(renderer.stats().uploaded_bytes == count*16*sizeof(float));
+        REQUIRE(glGetError() == GL_NO_ERROR);
+    };
+    compare(0,0);
+    for (std::size_t i=0;i<1200;++i) {
+        const auto e=world.create(); entities.push_back(e);
+        Transform t;
+        t.position={-0.96F+0.049F*static_cast<float>(i%40),-0.96F+0.065F*static_cast<float>(i/40),0};
+        t.scale={0.018F,0.024F,0.016F};
+        t.rotation=glm::angleAxis(static_cast<float>(i)*0.013F,glm::normalize(glm::vec3(1,2,3)));
+        world.set_transform(e,t);
+        world.set_mesh(e,{i%2 ? MeshKind::sphere : MeshKind::cube});
+        if (i==0) { compare(1,1); }
+        if (i==17) { compare(18,2); }
+    }
+    compare(1200,2);
+    world.transform(entities[0])->rotation=glm::angleAxis(1.7F,glm::vec3(0,1,0));
+    world.remove_transform(entities[1]);
+    world.remove_mesh(entities[2]);
+    world.destroy(entities[3]);
+    compare(1197,2);
+    for (std::size_t i=4;i<entities.size();++i) { world.destroy(entities[i]); }
+    compare(1,1);
+    world.set_mesh(entities[0],{MeshKind::sphere});
+    compare(1,1);
+    renderer.draw(0,Target::size,glm::mat4(1),world);
+    REQUIRE(renderer.stats().objects == 0);
+    REQUIRE(renderer.stats().draw_calls == 0);
+    world.destroy(entities[0]);
+    compare(0,0);
+}
+
+TEST_CASE("Streaming buffer ownership survives growth and moves") {
+    Context context;
+    VertexBuffer source;
+    REQUIRE_THROWS_AS(source.stream({}),std::invalid_argument);
+    source.stream(std::as_bytes(std::span(triangle)));
+    const auto id=source.id();
+    VertexBuffer moved(std::move(source));
+    REQUIRE(source.id() == 0);
+    REQUIRE(moved.id() == id);
+    std::array<float,256> larger{};
+    moved.stream(std::as_bytes(std::span(larger)));
+    VertexBuffer destination(triangle);
+    const auto replaced=destination.id();
+    destination=std::move(moved);
+    REQUIRE(glIsBuffer(replaced) == GL_FALSE);
+    destination.stream(std::as_bytes(std::span(triangle)));
+    REQUIRE(destination.id() == id);
+    REQUIRE(glGetError() == GL_NO_ERROR);
+}

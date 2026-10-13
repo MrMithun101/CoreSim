@@ -59,12 +59,15 @@ Mesh make_sphere() {
 
 Renderer::Renderer(const std::filesystem::path& shader_directory)
     : shader_(shader_directory / "cube.vert", shader_directory / "cube.frag"),
+      instanced_shader_(shader_directory / "instanced.vert", shader_directory / "cube.frag"),
       cube_(cube_vertices, cube_indices), sphere_(make_sphere()) {
     transform_location_ = shader_.uniform_location("u_transform");
 }
 
 void Renderer::draw(int framebuffer_width, int framebuffer_height,
-                    const glm::mat4& view_projection, const World& world) {
+                    const glm::mat4& view_projection, const World& world, RenderMode mode) {
+    stats_ = {};
+    for (auto& batch : batches_) { batch.clear(); }
     // Minimized windows may have zero-size framebuffers; avoid division by zero.
     if (framebuffer_width <= 0 || framebuffer_height <= 0) {
         return;
@@ -75,7 +78,8 @@ void Renderer::draw(int framebuffer_width, int framebuffer_height,
     glDepthMask(GL_TRUE);
     glClearColor(0.035F, 0.055F, 0.085F, 1.0F);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    shader_.bind();
+    if (mode == RenderMode::individual) { shader_.bind(); }
+    else { instanced_shader_.bind(); }
     for (const auto& entry : world.meshes()) {
         const auto* object = world.transform(entry.entity);
         if (!object) {
@@ -84,10 +88,27 @@ void Renderer::draw(int framebuffer_width, int framebuffer_height,
         const auto transform = view_projection * object->matrix();
         std::array<float, 16> matrix{};
         std::copy_n(glm::value_ptr(transform), matrix.size(), matrix.begin());
+        ++stats_.objects;
+        if (mode == RenderMode::instanced) {
+            switch (entry.value.kind) {
+            case MeshKind::cube: batches_[0].push_back(matrix); break;
+            case MeshKind::sphere: batches_[1].push_back(matrix); break;
+            }
+            continue;
+        }
+        ++stats_.draw_calls;
         shader_.set_matrix(transform_location_, matrix);
         switch (entry.value.kind) {
         case MeshKind::cube: cube_.draw(); break;
         case MeshKind::sphere: sphere_.draw(); break;
+        }
+    }
+    if (mode == RenderMode::instanced) {
+        cube_.draw_instanced(batches_[0]);
+        sphere_.draw_instanced(batches_[1]);
+        for (const auto& batch : batches_) {
+            if (!batch.empty()) { ++stats_.draw_calls; }
+            stats_.uploaded_bytes += batch.size() * sizeof(batch[0]);
         }
     }
     glBindVertexArray(0);

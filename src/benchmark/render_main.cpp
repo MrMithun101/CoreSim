@@ -67,7 +67,7 @@ int main(int argc,char** argv) {
         for (int i=1;i<argc;++i) {
             const std::string key=argv[i];
             if (key=="--help") {
-                std::cout<<"coresim_render_benchmark --mode individual --objects 1..100000 --frames 1..10000 --warmup 0..10000 --geometry cubes|mixed\n";
+                std::cout<<"coresim_render_benchmark --mode individual|instanced --objects 1..100000 --frames 1..10000 --warmup 0..10000 --geometry cubes|mixed\n";
                 return 0;
             }
             if (!seen.insert(key).second || i+1>=argc) { throw std::invalid_argument("Duplicate or missing option: "+key); }
@@ -79,7 +79,7 @@ int main(int argc,char** argv) {
             else if (key=="--geometry") { geometry=value; }
             else { throw std::invalid_argument("Unknown option: "+key); }
         }
-        if (mode!="individual" || (geometry!="cubes" && geometry!="mixed")) { throw std::invalid_argument("Invalid rendering mode or geometry"); }
+        if ((mode!="individual" && mode!="instanced") || (geometry!="cubes" && geometry!="mixed")) { throw std::invalid_argument("Invalid rendering mode or geometry"); }
         coresim::GlfwRuntime runtime;
         coresim::Window window(runtime,Target::width,Target::height,false);
         coresim::Renderer renderer(CORESIM_SHADER_DIR);
@@ -106,7 +106,7 @@ int main(int argc,char** argv) {
         for (std::size_t i=0;i<warmup+frames;++i) {
             window.process_events();
             const auto start=Clock::now();
-            renderer.draw(Target::width,Target::height,projection,world);
+            renderer.draw(Target::width,Target::height,projection,world,mode=="individual" ? coresim::RenderMode::individual : coresim::RenderMode::instanced);
             const auto submitted=Clock::now();
             glFinish(); // Bound each sample to completed work; no queued frames or swap/VSync.
             const auto completed=Clock::now();
@@ -118,7 +118,7 @@ int main(int argc,char** argv) {
         std::cout<<"schema,mode,geometry,objects,draw_calls,width,height,sample,cpu_submission_ms,frame_ms,fps,image_checksum\n"<<std::setprecision(12);
         for (std::size_t i=0;i<samples.size();++i) {
             const auto s=samples[i];
-            std::cout<<"1,"<<mode<<','<<geometry<<','<<objects<<','<<objects<<','<<Target::width<<','<<Target::height<<','<<i<<','<<s.submission<<','<<s.frame<<','<<1000/s.frame<<','<<checksum<<'\n';
+            std::cout<<"1,"<<mode<<','<<geometry<<','<<objects<<','<<renderer.stats().draw_calls<<','<<Target::width<<','<<Target::height<<','<<i<<','<<s.submission<<','<<s.frame<<','<<1000/s.frame<<','<<checksum<<'\n';
         }
     } catch (const std::exception& e) { std::cerr<<e.what()<<'\n'; return 1; }
 }
