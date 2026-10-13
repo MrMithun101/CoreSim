@@ -13,7 +13,8 @@ public:
                            BroadPhase mode = BroadPhase::spatial_hash, float cell_size = 3.0F,
                            BodyIteration iteration = BodyIteration::lookup);
     // Caller supplies fixed ticks. No render state or angular integration.
-    void step(World& world, float delta_seconds, CollisionStats* stats = nullptr, Profiler* profiler = nullptr);
+    void step(World& world, float delta_seconds, CollisionStats* stats = nullptr, Profiler* profiler = nullptr,
+              JobSystem* jobs = nullptr, std::size_t grain = default_integration_grain);
 private:
     glm::vec3 gravity_;
     CollisionSystem collisions_;

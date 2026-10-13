@@ -17,7 +17,8 @@ PhysicsSystem::PhysicsSystem(glm::vec3 gravity, BroadPhase mode, float cell_size
         throw std::invalid_argument("Gravity must be finite");
     }
 }
-void PhysicsSystem::step(World& world, float delta_seconds, CollisionStats* stats, Profiler* profiler) {
+void PhysicsSystem::step(World& world, float delta_seconds, CollisionStats* stats, Profiler* profiler,
+                         JobSystem* jobs, std::size_t grain) {
     ScopedProfiler timer(profiler, ProfileSection::physics);
     CollisionStats local_stats;
     const bool profiling = profiler && profiler->enabled();
@@ -25,7 +26,7 @@ void PhysicsSystem::step(World& world, float delta_seconds, CollisionStats* stat
     if (!std::isfinite(delta_seconds) || delta_seconds <= 0.0F) {
         throw std::invalid_argument("Physics timestep must be positive and finite");
     }
-    integrate_bodies(world, gravity_, delta_seconds, iteration_);
+    integrate_bodies(world, gravity_, delta_seconds, iteration_, jobs, grain);
     collisions_.solve(world, stats);
     if (profiling) {
         profiler->record(ProfileSection::broad_phase, stats->broad_phase_ms);

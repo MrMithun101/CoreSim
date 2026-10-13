@@ -58,6 +58,10 @@ public:
     template <class Visitor> void for_each(Visitor&& visitor) {
         for (auto& entry : dense_) { visitor(std::as_const(entry.entity), entry.value); }
     }
+    // Bounds are checked by the World caller; disjoint ranges may mutate values concurrently.
+    template <class Visitor> void for_each_range(std::size_t begin, std::size_t end, Visitor&& visitor) {
+        for (auto i = begin; i < end; ++i) { visitor(std::as_const(dense_[i].entity), dense_[i].value); }
+    }
     [[nodiscard]] std::span<const ComponentEntry<T>> entries() const noexcept { return dense_; }
 private:
     static constexpr auto missing = std::numeric_limits<std::size_t>::max();

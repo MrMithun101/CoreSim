@@ -32,6 +32,8 @@ public:
     [[nodiscard]] JobGroup submit(Job job);
     // Stop admission, drain accepted jobs, and join. Concurrent calls are serialized.
     void shutdown();
+    // Synchronous clients must reject nested waits before submitting borrowed work.
+    [[nodiscard]] static bool is_worker_thread() noexcept;
     [[nodiscard]] std::size_t worker_count() const noexcept { return workers_.size(); }
 private:
     struct WorkItem { Job job; std::shared_ptr<JobGroup::State> group; };

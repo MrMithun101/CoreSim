@@ -66,6 +66,7 @@ JobGroup JobSystem::submit(Job job) {
     submit(group, std::move(job));
     return group;
 }
+bool JobSystem::is_worker_thread() noexcept { return on_worker; }
 void JobSystem::shutdown() {
     require_external_thread();
     std::lock_guard shutdown_lock(shutdown_mutex_);

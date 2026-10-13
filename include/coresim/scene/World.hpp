@@ -4,11 +4,12 @@
 #include <coresim/scene/Transform.hpp>
 #include <coresim/scene/detail/ComponentPool.hpp>
 #include <utility>
+#include <stdexcept>
 #include <coresim/physics/RigidBody.hpp>
 #include <coresim/physics/Collider.hpp>
 
 namespace coresim {
-// A single-threaded owner of IDs and CPU component data. No graphics resources.
+// Owns IDs and CPU components. Structural mutations require exclusive access.
 class World {
 public:
     World() = default;
@@ -37,6 +38,15 @@ public:
     // Direct packed-value traversal. No create/destroy/set/remove during the callback.
     template <class Visitor> void for_each_rigid_body(Visitor&& visitor) {
         rigid_bodies_.for_each(std::forward<Visitor>(visitor));
+    }
+
+    // Disjoint ranges may run concurrently while all pool structures remain frozen.
+    // No other thread may access values being written. The caller must join before mutation.
+    template <class Visitor> void for_each_rigid_body_range(std::size_t begin, std::size_t end, Visitor&& visitor) {
+        if (begin > end || end > rigid_bodies_.entries().size()) {
+            throw std::out_of_range("Rigid body range");
+        }
+        rigid_bodies_.for_each_range(begin, end, std::forward<Visitor>(visitor));
     }
 
     Transform& set_transform(Entity entity, const Transform& value = {});
