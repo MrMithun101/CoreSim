@@ -2,9 +2,13 @@
 
 **High-Performance 3D Physics Simulation Engine**
 
-A C++20 systems and performance engineering project developed one measured milestone at a time. Current scope: **Milestone 15 — Reproducible Demo Scenes**. It provides custom fixed-step linear and angular physics, generation-checked entity IDs, packed component storage, primitive collision detection and impulse response, a movable perspective camera and a 100-body sphere/box demo, move-aware RAII GPU resources, file-based shaders, depth testing, frame timing, and tests. A deterministic spatial hash accelerates broad-phase collision detection; a live ImGui CPU profiler exposes timing bottlenecks. Bodies rotate under torque and off-center impulses; oriented-box manifolds and contact friction support the falling-body demo. The renderer batches repeated cubes and spheres with instancing, with a retained individual-draw path and measured comparisons up to 25,000 objects. GPU compute remains a future milestone. A headless CSV benchmark compares spatial hashing with the retained all-pairs baseline; see [measurements and methodology](BENCHMARKS.md).
+A C++20 systems and performance engineering project developed one measured milestone at a time. Current scope: **Milestone 16 — HIP Compute Foundation (hardware validation pending)**. It provides custom fixed-step linear and angular physics, generation-checked entity IDs, packed component storage, primitive collision detection and impulse response, a movable perspective camera and a 100-body sphere/box demo, move-aware RAII GPU resources, file-based shaders, depth testing, frame timing, and tests. A deterministic spatial hash accelerates broad-phase collision detection; a live ImGui CPU profiler exposes timing bottlenecks. Bodies rotate under torque and off-center impulses; oriented-box manifolds and contact friction support the falling-body demo. The renderer batches repeated cubes and spheres with instancing, with a retained individual-draw path and measured comparisons up to 25,000 objects. An optional Linux AMD HIP vector-add workload now provides the compute foundation; device execution remains unverified. A headless CSV benchmark compares spatial hashing with the retained all-pairs baseline; see [measurements and methodology](BENCHMARKS.md).
 
 ![Sphere and box collision scene rendered by CoreSim](docs/images/angular.png)
+
+## HIP compute foundation
+
+Run the portable reference with `./build/coresim_gpu_demo --elements 1025`, or use `./build/coresim --gpu-demo vector-add --backend cpu`. Optional Linux ROCm builds expose `--backend hip` and `--info`; unavailable HIP produces a clear error without CPU fallback. See [build instructions, execution model and validation limits](docs/hip.md). No compatible GPU is available for device testing; no GPU performance result is claimed.
 
 ## Reproducible scenes
 
@@ -55,7 +59,7 @@ ctest --test-dir build-release --output-on-failure
 ./build-release/coresim
 ```
 
-On this verified local setup, CMake is temporarily available via `export PATH="/tmp/coresim-build-tools/bin:$PATH"`. For long-term macOS use, install Xcode command-line tools and CMake normally, then use the same commands. Apple's deprecated OpenGL implementation is sufficient for this foundation. HIP is not part of this milestone.
+On this verified local setup, CMake is temporarily available via `export PATH="/tmp/coresim-build-tools/bin:$PATH"`. For long-term macOS use, install Xcode command-line tools and CMake normally, then use the same commands. Apple's deprecated OpenGL implementation is sufficient for this foundation. HIP is optional and requires a separate Linux ROCm build; the default macOS build uses the CPU reference.
 
 Presets `debug`, `release`, `asan`, and `tsan` use separate directories:
 
@@ -132,7 +136,7 @@ cmake --build --preset asan --parallel
 ctest --preset asan
 ```
 
-`CORESIM_SANITIZER=address` enables ASan plus UBSan; `thread` enables TSan separately on supported hosts; `none` is the default. These instrument CoreSim targets, not third-party code. TSan is provided for later concurrency work; this milestone is single-threaded.
+`CORESIM_SANITIZER=address` enables ASan plus UBSan; `thread` enables TSan separately on supported hosts; `none` is the default. These instrument CoreSim targets, not third-party code. TSan validates the existing job system and parallel physics; HIP builds use a separate configuration.
 
 ## Architecture
 
@@ -154,4 +158,4 @@ Shaders are copied into the build directory and found independently of the worki
 
 See [verification notes](docs/verification.md) for actual local results and commands. The screenshot above is an actual framebuffer capture, not an illustration or performance benchmark.
 
-**Next: Milestone 16 — HIP GPU Compute Foundation**, only on explicit request.
+**Next: Milestone 17 — GPU Particle Simulation**, only on explicit request; Milestone 16 device validation remains pending.

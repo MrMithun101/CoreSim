@@ -1,6 +1,7 @@
 #include <coresim/gpu/VectorAdd.hpp>
 #include <catch2/catch_test_macros.hpp>
 #include <stdexcept>
+#include <hip/hip_runtime.h>
 using namespace coresim::gpu;
 TEST_CASE("Real HIP kernel matches CPU across launch boundaries and repeated allocations") {
     const auto status=hip_status();
@@ -8,6 +9,8 @@ TEST_CASE("Real HIP kernel matches CPU across launch boundaries and repeated all
     REQUIRE(status.compiled);
     REQUIRE(status.diagnostic.empty());
     REQUIRE_FALSE(status.devices.empty());
+    int original_device=-1;
+    REQUIRE(hipGetDevice(&original_device)==hipSuccess);
     for (const auto& device:status.devices) {
         for (const std::size_t count:{0U,1U,255U,256U,257U,1025U,1048579U}) {
             std::vector<float> a(count),b(count);
@@ -17,7 +20,12 @@ TEST_CASE("Real HIP kernel matches CPU across launch boundaries and repeated all
             }
             const auto saved_a=a,saved_b=b;
             const auto reference=cpu_vector_add(a,b);
-            for (int repeat=0;repeat<3;++repeat) { REQUIRE(hip_vector_add(a,b,device.index)==reference); }
+            for (int repeat=0;repeat<3;++repeat) {
+                REQUIRE(hip_vector_add(a,b,device.index)==reference);
+                int current_device=-1;
+                REQUIRE(hipGetDevice(&current_device)==hipSuccess);
+                REQUIRE(current_device==original_device);
+            }
             REQUIRE(a==saved_a);
             REQUIRE(b==saved_b);
         }
