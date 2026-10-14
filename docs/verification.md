@@ -1,5 +1,15 @@
 # Verification
 
+## Milestone 15 — October 13, 2026
+
+Scene checkpoint `ba7a4a6` adds seeded Stress Tower, Sphere Rain and Particle Storm construction, count validation, starting cameras, reset snapshots and a headless exact-tick scene runner. The existing collision demo remains the default. Particle Storm uses independent collider-free CPU bodies and a serial periodic-boundary pass after integration joins. No HIP/GPU compute is included.
+
+All 56 local CTest entries passed in Release, Debug and ASan/UBSan. Builds emitted no CoreSim compiler/linker warnings or sanitizer diagnostics; GLM's existing upstream CMake deprecation warnings remain. The CPU suite passed 383,959 assertions in 63 cases. The renderer passed 160 assertions in 13 cases (163 with optional named-scene image capture). Display tests launch each new scene, compare both rendering paths, and verify visible geometry from each starting camera. Actual framebuffer captures were visually inspected and saved in `docs/images`. CLI tests reject invalid names, counts, seeds and duplicate options before initialization.
+
+New unit tests cover deterministic construction, seed changes, exact reset of linear/angular motion and loads, serial/worker trajectory equality, particle wrapping without collisions, and missing/deleted entities. The 256-box tower and 2,500-sphere rain ran for ten simulated seconds; 25,000 spheres ran for two seconds and 25,000 particles for ten seconds. All motion remained finite. Tower minimum center height was 0.498825 and final maximum linear speed was 0.067648. Sphere Rain exhibited transient floor penetration; its measured limits are documented rather than treated as a continuous-collision guarantee. Serial replays of both 25,000-object workloads matched every row except the worker-count field.
+
+All 5,286 diagnostic rows, exact commands, binary hash and extrema are retained in [scene verification traces](../benchmarks/results/scenes-m15). These traces describe fixed-tick behavior and do not support a new performance claim. See [scene construction, cameras, controls, reset and solver limits](demo-scenes.md). No Milestone 16 work is included.
+
 ## Milestone 14 — October 13, 2026
 
 Baseline checkpoint `c965703` adds an isolated rendering benchmark and serial comparison runner. Instancing checkpoint `2dfd015` adds streamed per-mesh matrix attributes, retained CPU/GPU capacities, one indexed instanced call per nonempty mesh type, actual submission counters and a selectable individual-draw reference. The interactive renderer defaults to instancing. GPU resources remain context-bound RAII owners; scene/physics ownership is unchanged.

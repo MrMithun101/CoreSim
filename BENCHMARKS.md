@@ -1,5 +1,7 @@
 # Benchmarks
 
+Milestone 15 adds [fixed-tick scene verification traces](docs/demo-scenes.md#observed-trajectories). They document reproducibility and solver behavior; they contain no performance measurements.
+
 Milestone 14 adds [individual versus instanced rendering measurements](docs/rendering-scalability.md), including raw paired trials through 25,000 cubes and mixed meshes. Rendering needs a display/OpenGL context; the CPU physics benchmarks below remain headless.
 
 # Collision benchmarks

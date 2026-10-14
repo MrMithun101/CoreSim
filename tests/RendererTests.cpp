@@ -475,3 +475,37 @@ TEST_CASE("Instanced mixed meshes preserve depth visibility across batch order")
     }
     REQUIRE(glGetError() == GL_NO_ERROR);
 }
+
+TEST_CASE("Named scene cameras show geometry and both render paths agree") {
+    Context context;
+    Target target;
+    Renderer renderer(shaders);
+    for (auto name : {"stress-tower","sphere-rain","particle-storm"}) {
+        DemoScene scene(scene_config(name));
+        const auto camera=scene.camera();
+        const auto matrix=camera.projection(1)*camera.view();
+        renderer.draw(Target::size,Target::size,matrix,scene.world(),RenderMode::individual);
+        const auto expected=target.pixels();
+        renderer.draw(Target::size,Target::size,matrix,scene.world());
+        const auto pixels=target.pixels();
+        REQUIRE((pixels==expected));
+        REQUIRE(renderer.stats().objects==scene.config().objects+(scene.config().kind==SceneKind::particle_storm ? 0 : 1));
+        std::size_t colored=0;
+        for (std::size_t i=0;i<pixels.size();i+=4) {
+            if (pixels[i]>30 || pixels[i+1]>30 || pixels[i+2]>30) { ++colored; }
+        }
+        REQUIRE(colored>500);
+        REQUIRE(glGetError()==GL_NO_ERROR);
+        if (const char* directory=std::getenv("CORESIM_NAMED_SCENE_DIR")) {
+            std::ofstream output(std::filesystem::path(directory)/(std::string(name)+".ppm"),std::ios::binary);
+            output<<"P6\n"<<Target::size<<' '<<Target::size<<"\n255\n";
+            for (int y=Target::size-1;y>=0;--y) {
+                for (int x=0;x<Target::size;++x) {
+                    const auto index=static_cast<std::size_t>((y*Target::size+x)*4);
+                    output.write(reinterpret_cast<const char*>(pixels.data()+index),3);
+                }
+            }
+            REQUIRE(output.good());
+        }
+    }
+}

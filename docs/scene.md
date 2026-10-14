@@ -11,13 +11,13 @@
 - W/S: forward/back along the view direction; A/D: strafe.
 - Q/E: down/up along world Y.
 - Hold the right mouse button: capture the cursor and look around. Release it to restore the cursor.
-- R: reset original demo body motion and the physics clock.
+- R: reset the selected scene’s saved body motion and the physics clock.
 - Escape or the native close button: exit.
 
 `Window` polls GLFW into a small `InputState` value. The application applies mouse deltas at 0.0025 radians per cursor unit, independent of frame duration, and movement at 8 units/second. Unfocused windows ignore input; capture transitions rebase the previous cursor position to avoid a first-frame jump. Cursor capture uses GLFW's disabled cursor mode, following the [GLFW input guide](https://www.glfw.org/docs/3.4/input_guide.html#cursor_mode).
 
 Camera motion caps its timestep at 0.1 seconds after stalls. This clamp now applies only to the camera; physics and demo spin use the separate fixed clock described in `physics.md`. Frame timing still records the actual elapsed time.
 
-`DemoScene` owns 100 dynamic entities (50 spheres and 50 boxes) and two static floor supports. Initial transforms are deterministic and collider dimensions match visual scales. Demo spin is still available for nonphysical animation but is not attached in the collision demo; axis-aligned boxes must keep their visual orientation fixed. There are no per-frame scene allocations; collision contact storage may grow when a new high-water mark is reached.
+`DemoScene` owns the selected scene's World and a vector of initial motion snapshots. The default remains 100 dynamic entities (50 spheres and 50 boxes), a visual floor and one collision plane. Named Stress Tower, Sphere Rain and Particle Storm setups add deterministic count/seed configuration, starting cameras and scene-specific gravity; see [scene contracts and exact-tick runner](demo-scenes.md). Spin animation skips physical bodies, whose quaternions are owned by physics. Particle boundary wrapping happens after the physics workers join.
 
-The application owns the camera and scene and passes a view-projection matrix plus a const World reference to `Renderer`. The renderer owns shared cube/sphere geometry and shaders. Each entity with both a supported mesh and transform produces one uniform update and indexed draw. Instancing and angular dynamics remain future milestones. Translational physics now runs at 120 Hz. R resets the original demo bodies without recreating entities; bodies now hit the supported floor geometry.
+The application owns the camera and scene and passes a view-projection matrix plus a const World reference to `Renderer`. Shared cube/sphere meshes use instancing by default. Linear and angular physics run at 120 Hz. Reset restores saved body motion without recreating entities. Camera movement remains independent of physics and is retained on reset. There are no per-frame scene allocations; collision and renderer storage can grow to new high-water marks.

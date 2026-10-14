@@ -2,9 +2,22 @@
 
 **High-Performance 3D Physics Simulation Engine**
 
-A C++20 systems and performance engineering project developed one measured milestone at a time. Current scope: **Milestone 14 — Rendering Scalability**. It provides custom fixed-step linear and angular physics, generation-checked entity IDs, packed component storage, primitive collision detection and impulse response, a movable perspective camera and a 100-body sphere/box demo, move-aware RAII GPU resources, file-based shaders, depth testing, frame timing, and tests. A deterministic spatial hash accelerates broad-phase collision detection; a live ImGui CPU profiler exposes timing bottlenecks. Bodies rotate under torque and off-center impulses; oriented-box manifolds and contact friction support the falling-body demo. The renderer batches repeated cubes and spheres with instancing, with a retained individual-draw path and measured comparisons up to 25,000 objects. GPU compute remains a future milestone. A headless CSV benchmark compares spatial hashing with the retained all-pairs baseline; see [measurements and methodology](BENCHMARKS.md).
+A C++20 systems and performance engineering project developed one measured milestone at a time. Current scope: **Milestone 15 — Reproducible Demo Scenes**. It provides custom fixed-step linear and angular physics, generation-checked entity IDs, packed component storage, primitive collision detection and impulse response, a movable perspective camera and a 100-body sphere/box demo, move-aware RAII GPU resources, file-based shaders, depth testing, frame timing, and tests. A deterministic spatial hash accelerates broad-phase collision detection; a live ImGui CPU profiler exposes timing bottlenecks. Bodies rotate under torque and off-center impulses; oriented-box manifolds and contact friction support the falling-body demo. The renderer batches repeated cubes and spheres with instancing, with a retained individual-draw path and measured comparisons up to 25,000 objects. GPU compute remains a future milestone. A headless CSV benchmark compares spatial hashing with the retained all-pairs baseline; see [measurements and methodology](BENCHMARKS.md).
 
 ![Sphere and box collision scene rendered by CoreSim](docs/images/angular.png)
+
+## Reproducible scenes
+
+Launch seeded Stress Tower, Sphere Rain or Particle Storm scenes with automatic starting cameras and R-to-reset motion. The original collision demo remains the default.
+
+```sh
+./build-release/coresim --scene stress-tower
+./build-release/coresim --scene sphere-rain --objects 25000 --seed 7
+./build-release/coresim --scene particle-storm --objects 25000 --seed 7
+./build-release/coresim_scene_runner --scene stress-tower --steps 1200 --workers 4 > tower.csv
+```
+
+The headless runner uses exact 120 Hz ticks and records motion digests and collision counters. Particle Storm uses independent CPU bodies in a periodic volume, with no particle collisions or GPU compute. See [scene construction, count limits, controls and observed behavior](docs/demo-scenes.md).
 
 ## Rendering scalability
 
@@ -141,4 +154,4 @@ Shaders are copied into the build directory and found independently of the worki
 
 See [verification notes](docs/verification.md) for actual local results and commands. The screenshot above is an actual framebuffer capture, not an illustration or performance benchmark.
 
-**Next: Milestone 15 — Reproducible Demo Scenes**, only on explicit request.
+**Next: Milestone 16 — HIP GPU Compute Foundation**, only on explicit request.

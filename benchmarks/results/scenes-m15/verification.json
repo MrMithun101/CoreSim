@@ -1,0 +1,197 @@
+{
+  "date": "2026-10-13",
+  "source_revision": "ba7a4a6",
+  "platform": "macOS-26.3.1-arm64-arm-64bit",
+  "compiler": "AppleClang-21.0.0.21000101",
+  "build": "Release",
+  "binary_sha256": "e578ca5121428876fcbc014ebe9d03dcd790ce8baaf91d0e80bd967c4f2d5a2d",
+  "purpose": "Fixed-tick trajectory verification; no performance measurements",
+  "records": [
+    {
+      "file": "tower.csv",
+      "command": [
+        "./build-m14-release/coresim_scene_runner",
+        "--scene",
+        "stress-tower",
+        "--objects",
+        "256",
+        "--steps",
+        "1200",
+        "--workers",
+        "4"
+      ],
+      "rows": 1201,
+      "min_center_y": 0.498825103045,
+      "peak_linear_speed": 2.39799618721,
+      "final": {
+        "schema": "1",
+        "scene": "stress-tower",
+        "objects": "256",
+        "seed": "1",
+        "workers": "4",
+        "tick": "1200",
+        "simulation_s": "10",
+        "candidate_pairs": "10789",
+        "contacts": "1464",
+        "min_center_y": "0.500523626804",
+        "max_speed": "0.0676478594542",
+        "motion_hash": "17317890513365240478"
+      }
+    },
+    {
+      "file": "rain.csv",
+      "command": [
+        "./build-m14-release/coresim_scene_runner",
+        "--scene",
+        "sphere-rain",
+        "--objects",
+        "2500",
+        "--steps",
+        "1200",
+        "--workers",
+        "4"
+      ],
+      "rows": 1201,
+      "min_center_y": 0.219441890717,
+      "peak_linear_speed": 19.2236671448,
+      "final": {
+        "schema": "1",
+        "scene": "sphere-rain",
+        "objects": "2500",
+        "seed": "1",
+        "workers": "4",
+        "tick": "1200",
+        "simulation_s": "10",
+        "candidate_pairs": "65196",
+        "contacts": "4469",
+        "min_center_y": "0.298847198486",
+        "max_speed": "6.92928028107",
+        "motion_hash": "5397317443915326189"
+      }
+    },
+    {
+      "file": "rain-large.csv",
+      "command": [
+        "./build-m14-release/coresim_scene_runner",
+        "--scene",
+        "sphere-rain",
+        "--objects",
+        "25000",
+        "--steps",
+        "240",
+        "--workers",
+        "4"
+      ],
+      "rows": 241,
+      "min_center_y": 0.235672593117,
+      "peak_linear_speed": 19.6951637268,
+      "final": {
+        "schema": "1",
+        "scene": "sphere-rain",
+        "objects": "25000",
+        "seed": "1",
+        "workers": "4",
+        "tick": "240",
+        "simulation_s": "2",
+        "candidate_pairs": "980219",
+        "contacts": "14326",
+        "min_center_y": "0.255903244019",
+        "max_speed": "19.6951637268",
+        "motion_hash": "7554123242109251359"
+      }
+    },
+    {
+      "file": "particles.csv",
+      "command": [
+        "./build-m14-release/coresim_scene_runner",
+        "--scene",
+        "particle-storm",
+        "--objects",
+        "25000",
+        "--steps",
+        "1200",
+        "--workers",
+        "4"
+      ],
+      "rows": 1201,
+      "min_center_y": -6.25000047684,
+      "peak_linear_speed": 3.4194021225,
+      "final": {
+        "schema": "1",
+        "scene": "particle-storm",
+        "objects": "25000",
+        "seed": "1",
+        "workers": "4",
+        "tick": "1200",
+        "simulation_s": "10",
+        "candidate_pairs": "0",
+        "contacts": "0",
+        "min_center_y": "-6.24928712845",
+        "max_speed": "3.4194021225",
+        "motion_hash": "11863537338786841324"
+      }
+    },
+    {
+      "file": "rain-large-serial.csv",
+      "command": [
+        "./build-m14-release/coresim_scene_runner",
+        "--scene",
+        "sphere-rain",
+        "--objects",
+        "25000",
+        "--steps",
+        "240",
+        "--workers",
+        "0"
+      ],
+      "rows": 241,
+      "min_center_y": 0.235672593117,
+      "peak_linear_speed": 19.6951637268,
+      "final": {
+        "schema": "1",
+        "scene": "sphere-rain",
+        "objects": "25000",
+        "seed": "1",
+        "workers": "0",
+        "tick": "240",
+        "simulation_s": "2",
+        "candidate_pairs": "980219",
+        "contacts": "14326",
+        "min_center_y": "0.255903244019",
+        "max_speed": "19.6951637268",
+        "motion_hash": "7554123242109251359"
+      }
+    },
+    {
+      "file": "particles-serial.csv",
+      "command": [
+        "./build-m14-release/coresim_scene_runner",
+        "--scene",
+        "particle-storm",
+        "--objects",
+        "25000",
+        "--steps",
+        "1200",
+        "--workers",
+        "0"
+      ],
+      "rows": 1201,
+      "min_center_y": -6.25000047684,
+      "peak_linear_speed": 3.4194021225,
+      "final": {
+        "schema": "1",
+        "scene": "particle-storm",
+        "objects": "25000",
+        "seed": "1",
+        "workers": "0",
+        "tick": "1200",
+        "simulation_s": "10",
+        "candidate_pairs": "0",
+        "contacts": "0",
+        "min_center_y": "-6.24928712845",
+        "max_speed": "3.4194021225",
+        "motion_hash": "11863537338786841324"
+      }
+    }
+  ]
+}

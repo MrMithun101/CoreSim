@@ -37,3 +37,24 @@ Particles use radius-like visual half-extents 0.045, lattice spacing 0.35, and v
 `--steps` accepts 1–10000, default 120. `--workers 0` means serial; 1–8 creates that many reusable workers, subject to the existing integration grain threshold. Row zero describes initial motion with zero collision counters; subsequent rows follow exact 1/120-second ticks. Schema 1 includes scene/count/seed/workers, tick, simulated seconds, candidate pairs, contact points, minimum dynamic center height, maximum linear speed and a 64-bit FNV-1a motion digest. The digest mixes float bits of positions, linear/angular velocities and quaternions in dynamic component order, least-significant byte first. It is a diagnostic, not a proof of state equality or a cross-platform physics guarantee. Timing is deliberately absent; this runner verifies trajectories, not performance. Nonfinite motion fails with a nonzero exit status. Duplicate, unknown, malformed and out-of-range options fail before scene allocation.
 
 Fixed seeds and ticks allow repeatable runs on the same build/platform. Floating-point collision solving is not guaranteed bitwise identical across compilers or architectures. Unit tests compare complete motion state between repeated setups, after reset and after serial/worker integration. Local longer-run observations and limits are recorded in [verification](verification.md).
+
+## Captured initial scenes
+
+These are actual 256×256 framebuffer readbacks from the default scenes, using each scene's starting camera. Tests also require the individual and instanced paths to produce identical pixels.
+
+| Stress Tower, 256 boxes | Sphere Rain, 2,500 spheres | Particle Storm, 25,000 particles |
+| --- | --- | --- |
+| ![Stress Tower](images/stress-tower.png) | ![Sphere Rain](images/sphere-rain.png) | ![Particle Storm](images/particle-storm.png) |
+
+## Observed trajectories
+
+Release, Apple M1, macOS 26.3.1, AppleClang 21.0.0.21000101, scene implementation `ba7a4a6`, seed 1. Every tick, including tick zero, is retained in [the verification traces](../benchmarks/results/scenes-m15); `verification.json` records commands, binary hash and extrema. These runs are correctness/stress observations, not timing benchmarks.
+
+| Scene | Objects | Simulated seconds | Minimum center Y over run | Peak linear speed | Final maximum linear speed |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Stress Tower | 256 | 10 | 0.498825 | 2.397996 | 0.067648 |
+| Sphere Rain | 2,500 | 10 | 0.219442 | 19.223667 | 6.929280 |
+| Sphere Rain | 25,000 | 2 | 0.235673 | 19.695164 | 19.695164 |
+| Particle Storm | 25,000 | 10 | -6.250001 | 3.419402 | 3.419402 |
+
+The tower settles near its half-height of 0.5. The radius-0.3 spheres transiently penetrate the floor by about 0.081 units in the 2,500-object run; the solver uses discrete contacts and iterative correction, not continuous collision detection. The 25,000-sphere run demonstrates two simulated seconds with contacts, not long-term dense-stack stability. Particles wrap at approximately ±6.25, with floating-point boundary rounding; their collision counters remain zero. Every recorded row for the 25,000-particle ten-second and 25,000-sphere two-second runs matched a serial replay, except the worker-count field. Smaller unit workloads additionally compare individual motion fields.
