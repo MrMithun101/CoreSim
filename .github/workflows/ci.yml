@@ -47,3 +47,25 @@ jobs:
       - run: cmake --build build --target coresim_jobs_tests coresim_parallel_tests --parallel 3
       - name: Repeat concurrency stress under ThreadSanitizer
         run: ctest --test-dir build -R '^coresim.(jobs|parallel_physics)$' --repeat until-fail:10 --output-on-failure
+  hip-compile:
+    runs-on: ubuntu-24.04
+    # Official rocm/dev-ubuntu-22.04:6.3.3 amd64 image. Hosted runner has no GPU.
+    container: rocm/dev-ubuntu-22.04@sha256:803b9021468bf945b6b932d62b5f885b4c972e0fe83941953a72a1dbd46c9733
+    steps:
+      - name: Install build tools
+        run: |
+          apt-get update
+          apt-get install -y git g++ make python3-pip
+          python3 -m pip install cmake==3.31.6
+      - uses: actions/checkout@v4
+      - name: Configure real HIP compiler without device discovery
+        run: >-
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+          -DCORESIM_BUILD_APP=OFF -DCORESIM_ENABLE_HIP=ON
+          -DCORESIM_HIP_DEVICE_TESTS=OFF
+          -DCMAKE_HIP_COMPILER=/opt/rocm/llvm/bin/clang++
+          -DCMAKE_HIP_ARCHITECTURES=gfx1100 -DCMAKE_PREFIX_PATH=/opt/rocm
+      - name: Compile and link kernel, demo and hardware test binary
+        run: cmake --build build --parallel 2
+      - name: CPU integration tests only (no device execution claim)
+        run: ctest --test-dir build --output-on-failure

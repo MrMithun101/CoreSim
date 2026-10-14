@@ -1,4 +1,5 @@
 #include <coresim/core/Application.hpp>
+#include <coresim/gpu/Demo.hpp>
 
 #include <coresim/benchmark/CollisionBenchmark.hpp>
 #include <algorithm>
@@ -14,6 +15,10 @@
 int main(int argc, char** argv) {
     try {
         const std::vector<std::string_view> arguments(argv + 1, argv + argc);
+        if (std::find(arguments.begin(), arguments.end(), "--gpu-demo") != arguments.end()) {
+            coresim::gpu::run_demo(coresim::gpu::parse_demo_options(arguments), std::cout);
+            return 0;
+        }
         if (std::find(arguments.begin(), arguments.end(), "--benchmark") != arguments.end()) {
             coresim::run_collision_benchmark(coresim::parse_benchmark_options(arguments), std::cout);
             return 0;
@@ -28,7 +33,7 @@ int main(int argc, char** argv) {
         for (int i = 1; i < argc; ++i) {
             const std::string_view option(argv[i]);
             if (option == "--help") {
-                std::cout << usage << "       coresim " << coresim::benchmark_usage << "WASD move, Q/E down/up, hold right mouse to look. R resets physics. Escape closes.\n";
+                std::cout << "       coresim " << coresim::gpu::demo_usage << usage << "       coresim " << coresim::benchmark_usage << "WASD move, Q/E down/up, hold right mouse to look. R resets physics. Escape closes.\n";
                 return 0;
             }
             if (!seen.insert(option).second || (option != "--frames" && option != "--shader-dir" && option != "--scene" && option != "--objects" && option != "--seed") || i + 1 >= argc) {
