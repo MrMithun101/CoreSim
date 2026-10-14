@@ -49,7 +49,7 @@ void ProfilerPanel::draw(Profiler& profiler, bool studio_layout) {
         ImGui::SameLine();
         if (ImGui::Button("Reset statistics")) { profiler.reset(); next_refresh_ = 0; }
         ImGui::SameLine();
-        ImGui::TextUnformatted(enabled ? "Live (4 Hz refresh)" : "Paused; simulation continues");
+        ImGui::TextUnformatted(enabled ? "Live (4 Hz refresh)" : "Collection paused");
         if (ImGui::GetTime() >= next_refresh_) {
             snapshot_ = profiler.stats();
             next_refresh_ = ImGui::GetTime() + 0.25;

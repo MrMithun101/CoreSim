@@ -2,9 +2,15 @@
 
 **High-Performance 3D Physics Simulation Engine**
 
-A C++20 systems and performance engineering project developed one measured milestone at a time. Current scope: **Milestone 16 — HIP Compute Foundation (hardware validation pending)**. It provides custom fixed-step linear and angular physics, generation-checked entity IDs, packed component storage, primitive collision detection and impulse response, a movable perspective camera and a 100-body sphere/box demo, move-aware RAII GPU resources, file-based shaders, depth testing, frame timing, and tests. A deterministic spatial hash accelerates broad-phase collision detection; a live ImGui CPU profiler exposes timing bottlenecks. Bodies rotate under torque and off-center impulses; oriented-box manifolds and contact friction support the falling-body demo. The renderer batches repeated cubes and spheres with instancing, with a retained individual-draw path and measured comparisons up to 25,000 objects. An optional Linux AMD HIP vector-add workload now provides the compute foundation; device execution remains unverified. A headless CSV benchmark compares spatial hashing with the retained all-pairs baseline; see [measurements and methodology](BENCHMARKS.md).
+A C++20 systems and performance engineering project developed one measured milestone at a time. Current scope: **Milestone 17 — CoreSim Studio shell and scene selector**. It provides custom fixed-step linear and angular physics, generation-checked entity IDs, packed component storage, primitive collision detection and impulse response, a movable perspective camera and a 100-body sphere/box demo, move-aware RAII GPU resources, file-based shaders, depth testing, frame timing, and tests. A deterministic spatial hash accelerates broad-phase collision detection; a live ImGui CPU profiler exposes timing bottlenecks. Bodies rotate under torque and off-center impulses; oriented-box manifolds and contact friction support the falling-body demo. The renderer batches repeated cubes and spheres with instancing, with a retained individual-draw path and measured comparisons up to 25,000 objects. An optional Linux AMD HIP vector-add workload now provides the compute foundation; device execution remains unverified. A headless CSV benchmark compares spatial hashing with the retained all-pairs baseline; see [measurements and methodology](BENCHMARKS.md).
 
 ![Sphere and box collision scene rendered by CoreSim](docs/images/angular.png)
+
+## CoreSim Studio
+
+Launch `./build-release/coresim` to open Studio. Choose Tower, Rain, Particle Storm or Sandbox from the Simulation selector, then pause, resume, single-step or reset without restarting. Sandbox uses the original mixed-body demo; object editing is deferred. The camera remains available while physics is paused. See [Studio controls, transition behavior and scope](docs/studio.md).
+
+![CoreSim Studio Sandbox](docs/images/studio-m17.png)
 
 ## HIP compute foundation
 
@@ -158,4 +164,4 @@ Shaders are copied into the build directory and found independently of the worki
 
 See [verification notes](docs/verification.md) for actual local results and commands. The screenshot above is an actual framebuffer capture, not an illustration or performance benchmark.
 
-**Next: Milestone 17 — GPU Particle Simulation**, only on explicit request; Milestone 16 device validation remains pending.
+**Next: Milestone 18 — Studio live configuration**, only on explicit request. GPU particle work moves to Studio V2 Milestone 23; HIP device validation remains pending.

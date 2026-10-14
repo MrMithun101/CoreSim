@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
         std::size_t objects=0;
         std::uint32_t seed=1;
         std::set<std::string_view> seen;
-        constexpr auto usage = "Usage: coresim [--frames positive-integer] [--shader-dir path] [--scene collision-demo|stress-tower|sphere-rain|particle-storm] [--objects count] [--seed uint32]\n";
+        constexpr auto usage = "Usage: coresim [--frames positive-integer] [--shader-dir path] [--scene sandbox|collision-demo|stress-tower|sphere-rain|particle-storm] [--objects count] [--seed uint32]\n";
         for (int i = 1; i < argc; ++i) {
             const std::string_view option(argv[i]);
             if (option == "--help") {

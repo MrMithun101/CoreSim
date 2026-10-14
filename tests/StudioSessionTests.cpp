@@ -4,6 +4,7 @@
 #include <limits>
 using namespace coresim;
 TEST_CASE("Studio pause, step and resume exclude paused wall time") {
+    REQUIRE(scene_config("sandbox").kind==SceneKind::collision_demo);
     StudioSession session(scene_config("sphere-rain",8,7));
     session.advance(FixedStepper::step_seconds);
     REQUIRE(session.ticks()==1);

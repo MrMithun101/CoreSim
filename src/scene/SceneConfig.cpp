@@ -20,7 +20,7 @@ void validate_scene_config(const SceneConfig& c) {
 }
 SceneConfig scene_config(std::string_view name, std::size_t objects, std::uint32_t seed) {
     SceneConfig c;
-    if (name == "collision-demo") { c.kind=SceneKind::collision_demo; c.objects=100; }
+    if (name == "collision-demo" || name == "sandbox") { c.kind=SceneKind::collision_demo; c.objects=100; }
     else if (name == "stress-tower") { c.kind=SceneKind::stress_tower; c.objects=256; }
     else if (name == "sphere-rain") { c.kind=SceneKind::sphere_rain; c.objects=2500; }
     else if (name == "particle-storm") { c.kind=SceneKind::particle_storm; c.objects=25000; }
