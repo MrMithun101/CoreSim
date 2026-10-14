@@ -5,8 +5,8 @@
 #include <sstream>
 
 namespace coresim {
-Application::Application(const std::filesystem::path& shader_directory)
-    : renderer_(shader_directory) {}
+Application::Application(const std::filesystem::path& shader_directory, SceneConfig scene)
+    : renderer_(shader_directory), scene_(scene), physics_(scene_.gravity()) { camera_=scene_.camera(); }
 
 int Application::run(std::uint64_t frame_limit) {
     FrameTimer timer;
@@ -28,7 +28,8 @@ int Application::run(std::uint64_t frame_limit) {
         }
     }
     const auto& stats = timer.stats();
-    std::cout << "CoreSim stopped cleanly: frames=" << stats.frame_count
+    std::cout << "CoreSim stopped cleanly: scene=" << scene_name(scene_.config().kind)
+              << " objects=" << scene_.config().objects << " seed=" << scene_.config().seed << " frames=" << stats.frame_count
               << " elapsed_s=" << stats.elapsed_seconds << " average_fps=" << stats.fps
               << " last_frame_ms=" << stats.total_frame_seconds * 1000.0
               << " physics_ticks=" << physics_ticks_
@@ -62,7 +63,7 @@ void Application::update(const FrameStats& stats) {
     }
     if (stats.frame_count > 0 && stats.elapsed_seconds >= next_title_update_) {
         std::ostringstream title;
-        title << std::fixed << std::setprecision(2) << "CoreSim | " << scene_.world().size()
+        title << std::fixed << std::setprecision(2) << "CoreSim | " << scene_name(scene_.config().kind) << " | " << scene_.world().size()
               << " entities | R reset | sim "
               << static_cast<double>(physics_ticks_) * FixedStepper::step_seconds
               << " s | dropped " << dropped_physics_seconds_ << " s | FPS " << stats.fps

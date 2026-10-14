@@ -3,6 +3,8 @@
 #include <coresim/benchmark/CollisionBenchmark.hpp>
 #include <algorithm>
 #include <vector>
+#include <set>
+#include <limits>
 #include <charconv>
 #include <exception>
 #include <iostream>
@@ -18,18 +20,25 @@ int main(int argc, char** argv) {
         }
         std::uint64_t frame_limit = 0;
         std::filesystem::path shader_directory = CORESIM_SHADER_DIR;
-        constexpr auto usage = "Usage: coresim [--frames positive-integer] [--shader-dir path]\n";
+        std::string_view scene="collision-demo";
+        std::size_t objects=0;
+        std::uint32_t seed=1;
+        std::set<std::string_view> seen;
+        constexpr auto usage = "Usage: coresim [--frames positive-integer] [--shader-dir path] [--scene collision-demo|stress-tower|sphere-rain|particle-storm] [--objects count] [--seed uint32]\n";
         for (int i = 1; i < argc; ++i) {
             const std::string_view option(argv[i]);
             if (option == "--help") {
                 std::cout << usage << "       coresim " << coresim::benchmark_usage << "WASD move, Q/E down/up, hold right mouse to look. R resets physics. Escape closes.\n";
                 return 0;
             }
-            if ((option != "--frames" && option != "--shader-dir") || i + 1 >= argc) {
+            if (!seen.insert(option).second || (option != "--frames" && option != "--shader-dir" && option != "--scene" && option != "--objects" && option != "--seed") || i + 1 >= argc) {
                 throw std::invalid_argument(usage);
             }
             const std::string_view value(argv[++i]);
-            if (option == "--shader-dir") {
+            if (option == "--scene") { scene=value; }
+            else if (option == "--objects") { objects=static_cast<std::size_t>(coresim::scene_integer(value,100000)); }
+            else if (option == "--seed") { seed=static_cast<std::uint32_t>(coresim::scene_integer(value,std::numeric_limits<std::uint32_t>::max(),true)); }
+            else if (option == "--shader-dir") {
                 if (value.empty()) {
                     throw std::invalid_argument("--shader-dir requires a nonempty path");
                 }
@@ -42,7 +51,7 @@ int main(int argc, char** argv) {
                 }
             }
         }
-        coresim::Application application(shader_directory);
+        coresim::Application application(shader_directory,coresim::scene_config(scene,objects,seed));
         return application.run(frame_limit);
     } catch (const std::exception& error) {
         std::cerr << "CoreSim: " << error.what() << '\n';

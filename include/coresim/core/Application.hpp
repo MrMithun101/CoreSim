@@ -13,7 +13,7 @@
 namespace coresim {
 class Application {
 public:
-    explicit Application(const std::filesystem::path& shader_directory);
+    explicit Application(const std::filesystem::path& shader_directory, SceneConfig scene = {});
     // Zero runs interactively; positive values bound display smoke tests.
     int run(std::uint64_t frame_limit = 0);
 private:
