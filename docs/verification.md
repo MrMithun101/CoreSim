@@ -1,5 +1,19 @@
 # Verification
 
+## Milestone 16 — October 14, 2026
+
+Checkpoint `1297975` adds the optional Linux AMD HIP vector-add backend, CPU reference, runtime/device inspector, headless executable and CoreSim command dispatch. `cae8afe` adds the ownership/execution guide and a device-restoration regression. The default build requires no ROCm installation. HIP requests fail explicitly when unavailable; no CPU fallback is used.
+
+All 65 local CTest entries passed in Release, Debug and ASan/UBSan, including the existing display and concurrency suites. The new CPU/backend/CLI suite passed 58 assertions in four cases. Builds emitted no CoreSim compiler/linker warnings or sanitizer diagnostics. Existing upstream GLM CMake deprecation warnings remain. Local tests cover input preservation, empty input, block-boundary sizes through 1,048,579 elements, nonfinite/overflow rejection, malformed CLI arguments and unavailable-backend errors. Configuration checks reject HIP on this Mac and device-test registration without a HIP build.
+
+The portable demonstration with 1,048,579 elements reports `backend=cpu`, `verified=true`, checksum `-1570.25`. This is a correctness diagnostic, not a timing measurement. Local builds reused `build-m14-release`, `build-m14-debug` and `build-m14-asan` with pinned dependency sources in `/tmp/coresim-m14-deps`; each was rebuilt and its full CTest suite run. The host is Apple M1/macOS with AppleClang 21 and no HIP compiler or compatible GPU.
+
+The [foundation checkpoint CI](https://github.com/MrMithun101/CoreSim/actions/runs/38605694922) passed all seven jobs, including GCC/Clang Debug/Release display tests, ASan/UBSan, ten repetitions of both concurrency suites under ThreadSanitizer, and real HIP compilation. The [final code CI](https://github.com/MrMithun101/CoreSim/actions/runs/38605952422) for `cae8afe` also passed all seven jobs.
+
+The [final HIP compile job](https://github.com/MrMithun101/CoreSim/actions/runs/38605952422/job/115996755593) passed using the pinned official ROCm 6.3.3 Ubuntu 22.04 image, CMake 3.31.6 and HIP Clang 18. It compiled `VectorAdd.hip`, linked the demo and device-test executable, and passed all 39 headless CPU integration CTest entries. No GPU-source compiler warnings were emitted. The container's older GCC emits an existing `Profiler.hpp` parameter-shadow warning; this is unrelated to the GPU implementation. The job does not expose a GPU and does not register the device suite.
+
+**Hardware execution remains unverified.** The user has no GPU machine available. The real device test binary is compiled in ROCm CI, but device tests are registered only with `CORESIM_HIP_DEVICE_TESTS=ON`; enabling them without a working GPU fails. No kernel execution, GPU memory-cleanup behavior, device-restoration success or GPU performance claim follows from compilation. See [HIP setup, memory transfers, launch geometry, synchronization and validation limits](hip.md). Milestone 17 particle GPU integration is not included.
+
 ## Milestone 15 — October 13, 2026
 
 Scene checkpoint `ba7a4a6` adds seeded Stress Tower, Sphere Rain and Particle Storm construction, count validation, starting cameras, reset snapshots and a headless exact-tick scene runner. The existing collision demo remains the default. Particle Storm uses independent collider-free CPU bodies and a serial periodic-boundary pass after integration joins. No HIP/GPU compute is included.
