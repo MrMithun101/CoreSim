@@ -6,7 +6,7 @@
 
 namespace coresim {
 Application::Application(const std::filesystem::path& shader_directory, SceneConfig scene)
-    : renderer_(shader_directory), scene_(scene), physics_(scene_.gravity()) { camera_=scene_.camera(); }
+    : renderer_(shader_directory), session_(scene) { camera_=session_.scene().camera(); }
 
 int Application::run(std::uint64_t frame_limit) {
     FrameTimer timer;
@@ -19,6 +19,7 @@ int Application::run(std::uint64_t frame_limit) {
                 break;
             }
             profiler_panel_.begin_frame();
+            if (studio_panel_.draw(session_)) { camera_=session_.scene().camera(); }
             update(timer.stats());
             render();
         }
@@ -28,12 +29,12 @@ int Application::run(std::uint64_t frame_limit) {
         }
     }
     const auto& stats = timer.stats();
-    std::cout << "CoreSim stopped cleanly: scene=" << scene_name(scene_.config().kind)
-              << " objects=" << scene_.config().objects << " seed=" << scene_.config().seed << " frames=" << stats.frame_count
+    std::cout << "CoreSim stopped cleanly: scene=" << scene_name(session_.scene().config().kind)
+              << " objects=" << session_.scene().config().objects << " seed=" << session_.scene().config().seed << " frames=" << stats.frame_count
               << " elapsed_s=" << stats.elapsed_seconds << " average_fps=" << stats.fps
               << " last_frame_ms=" << stats.total_frame_seconds * 1000.0
-              << " physics_ticks=" << physics_ticks_
-              << " dropped_physics_s=" << dropped_physics_seconds_ << '\n';
+              << " physics_ticks=" << session_.ticks()
+              << " dropped_physics_s=" << session_.dropped_seconds() << '\n';
     for (std::size_t i = 0; i < profile_names.size(); ++i) {
         const auto& entry = profiler_.stats()[i];
         std::cout << "Profile " << profile_names[i] << ": calls=" << entry.count
@@ -49,24 +50,16 @@ void Application::update(const FrameStats& stats) {
     camera_.look(input.look_x * 0.0025F, input.look_y * 0.0025F);
     camera_.move({input.right, input.up, input.forward}, dt);
     if (input.reset_physics) {
-        scene_.reset_physics();
-        physics_clock_.reset();
-        physics_ticks_ = 0;
-        dropped_physics_seconds_ = 0;
-    } else {
-        const auto result = physics_clock_.advance(stats.delta_seconds, [this](float step) {
-            physics_.step(scene_.world(), step, nullptr, &profiler_, &jobs_);
-            scene_.update(step);
-        });
-        physics_ticks_ += result.steps;
-        dropped_physics_seconds_ += result.dropped_seconds;
+        session_.reset();
+        camera_=session_.scene().camera();
     }
+    session_.advance(stats.delta_seconds,&profiler_,&jobs_);
     if (stats.frame_count > 0 && stats.elapsed_seconds >= next_title_update_) {
         std::ostringstream title;
-        title << std::fixed << std::setprecision(2) << "CoreSim | " << scene_name(scene_.config().kind) << " | " << scene_.world().size()
+        title << std::fixed << std::setprecision(2) << "CoreSim Studio | " << scene_name(session_.scene().config().kind) << " | " << session_.scene().world().size()
               << " entities | R reset | sim "
-              << static_cast<double>(physics_ticks_) * FixedStepper::step_seconds
-              << " s | dropped " << dropped_physics_seconds_ << " s | FPS " << stats.fps
+              << static_cast<double>(session_.ticks()) * FixedStepper::step_seconds
+              << " s | dropped " << session_.dropped_seconds() << " s | FPS " << stats.fps
               << " | dt " << stats.delta_seconds * 1000.0 << " ms | frame "
               << stats.total_frame_seconds * 1000.0 << " ms";
         window_.set_title(title.str());
@@ -79,9 +72,9 @@ void Application::render() {
         const auto [width, height] = window_.framebuffer_size();
         if (width > 0 && height > 0) {
             const float aspect = static_cast<float>(width) / static_cast<float>(height);
-            renderer_.draw(width, height, camera_.projection(aspect) * camera_.view(), scene_.world());
+            renderer_.draw(width, height, camera_.projection(aspect) * camera_.view(), session_.scene().world());
         }
-        profiler_panel_.draw(profiler_);
+        profiler_panel_.draw(profiler_,true);
         profiler_panel_.render();
     }
     ScopedProfiler presentation(&profiler_, ProfileSection::presentation);

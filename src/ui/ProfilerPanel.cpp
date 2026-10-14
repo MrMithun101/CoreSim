@@ -36,8 +36,9 @@ void ProfilerPanel::begin_frame() {
 }
 bool ProfilerPanel::captures_keyboard() const { return ImGui::GetIO().WantCaptureKeyboard; }
 bool ProfilerPanel::captures_mouse() const { return ImGui::GetIO().WantCaptureMouse; }
-void ProfilerPanel::draw(Profiler& profiler) {
-    ImGui::SetNextWindowPos({12, 12}, ImGuiCond_FirstUseEver);
+void ProfilerPanel::draw(Profiler& profiler, bool studio_layout) {
+    if (studio_layout) { ImGui::SetNextWindowCollapsed(true,ImGuiCond_FirstUseEver); }
+    ImGui::SetNextWindowPos({studio_layout ? 380.0F : 12.0F, 12}, ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowSize({710, 340}, ImGuiCond_FirstUseEver);
     if (ImGui::Begin("CPU Profiler")) {
         bool enabled = profiler.enabled();

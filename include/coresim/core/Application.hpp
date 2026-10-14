@@ -1,5 +1,7 @@
 #pragma once
 #include <coresim/core/FrameTimer.hpp>
+#include <coresim/studio/StudioSession.hpp>
+#include <coresim/ui/StudioPanel.hpp>
 #include <coresim/core/Window.hpp>
 #include <coresim/ui/ProfilerPanel.hpp>
 #include <coresim/jobs/JobSystem.hpp>
@@ -26,11 +28,8 @@ private:
     Profiler profiler_;
     ProfilerPanel profiler_panel_{window_};
     Camera camera_{{16.0F, 18.0F, 27.0F}, -2.106F, -0.52F};
-    DemoScene scene_;
-    PhysicsSystem physics_;
-    FixedStepper physics_clock_;
-    std::uint64_t physics_ticks_{};
-    double dropped_physics_seconds_{};
+    StudioSession session_;
+    StudioPanel studio_panel_;
     double next_title_update_{};
     // Destroy/join workers before any simulation or graphics resources.
     JobSystem jobs_;

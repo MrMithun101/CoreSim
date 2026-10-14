@@ -11,7 +11,7 @@ public:
     ProfilerPanel(const ProfilerPanel&) = delete;
     ProfilerPanel& operator=(const ProfilerPanel&) = delete;
     void begin_frame();
-    void draw(Profiler& profiler);
+    void draw(Profiler& profiler, bool studio_layout = false);
     void render();
     [[nodiscard]] bool captures_keyboard() const;
     [[nodiscard]] bool captures_mouse() const;
