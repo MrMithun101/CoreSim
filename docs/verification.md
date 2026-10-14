@@ -1,5 +1,19 @@
 # Verification
 
+## Milestone 17 — CoreSim Studio — October 14, 2026
+
+Checkpoint `59b5549` adds the Studio shell, four-scene selector and headless simulation-session owner. Integration `11e7d26` adds actual UI interaction tests, the Sandbox CLI alias and the illustrated Studio guide. This is the revised Studio roadmap's Milestone 17; GPU particle integration is deferred to Milestone 23.
+
+The [Studio checkpoint CI](https://github.com/MrMithun101/CoreSim/actions/runs/38614333043) passed all seven jobs: GCC/Clang Debug/Release display tests, ASan/UBSan, repeated ThreadSanitizer concurrency tests and HIP compilation. The [final integration CI](https://github.com/MrMithun101/CoreSim/actions/runs/38614670552) for `11e7d26` also passed all seven jobs. CI retains the pre-existing `Profiler.hpp` parameter-shadow warning.
+
+All 65 local CTest entries passed in Release, Debug and ASan/UBSan. The new headless session tests passed 56 assertions in three cases. The UI suite includes clicks on Pause, Single step, Reset, Resume and all four scene choices; it renders the actual scene and panels into a depth-enabled framebuffer. No local CoreSim compiler/linker warnings or sanitizer diagnostics were emitted; the existing upstream GLM CMake deprecation warning remains.
+
+Session checks cover pause without catch-up, one-tick manual advancement, fractional-time reset, preserved pause state, repeated scene replacement, particle/rain gravity changes, worker-backed stepping, invalid transition rollback and initial-motion restoration. Scene construction is transactional, and controls apply only between joined physics updates. Reset/selection discard the control frame and the following elapsed interval so rebuild time cannot advance the new simulation. Scene changes load preset defaults; existing CLI overrides continue to configure the initial scene.
+
+The documented `--scene sandbox --frames 3` launch exited cleanly. Sandbox is the original 100-body mixed collision demo, not an object editor. The [Studio framebuffer capture](images/studio-m17.png) was visually inspected for readable controls, visible geometry and profiler separation. Both panels use the existing ImGui context; keyboard/mouse capture continues to gate camera input. The profiler starts collapsed and retains cumulative samples across scene changes.
+
+Local builds reused `build-m14-release`, `build-m14-debug` and `build-m14-asan` with pinned dependency sources in `/tmp/coresim-m14-deps`, followed by full CTest runs. See [Studio controls and transition semantics](studio.md). No live configuration, algorithm toggles, debug overlays or new performance claims are included in this milestone.
+
 ## Milestone 16 — October 14, 2026
 
 Checkpoint `1297975` adds the optional Linux AMD HIP vector-add backend, CPU reference, runtime/device inspector, headless executable and CoreSim command dispatch. `cae8afe` adds the ownership/execution guide and a device-restoration regression. The default build requires no ROCm installation. HIP requests fail explicitly when unavailable; no CPU fallback is used.
