@@ -44,9 +44,11 @@ jobs:
           CC: clang
           CXX: clang++
         run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DCORESIM_BUILD_APP=OFF -DCORESIM_SANITIZER=thread
-      - run: cmake --build build --target coresim_jobs_tests coresim_parallel_tests --parallel 3
+      - run: cmake --build build --target coresim_jobs_tests coresim_parallel_tests coresim_particle_tests --parallel 3
       - name: Repeat concurrency stress under ThreadSanitizer
         run: ctest --test-dir build -R '^coresim.(jobs|parallel_physics)$' --repeat until-fail:10 --output-on-failure
+      - name: Particle parity and failure recovery under ThreadSanitizer
+        run: ctest --test-dir build -R '^coresim.particles$' --repeat until-fail:3 --output-on-failure
   hip-compile:
     runs-on: ubuntu-24.04
     # Official rocm/dev-ubuntu-22.04:6.3.3 amd64 image. Hosted runner has no GPU.
