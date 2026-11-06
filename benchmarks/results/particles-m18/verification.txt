@@ -1,0 +1,41 @@
+CoreSim Milestone 18 correctness verification — 2026-11-06
+Host: macOS-26.3.1-arm64-arm-64bit arm64
+Binary SHA256: a86201677ead5098489629acc8065760ac314a82b82f0a43dc4cfbc8c91d61ca
+No timings or speedup measurements; every compare run checks all six scalars after every tick.
+
+$ ./build-m18-release/coresim_particle_runner --backend compare --particles 1000 --steps 120 --workers 1 --seed 7
+workload=constant-acceleration-v1 backend=compare particles=1000 seed=7 ticks=120 timestep=0.00833333377 acceleration=0,-9.81000042,0 workers=1 worker_tasks=120 cpu_parity=exact-every-tick digest=f0a0b9b1815a39fc
+
+$ ./build-m18-release/coresim_particle_runner --backend compare --particles 1000 --steps 120 --workers 2 --seed 7
+workload=constant-acceleration-v1 backend=compare particles=1000 seed=7 ticks=120 timestep=0.00833333377 acceleration=0,-9.81000042,0 workers=2 worker_tasks=240 cpu_parity=exact-every-tick digest=f0a0b9b1815a39fc
+
+$ ./build-m18-release/coresim_particle_runner --backend compare --particles 1000 --steps 120 --workers 4 --seed 7
+workload=constant-acceleration-v1 backend=compare particles=1000 seed=7 ticks=120 timestep=0.00833333377 acceleration=0,-9.81000042,0 workers=4 worker_tasks=480 cpu_parity=exact-every-tick digest=f0a0b9b1815a39fc
+
+$ ./build-m18-release/coresim_particle_runner --backend compare --particles 1000 --steps 120 --workers 8 --seed 7
+workload=constant-acceleration-v1 backend=compare particles=1000 seed=7 ticks=120 timestep=0.00833333377 acceleration=0,-9.81000042,0 workers=8 worker_tasks=960 cpu_parity=exact-every-tick digest=f0a0b9b1815a39fc
+
+$ ./build-m18-release/coresim_particle_runner --backend compare --particles 10000 --steps 120 --workers 1 --seed 7
+workload=constant-acceleration-v1 backend=compare particles=10000 seed=7 ticks=120 timestep=0.00833333377 acceleration=0,-9.81000042,0 workers=1 worker_tasks=120 cpu_parity=exact-every-tick digest=5a6dd2c66489108d
+
+$ ./build-m18-release/coresim_particle_runner --backend compare --particles 10000 --steps 120 --workers 2 --seed 7
+workload=constant-acceleration-v1 backend=compare particles=10000 seed=7 ticks=120 timestep=0.00833333377 acceleration=0,-9.81000042,0 workers=2 worker_tasks=240 cpu_parity=exact-every-tick digest=5a6dd2c66489108d
+
+$ ./build-m18-release/coresim_particle_runner --backend compare --particles 10000 --steps 120 --workers 4 --seed 7
+workload=constant-acceleration-v1 backend=compare particles=10000 seed=7 ticks=120 timestep=0.00833333377 acceleration=0,-9.81000042,0 workers=4 worker_tasks=480 cpu_parity=exact-every-tick digest=5a6dd2c66489108d
+
+$ ./build-m18-release/coresim_particle_runner --backend compare --particles 10000 --steps 120 --workers 8 --seed 7
+workload=constant-acceleration-v1 backend=compare particles=10000 seed=7 ticks=120 timestep=0.00833333377 acceleration=0,-9.81000042,0 workers=8 worker_tasks=960 cpu_parity=exact-every-tick digest=5a6dd2c66489108d
+
+$ ./build-m18-release/coresim_particle_runner --backend compare --particles 100000 --steps 120 --workers 1 --seed 7
+workload=constant-acceleration-v1 backend=compare particles=100000 seed=7 ticks=120 timestep=0.00833333377 acceleration=0,-9.81000042,0 workers=1 worker_tasks=120 cpu_parity=exact-every-tick digest=5874fa4c8849d772
+
+$ ./build-m18-release/coresim_particle_runner --backend compare --particles 100000 --steps 120 --workers 2 --seed 7
+workload=constant-acceleration-v1 backend=compare particles=100000 seed=7 ticks=120 timestep=0.00833333377 acceleration=0,-9.81000042,0 workers=2 worker_tasks=240 cpu_parity=exact-every-tick digest=5874fa4c8849d772
+
+$ ./build-m18-release/coresim_particle_runner --backend compare --particles 100000 --steps 120 --workers 4 --seed 7
+workload=constant-acceleration-v1 backend=compare particles=100000 seed=7 ticks=120 timestep=0.00833333377 acceleration=0,-9.81000042,0 workers=4 worker_tasks=480 cpu_parity=exact-every-tick digest=5874fa4c8849d772
+
+$ ./build-m18-release/coresim_particle_runner --backend compare --particles 100000 --steps 120 --workers 8 --seed 7
+workload=constant-acceleration-v1 backend=compare particles=100000 seed=7 ticks=120 timestep=0.00833333377 acceleration=0,-9.81000042,0 workers=8 worker_tasks=960 cpu_parity=exact-every-tick digest=5874fa4c8849d772
+

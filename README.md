@@ -2,9 +2,15 @@
 
 **High-Performance 3D Physics Simulation Engine**
 
-A C++20 systems and performance engineering project developed one measured milestone at a time. Current scope: **Milestone 17 — CoreSim Studio shell and scene selector**. It provides custom fixed-step linear and angular physics, generation-checked entity IDs, packed component storage, primitive collision detection and impulse response, a movable perspective camera and a 100-body sphere/box demo, move-aware RAII GPU resources, file-based shaders, depth testing, frame timing, and tests. A deterministic spatial hash accelerates broad-phase collision detection; a live ImGui CPU profiler exposes timing bottlenecks. Bodies rotate under torque and off-center impulses; oriented-box manifolds and contact friction support the falling-body demo. The renderer batches repeated cubes and spheres with instancing, with a retained individual-draw path and measured comparisons up to 25,000 objects. An optional Linux AMD HIP vector-add workload now provides the compute foundation; device execution remains unverified. A headless CSV benchmark compares spatial hashing with the retained all-pairs baseline; see [measurements and methodology](BENCHMARKS.md).
+A C++20 systems and performance engineering project developed one measured milestone at a time. Current scope: **Milestone 18 — Comparable Particle Workload**. It provides custom fixed-step linear and angular physics, generation-checked entity IDs, packed component storage, primitive collision detection and impulse response, a movable perspective camera and a 100-body sphere/box demo, move-aware RAII GPU resources, file-based shaders, depth testing, frame timing, and tests. A deterministic spatial hash accelerates broad-phase collision detection; a live ImGui CPU profiler exposes timing bottlenecks. Bodies rotate under torque and off-center impulses; oriented-box manifolds and contact friction support the falling-body demo. The renderer batches repeated cubes and spheres with instancing, with a retained individual-draw path and measured comparisons up to 25,000 objects. An optional Linux AMD HIP vector-add workload now provides the compute foundation; device execution remains unverified. A headless CSV benchmark compares spatial hashing with the retained all-pairs baseline; see [measurements and methodology](BENCHMARKS.md).
 
 ![Sphere and box collision scene rendered by CoreSim](docs/images/angular.png)
+
+## Comparable CPU particle workload
+
+A headless runner compares serial and persistent worker-pool execution on identical seeded particles at a fixed 1/120-second timestep. It checks all six position/velocity scalars after every tick, with verified 1K, 10K and 100K workloads. Run `./build-m18-release/coresim_particle_runner --particles 100000 --workers 4 --seed 7` after following the [build instructions and workload contract](docs/particle-workload.md). This is correctness validation; performance measurements follow in Milestone 19.
+
+See the [revised CPU/GPU roadmap](docs/roadmap.md). Studio live configuration is deferred in favor of the comparable simulation and measurement foundation.
 
 ## CoreSim Studio
 
@@ -164,4 +170,4 @@ Shaders are copied into the build directory and found independently of the worki
 
 See [verification notes](docs/verification.md) for actual local results and commands. The screenshot above is an actual framebuffer capture, not an illustration or performance benchmark.
 
-**Next: Milestone 18 — Studio live configuration**, only on explicit request. GPU particle work moves to Studio V2 Milestone 23; HIP device validation remains pending.
+**Next: Milestone 19 — CPU measurement baseline**, only on explicit request. CUDA integration follows in Milestone 20; real GPU validation requires hardware access.
