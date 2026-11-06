@@ -1,5 +1,19 @@
 # Verification
 
+## Milestone 18 — Comparable Particle Workload — November 6, 2026
+
+Code checkpoint `44b3aaf` implements the revised compute-first Milestone 18: a standalone particle state/integrator, deterministic initialization, serial and persistent worker-pool CPU paths, a headless correctness runner and concurrency/error-path tests. Documentation checkpoint `bc13548` records the workload contract, revised roadmap and reproducible validation runs. Studio live configuration is deferred; the existing Particle Storm is not treated as an equivalent workload because it uses different motion/boundary rules.
+
+The [code checkpoint CI](https://github.com/MrMithun101/CoreSim/actions/runs/42252113993) passed all seven jobs: GCC/Clang Debug/Release with 78 display-enabled CTest entries, headless ASan/UBSan, HIP compilation, and ThreadSanitizer. The concurrency job repeats the existing jobs/parallel-physics suites ten times and the new particle suite three times. The inspected GCC log reports only the pre-existing `Profiler.hpp` shadow warning; no new particle-code warnings were emitted.
+
+All 53 headless local CTest entries passed in fresh Release, Debug and ASan/UBSan builds. The particle suite passed 1,369 assertions across six test cases; its 13 CTest entries cover the suite, 1K/10K/100K comparison runs, independent serial/parallel commands and invalid CLI inputs. No CoreSim compiler warnings or sanitizer diagnostics were emitted locally. Existing upstream GLM CMake deprecation warnings remain.
+
+Independent analytical tests validate the semi-implicit Euler equations for 120 fixed ticks. CPU parity checks every scalar after every tick across small/uneven partitions, pools with 1/2/4 workers and the three requested workload sizes with three workers. Failure checks cover numerical overflow, nonfinite inputs, closed-pool admission and nested-worker calls; failed steps leave current state and tick count unchanged. Reset/replay, stable initialization bit patterns and full-state comparison are also covered.
+
+Twelve additional Release runs compared 1K, 10K and 100K particles at seed 7 for 120 ticks with 1, 2, 4 and 8 workers. Every per-tick comparison was exact. For each count, the final digest matched across all four worker counts. [Retained commands/results](../benchmarks/results/particles-m18/verification.txt) include the binary SHA256 and host metadata. No timings or speedups were measured; the digest is diagnostic and does not replace full-state comparison.
+
+Local verification used Apple Silicon/macOS, CMake 3.31.6 restored under `/tmp/coresim-m18-tools`, and fresh `build-m18-release`, `build-m18-debug` and `build-m18-asan` directories with `CORESIM_BUILD_APP=OFF`. Pinned Catch2/GLM sources were restored under `/tmp/coresim-m18-deps`; Debug/ASan use separate build trees with source overrides. Graphical regression coverage is provided by CI. See [the workload contract](particle-workload.md) and [revised milestones](roadmap.md).
+
 ## Milestone 17 — CoreSim Studio — October 14, 2026
 
 Checkpoint `59b5549` adds the Studio shell, four-scene selector and headless simulation-session owner. Integration `11e7d26` adds actual UI interaction tests, the Sandbox CLI alias and the illustrated Studio guide. This is the revised Studio roadmap's Milestone 17; GPU particle integration is deferred to Milestone 23.
