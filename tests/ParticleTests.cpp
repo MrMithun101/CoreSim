@@ -146,7 +146,7 @@ TEST_CASE("Particle CLI reports actual execution and validates input") {
     for (const auto& args:std::vector<std::vector<std::string_view>>{
         {"--particles","0"},{"--particles","100001"},{"--particles","-1"},{"--steps","2x"},
         {"--steps",""},{"--steps","18446744073709551616"},{"--workers","65"},{"--workers","0"},
-        {"--backend","cuda"},{"--backend","serial","--workers","4"},{"--seed","4294967296"},
+        {"--backend","unknown"},{"--backend","serial","--workers","4"},{"--seed","4294967296"},
         {"--seed","-1"},{"--steps","1","--steps","2"},{"--steps"},{"--unknown"},{"--help","--unknown"}}) {
         REQUIRE_THROWS_AS(parse_options(args),std::invalid_argument);
     }

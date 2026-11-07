@@ -71,3 +71,23 @@ jobs:
         run: cmake --build build --parallel 2
       - name: CPU integration tests only (no device execution claim)
         run: ctest --test-dir build --output-on-failure
+  cuda-compile:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install NVIDIA CUDA compiler and runtime development files (no driver)
+        run: |
+          curl -fsSLo /tmp/cuda-keyring.deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-keyring_1.1-1_all.deb
+          sudo dpkg -i /tmp/cuda-keyring.deb
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends g++-13 cuda-nvcc-12-6=12.6.85-1 cuda-cudart-dev-12-6
+      - name: Configure offline device compilation for compute capability 8.0
+        run: >-
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCORESIM_BUILD_APP=OFF
+          -DCORESIM_ENABLE_CUDA=ON -DCORESIM_CUDA_DEVICE_TESTS=OFF
+          -DCMAKE_CUDA_COMPILER=/usr/local/cuda-12.6/bin/nvcc
+          -DCMAKE_CUDA_HOST_COMPILER=/usr/bin/g++-13 -DCMAKE_CUDA_ARCHITECTURES=80
+      - name: Compile and link real kernel, runner and device suite
+        run: cmake --build build --parallel 2 --target coresim_particle_runner coresim_particle_tests coresim_cuda_device_tests
+      - name: Run only hardware-independent particle tests
+        run: ctest --test-dir build -R '^coresim\.(particles($|_)|cuda_info$)' --output-on-failure

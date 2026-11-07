@@ -1,5 +1,6 @@
 #include <coresim/particles/ParticleRunner.hpp>
 #include <coresim/jobs/JobSystem.hpp>
+#include <coresim/particles/CudaParticles.hpp>
 #include <charconv>
 #include <iomanip>
 #include <limits>
@@ -26,7 +27,8 @@ RunOptions parse_options(std::span<const std::string_view> arguments) {
         const auto key = arguments[i];
         if (!seen.insert(key).second) { throw std::invalid_argument("Duplicate particle option"); }
         if (key == "--help") { options.help = true; continue; }
-        if (key != "--backend" && key != "--particles" && key != "--steps" && key != "--workers" && key != "--seed") {
+        if (key == "--cuda-info") { options.cuda_info = true; continue; }
+        if (key != "--device" && key != "--backend" && key != "--particles" && key != "--steps" && key != "--workers" && key != "--seed") {
             throw std::invalid_argument("Unknown particle option: " + std::string(key));
         }
         if (++i == arguments.size()) { throw std::invalid_argument("Missing particle option value"); }
@@ -35,21 +37,48 @@ RunOptions parse_options(std::span<const std::string_view> arguments) {
             if (value == "serial") { options.backend = Backend::serial; }
             else if (value == "parallel") { options.backend = Backend::parallel; }
             else if (value == "compare") { options.backend = Backend::compare; }
-            else { throw std::invalid_argument("Particle backend must be serial, parallel or compare"); }
+            else if (value == "cuda") { options.backend = Backend::cuda; }
+            else { throw std::invalid_argument("Particle backend must be serial, parallel, compare or cuda"); }
         } else if (key == "--particles") { options.config.count = static_cast<std::size_t>(integer(value, maximum_particles)); }
         else if (key == "--steps") { options.steps = static_cast<std::size_t>(integer(value, 10000)); }
         else if (key == "--workers") { options.workers = static_cast<std::size_t>(integer(value, 64)); }
+        else if (key == "--device") { options.device = static_cast<int>(integer(value, std::numeric_limits<int>::max(), true)); }
         else { options.config.seed = static_cast<std::uint32_t>(integer(value, std::numeric_limits<std::uint32_t>::max(), true)); }
     }
-    if (options.backend == Backend::serial && seen.contains("--workers")) {
+    if (options.cuda_info && seen.size() != 1) { throw std::invalid_argument("--cuda-info is a standalone inspection command"); }
+    if (seen.contains("--device") && options.backend != Backend::cuda) { throw std::invalid_argument("--device requires CUDA"); }
+    if (options.backend != Backend::parallel && options.backend != Backend::compare && seen.contains("--workers")) {
         throw std::invalid_argument("--workers requires parallel or compare backend");
     }
     return options;
 }
 void run(const RunOptions& options, std::ostream& output) {
     if (options.help) { output << runner_usage; return; }
+    if (options.cuda_info) {
+        const auto status = cuda_status();
+        output << "cuda_compiled=" << (status.compiled ? "true" : "false") << " devices=" << status.devices.size() << '\n';
+        for (const auto& d : status.devices) { output << "device=" << d.index << " name=" << d.name << " capability=" << d.major << '.' << d.minor << '\n'; }
+        if (!status.diagnostic.empty()) { output << "diagnostic=" << status.diagnostic << '\n'; }
+        return;
+    }
     if (options.config.count == 0 || options.config.count > maximum_particles || options.steps == 0 || options.steps > 10000 || options.workers == 0 || options.workers > 64) {
         throw std::invalid_argument("Particle runner options out of range");
+    }
+    if (options.backend == Backend::cuda) {
+        ParticleSimulation reference(options.config);
+        const auto actual = integrate_cuda(reference.state(), options.config.acceleration, options.steps, options.device);
+        for (std::size_t step = 0; step < options.steps; ++step) { (void)reference.step_serial(); }
+        const auto comparison = compare_cuda(reference.state(), actual);
+        if (!comparison.equal) {
+            throw std::runtime_error("CUDA final-state mismatch: particles=" + std::to_string(comparison.mismatched_particles)
+                                     + " max_absolute_error=" + std::to_string(comparison.max_absolute_error));
+        }
+        output << "workload=constant-acceleration-v1 backend=cuda device=" << options.device
+               << " particles=" << actual.size() << " seed=" << options.config.seed << " ticks=" << options.steps
+               << " cpu_parity=tolerant-final-state max_absolute_error=" << comparison.max_absolute_error
+               << " abs_tolerance=" << cuda_abs_tolerance << " rel_tolerance=" << cuda_rel_tolerance
+               << " digest=" << std::hex << digest(actual) << std::dec << '\n';
+        return;
     }
     if (options.backend != Backend::serial && options.backend != Backend::parallel && options.backend != Backend::compare) {
         throw std::invalid_argument("Invalid particle backend");
