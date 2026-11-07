@@ -70,7 +70,11 @@ jobs:
       - name: Compile and link kernel, demo and hardware test binary
         run: cmake --build build --parallel 2
       - name: CPU integration tests only (no device execution claim)
-        run: ctest --test-dir build --output-on-failure
+        # The container owns a different UID than the mounted Actions checkout.
+        # Trust only this checkout and only for this test process and its children.
+        run: |
+          GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=safe.directory GIT_CONFIG_VALUE_0="$PWD" \
+            ctest --test-dir build --output-on-failure
   cuda-compile:
     runs-on: ubuntu-24.04
     steps:
