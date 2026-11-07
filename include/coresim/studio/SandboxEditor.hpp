@@ -17,7 +17,12 @@ Ray camera_ray(const Camera& camera,glm::vec2 ndc,float aspect);
 ObjectSpec primitive_spec(Primitive shape,glm::vec3 position);
 class SandboxEditor {
 public:
-    explicit SandboxEditor(World& world);
+    explicit SandboxEditor(World& world,bool structural=false);
+    [[nodiscard]] Entity projectile() const noexcept {return projectile_;}
+    bool launch_ready() const {return world_.alive(projectile_) && world_.rigid_body(projectile_)->inverse_mass()>0 && !launched_;}
+    glm::vec3 launch_velocity{16,0,0};
+    void launch();
+    void impulse(glm::vec3 impulse);
     struct Item { Entity entity; ObjectSpec authored; Transform original; };
     const std::vector<Item>& items() const noexcept { return items_; }
     const Item* selected() const;
@@ -37,7 +42,8 @@ private:
     void require_build() const;
     World& world_;
     std::vector<Item> items_;
-    Entity selection_;
+    Entity selection_,projectile_;
+    bool launched_{};
     bool building_{true};
 };
 }

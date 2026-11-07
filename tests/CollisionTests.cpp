@@ -54,7 +54,8 @@ TEST_CASE("Sphere plane contacts use a translated one-sided solid half-space") {
     REQUIRE(below->penetration == Catch::Approx(3));
     const auto reverse = detect_contact(plane, {0,2,0}, sphere, {0,3.5F,0});
     REQUIRE(reverse->normal == -contact->normal);
-    REQUIRE_FALSE(detect_contact(sphere, {0,0,0}, BoxCollider{}, {0,0,0}));
+    const auto inside=detect_contact(sphere,{0,0,0},BoxCollider{},{0,0,0});
+    REQUIRE(inside);REQUIRE(inside->penetration>1);
     REQUIRE_FALSE(detect_contact(plane, {0,0,0}, plane, {0,0,0}));
 }
 TEST_CASE("Collider shape validation and component lifecycle") {
@@ -229,4 +230,16 @@ TEST_CASE("Naive metrics distinguish candidates initial tests and correction ret
     REQUIRE(stats.contacts == 1);
     REQUIRE(stats.correction_checks == 4);
     REQUIRE(world.transform(a)->position.x < -0.49F);
+}
+
+TEST_CASE("Sphere contacts rotated box faces and corners symmetrically") {
+    const Collider ball=SphereCollider(.5F), beam=BoxCollider({2,.25F,.4F});
+    const auto q=glm::angleAxis(.7F,glm::vec3(0,0,1));
+    const auto pos=q*glm::vec3(0,.6F,0);
+    auto a=detect_contact(ball,pos,beam,{},glm::quat(1,0,0,0),q);
+    auto b=detect_contact(beam,{},ball,pos,q,glm::quat(1,0,0,0));
+    REQUIRE(a);REQUIRE(b);REQUIRE(std::abs(a->penetration-.15F)<.0001F);
+    REQUIRE(glm::length(a->normal+b->normal)<.0001F);
+    REQUIRE(glm::length(a->normal-q*glm::vec3(0,-1,0))<.0001F);
+    REQUIRE_FALSE(detect_contact(ball,q*glm::vec3(2.4F,.65F,0),beam,{},glm::quat(1,0,0,0),q));
 }

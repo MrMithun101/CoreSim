@@ -9,6 +9,7 @@ public:
     float sensitivity{1};
 private:
     void viewport(SandboxEditor& editor, Camera& camera);
+    glm::vec3 impulse_{5,0,0};
     glm::vec3 focus_{0,1,0};
     int tool_{}, axis_{-1}; bool local_{};
     glm::vec2 start_{},screen_axis_{};

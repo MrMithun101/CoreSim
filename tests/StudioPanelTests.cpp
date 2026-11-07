@@ -103,6 +103,20 @@ TEST_CASE("Studio controls select scenes and drive paused simulation through the
             image.write(reinterpret_cast<const char*>(pixels.data()+static_cast<std::size_t>((y*1280+x)*4)),3);
         REQUIRE(image.good());
     }
+    session.select(scene_config("structural-lab"));camera=session.scene().camera();frame();frame();
+    auto capture_lab=[&](const char* path){
+        if(!path)return;
+        frame();std::vector<unsigned char> pixels(1280*720*4);
+        glReadPixels(0,0,1280,720,GL_RGBA,GL_UNSIGNED_BYTE,pixels.data());
+        std::ofstream image(path,std::ios::binary);image<<"P6\n1280 720\n255\n";
+        for(int y=719;y>=0;--y)for(int x=0;x<1280;++x)
+            image.write(reinterpret_cast<const char*>(pixels.data()+static_cast<std::size_t>((y*1280+x)*4)),3);
+        REQUIRE(image.good());
+    };
+    capture_lab(std::getenv("CORESIM_LAB_IMAGE"));
+    session.set_paused(false);session.scene().editor()->launch();
+    for(int i=0;i<120;++i)session.advance(FixedStepper::step_seconds);
+    capture_lab(std::getenv("CORESIM_IMPACT_IMAGE"));
     glDeleteRenderbuffers(1,&depth);
     glDeleteTextures(1,&texture);
     glDeleteFramebuffers(1,&framebuffer);

@@ -26,7 +26,7 @@ void apply(World& w, Entity e,const ObjectSpec& o) {
     w.set_transform(e,o.pose);
     w.set_mesh(e,{o.primitive==Primitive::sphere?MeshKind::sphere:MeshKind::cube,o.finish});
     if(o.primitive==Primitive::sphere) w.set_collider(e,SphereCollider(o.pose.scale.x));
-    else if(o.primitive==Primitive::plane) w.set_collider(e,PlaneCollider(o.pose.rotation*glm::vec3(0,1,0),o.pose.scale.y));
+    else if(o.primitive==Primitive::plane) w.set_collider(e,PlaneCollider(glm::vec3(0,1,0),o.pose.scale.y));
     else w.set_collider(e,BoxCollider(o.pose.scale));
     RigidBody body(o.mass,o.restitution,o.friction);
     body.gravity_enabled=o.gravity;body.velocity=o.velocity;body.angular_velocity=o.angular;
@@ -50,7 +50,7 @@ std::optional<float> intersection(const Transform& t,const Collider& c,const Ray
         }
         if(hi>=lo && hi>=0) return lo>=0?lo:hi;
     } else {
-        auto plane=std::get<PlaneCollider>(c);float d=glm::dot(plane.normal,r.direction);
+        auto plane=std::get<PlaneCollider>(c);plane.normal=t.rotation*plane.normal;float d=glm::dot(plane.normal,r.direction);
         if(std::abs(d)>1e-7F) {float v=(plane.offset-glm::dot(plane.normal,p))/d;if(v>=0)return v;}
     }
     return {};
@@ -71,8 +71,21 @@ ObjectSpec primitive_spec(Primitive p,glm::vec3 pos) {
     if(p==Primitive::plane){o.mass=0;o.pose.scale={12,.15F,12};o.finish=Finish::concrete;}
     return o;
 }
-SandboxEditor::SandboxEditor(World& w):world_(w) {
+SandboxEditor::SandboxEditor(World& w,bool structural):world_(w) {
     create(primitive_spec(Primitive::plane,{0,-.15F,0}));
+    if(structural){
+        auto wall=primitive_spec(Primitive::wall,{0,1.2F,-6});
+        wall.pose.scale={9,1.2F,.24F};create(wall);
+        for(int layer=0;layer<8;++layer)for(int beam=-1;beam<=1;++beam){
+            auto o=primitive_spec(Primitive::platform,{0,.281F+.561F*static_cast<float>(layer),0});
+            o.mass=1.25F;o.friction=.75F;o.restitution=.04F;o.pose.scale={1.45F,.28F,.46F};
+            if(layer%2){o.pose.position.x=static_cast<float>(beam)*.96F;o.pose.rotation=glm::angleAxis(glm::radians(90.F),glm::vec3(0,1,0));}
+            else o.pose.position.z=static_cast<float>(beam)*.96F;
+            create(o);
+        }
+        auto ball=primitive_spec(Primitive::sphere,{-6,1.4F,0});ball.pose.scale=glm::vec3(.85F);
+        ball.mass=22;ball.gravity=false;ball.finish=Finish::steel;projectile_=create(ball);return;
+    }
     create(primitive_spec(Primitive::cube,{-1,.66F,0}));
     create(primitive_spec(Primitive::sphere,{1,2,0}));selection_={};
 }
@@ -110,5 +123,17 @@ void SandboxEditor::erase(){require_build();if(!selected())return;world_.destroy
     std::erase_if(items_,[&](auto& i){return i.entity==selection_;});selection_={};}
 void SandboxEditor::duplicate(){require_build();if(auto* i=selected()){auto o=i->authored;o.pose.position.x+=2*o.pose.scale.x+.1F;create(o);}}
 void SandboxEditor::reset_transform(){require_build();if(auto* i=selected()){auto o=i->authored;o.pose=i->original;change(o);}}
-void SandboxEditor::restore(){for(auto& i:items_)apply(world_,i.entity,i.authored);building_=true;}
+void SandboxEditor::launch(){
+    if(building_ || !launch_ready())throw std::logic_error("Projectile cannot launch");
+    if(!finite(launch_velocity)||glm::length(launch_velocity)>100)throw std::invalid_argument("Launch speed must be at most 100 m/s");
+    auto* body=world_.rigid_body(projectile_);body->wake();body->velocity=launch_velocity;body->gravity_enabled=true;launched_=true;
+}
+void SandboxEditor::impulse(glm::vec3 impulse){
+    if(building_ || !selected())return;
+    auto* body=world_.rigid_body(selection_);if(body->inverse_mass()==0)return;
+    const auto v=body->velocity+impulse*body->inverse_mass();
+    if(!finite(v))throw std::invalid_argument("Invalid impulse");
+    body->wake();body->velocity=v;
+}
+void SandboxEditor::restore(){launched_=false;for(auto& i:items_)apply(world_,i.entity,i.authored);building_=true;}
 }

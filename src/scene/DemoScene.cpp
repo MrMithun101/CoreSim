@@ -7,7 +7,9 @@
 namespace coresim {
 DemoScene::DemoScene(SceneConfig config) : config_(config) {
     validate_scene_config(config_);
-    if(config_.kind==SceneKind::sandbox){editor_=std::make_unique<SandboxEditor>(world_);return;}
+    if(config_.kind==SceneKind::sandbox || config_.kind==SceneKind::structural_lab){
+        editor_=std::make_unique<SandboxEditor>(world_,config_.kind==SceneKind::structural_lab);return;
+    }
     initial_motion_.reserve(config_.objects);
     if (config_.kind != SceneKind::collision_demo) { build_stress_scene(); return; }
     for (std::size_t i = 0; i < 100; ++i) {
@@ -88,6 +90,7 @@ glm::vec3 DemoScene::gravity() const noexcept {
     return config_.kind == SceneKind::particle_storm ? glm::vec3(0) : glm::vec3(0,-9.81F,0);
 }
 Camera DemoScene::camera() const {
+    if(config_.kind==SceneKind::structural_lab)return Camera({4,5,11},-2.0F,-.25F);
     if(editor_) return Camera({9,7,12},-2.2143F,-.38F);
     if (config_.kind == SceneKind::collision_demo) { return Camera({16,18,27},-2.106F,-0.52F); }
     const glm::vec3 offset=radius_*glm::vec3(1.35F,0.9F,1.7F);

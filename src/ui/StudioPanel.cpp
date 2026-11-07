@@ -11,10 +11,10 @@ bool StudioPanel::draw(StudioSession& session, Camera& camera) {
     ImGui::SetNextWindowSize({350,270},ImGuiCond_FirstUseEver);
     if (ImGui::Begin("CoreSim Studio")) {
         ImGui::TextUnformatted("Interactive 3D systems-performance laboratory");
-        constexpr std::array names{"Tower","Rain","Particle Storm","Collision demo","Sandbox"};
-        constexpr std::array kinds{SceneKind::stress_tower,SceneKind::sphere_rain,SceneKind::particle_storm,SceneKind::collision_demo,SceneKind::sandbox};
+        constexpr std::array names{"Tower","Rain","Particle Storm","Collision demo","Sandbox","Structural Lab"};
+        constexpr std::array kinds{SceneKind::stress_tower,SceneKind::sphere_rain,SceneKind::particle_storm,SceneKind::collision_demo,SceneKind::sandbox,SceneKind::structural_lab};
         int current=0;
-        for (int i=0;i<5;++i) { if (session.scene().config().kind==kinds[static_cast<std::size_t>(i)]) { current=i; } }
+        for (int i=0;i<6;++i) { if (session.scene().config().kind==kinds[static_cast<std::size_t>(i)]) { current=i; } }
         ImGui::SetNextItemWidth(200);
         if (ImGui::Combo("Simulation",&current,names.data(),static_cast<int>(names.size()))) {
             try {

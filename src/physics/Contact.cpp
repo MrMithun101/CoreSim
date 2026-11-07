@@ -24,6 +24,22 @@ std::optional<ContactGeometry> sphere_plane(const SphereCollider& sphere, glm::v
     if (distance > sphere.radius) { return std::nullopt; }
     return ContactGeometry{-plane.normal, sphere.radius - distance, ps - plane.normal * distance};
 }
+std::optional<ContactGeometry> sphere_box(const SphereCollider& sphere,glm::vec3 ps,
+                                          const BoxCollider& box,glm::vec3 pb,glm::quat rotation) {
+    const auto q=unit_rotation(rotation);
+    const auto local=glm::conjugate(q)*(ps-pb);
+    auto point=glm::clamp(local,-box.half_extents,box.half_extents);
+    const auto delta=point-local;
+    const float distance=glm::length(delta);
+    if(distance>sphere.radius)return {};
+    if(distance>0)return ContactGeometry{q*(delta/distance),sphere.radius-distance,pb+q*point};
+    // Center inside/on box: eject the sphere through the nearest face.
+    const auto depth=box.half_extents-glm::abs(local);
+    int axis=0;for(int i=1;i<3;++i)if(depth[i]<depth[axis])axis=i;
+    glm::vec3 outward(0);outward[axis]=local[axis]<0?-1.F:1.F;
+    point[axis]=outward[axis]*box.half_extents[axis];
+    return ContactGeometry{-(q*outward),sphere.radius+depth[axis],pb+q*point};
+}
 } // namespace
 ContactManifold detect_manifold(const Collider& a, glm::vec3 pa, const Collider& b, glm::vec3 pb,
                                 glm::quat qa, glm::quat qb) {
@@ -44,7 +60,12 @@ ContactManifold detect_manifold(const Collider& a, glm::vec3 pa, const Collider&
         for (std::size_t i = 0; i < result.count; ++i) { result.points[i].normal = -result.points[i].normal; }
         return result;
     } else if (const auto* sphere = std::get_if<SphereCollider>(&a)) {
+        if (const auto* box=std::get_if<BoxCollider>(&b))return single(sphere_box(*sphere,pa,*box,pb,qb));
         if (const auto* other = std::get_if<SphereCollider>(&b)) { return single(spheres(*sphere,pa,*other,pb)); }
+    } else if (std::holds_alternative<BoxCollider>(a) && std::holds_alternative<SphereCollider>(b)) {
+        auto g=sphere_box(std::get<SphereCollider>(b),pb,std::get<BoxCollider>(a),pa,qa);
+        if(g)g->normal=-g->normal;
+        return single(g);
     } else if (const auto* box = std::get_if<BoxCollider>(&a)) {
         if (const auto* other = std::get_if<BoxCollider>(&b)) { return detail::box_contacts(*box,pa,qa,*other,pb,qb); }
     }

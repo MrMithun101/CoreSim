@@ -132,3 +132,26 @@ TEST_CASE("Supported sandbox bodies settle, wake under force, and fall if suppor
     REQUIRE_FALSE(e.world().rigid_body(bottom)->sleeping());
     REQUIRE(e.world().rigid_body(bottom)->velocity.y<0);
 }
+
+TEST_CASE("Structural Lab holds a stable tower then transfers projectile momentum and resets") {
+    StudioSession s(scene_config("structural-lab"));auto& e=*s.scene().editor();REQUIRE(e.items().size()==27);
+    REQUIRE(e.launch_ready());auto projectile=e.projectile();auto start=e.world().transform(projectile)->position;
+    s.set_paused(false);
+    for(int i=0;i<240;++i)s.advance(FixedStepper::step_seconds);
+    REQUIRE(e.world().transform(projectile)->position==start);
+    float drift=0;
+    for(const auto& item:e.items())if(item.authored.finish==Finish::wood)
+        drift=std::max(drift,glm::distance(e.world().transform(item.entity)->position,item.authored.pose.position));
+    REQUIRE(drift<.15F);
+    e.launch();REQUIRE_FALSE(e.launch_ready());
+    for(int i=0;i<240;++i)s.advance(FixedStepper::step_seconds);
+    int displaced=0;
+    for(const auto& item:e.items())if(item.authored.finish==Finish::wood){
+        auto p=e.world().transform(item.entity)->position;REQUIRE(std::isfinite(glm::length(p)));REQUIRE(p.y>-.5F);
+        if(glm::distance(p,item.authored.pose.position)>1)++displaced;
+    }
+    CAPTURE(s.ticks(),e.world().transform(projectile)->position.x,e.world().transform(projectile)->position.y,e.world().rigid_body(projectile)->velocity.x,drift);
+    REQUIRE(displaced>=6);
+    s.reset();REQUIRE(e.launch_ready());REQUIRE(e.world().transform(projectile)->position==start);
+    for(const auto& item:e.items())REQUIRE(e.world().transform(item.entity)->position==item.authored.pose.position);
+}

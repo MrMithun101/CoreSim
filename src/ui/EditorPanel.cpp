@@ -104,8 +104,8 @@ bool EditorPanel::draw(StudioSession& session,Camera& camera){
     } theme;
     try {
         dock("CoreSim Studio",{8,8},{std::max(320.F,size.x-16),65});
-        if(ImGui::BeginCombo("##scene", "Sandbox",ImGuiComboFlags_WidthFitPreview)){
-            for(auto name:{"collision-demo","stress-tower","sphere-rain","particle-storm"}){
+        if(ImGui::BeginCombo("##scene", session.scene().config().kind==SceneKind::structural_lab?"Structural Lab":"Sandbox",ImGuiComboFlags_WidthFitPreview)){
+            for(auto name:{"structural-lab","sandbox","collision-demo","stress-tower","sphere-rain","particle-storm"}){
                 if(ImGui::Selectable(name)){session.select(scene_config(name));ImGui::EndCombo();ImGui::End();axis_=-1;return true;}
             }
             ImGui::EndCombo();
@@ -114,6 +114,11 @@ bool EditorPanel::draw(StudioSession& session,Camera& camera){
         if(ImGui::Button(e.building()?"Build *":"Build / reset"))session.reset();
         ImGui::SameLine();if(ImGui::Button(session.paused()?"Play":"Pause"))session.set_paused(!session.paused());
         ImGui::SameLine();ImGui::BeginDisabled(!session.paused());if(ImGui::Button("Step"))session.request_step();ImGui::EndDisabled();
+        if(e.projectile()!=Entity{}){
+            ImGui::SameLine();ImGui::BeginDisabled(!e.launch_ready());if(ImGui::Button("Launch sphere")){
+                edit([&]{session.set_paused(false);e.launch();});
+            }ImGui::EndDisabled();
+        }
         ImGui::SameLine();ImGui::Checkbox("Analyze",&analyze);ImGui::SameLine();ImGui::TextDisabled("%zu objects  |  %.2f s",e.items().size(),static_cast<double>(session.ticks())/120.);
         ImGui::SameLine();if(ImGui::Button("Frame all")){
             glm::vec3 lo(10000),hi(-10000);bool any=false;
@@ -159,7 +164,9 @@ bool EditorPanel::draw(StudioSession& session,Camera& camera){
                 changed|=ImGui::Checkbox("Gravity",&o.gravity);
                 changed|=ImGui::DragFloat3("m/s",glm::value_ptr(o.velocity),.1F,-100,100);
                 changed|=ImGui::DragFloat3("rad/s",glm::value_ptr(o.angular),.1F,-50,50);
-                ImGui::EndDisabled();ImGui::SeparatorText("Surface");
+                ImGui::EndDisabled();
+                if(item->entity==e.projectile())ImGui::DragFloat3("Launch m/s",glm::value_ptr(e.launch_velocity),.1F,-50,50,"%.1f",ImGuiSliderFlags_AlwaysClamp);
+                ImGui::SeparatorText("Surface");
                 changed|=ImGui::SliderFloat("Friction",&o.friction,0,1);
                 changed|=ImGui::SliderFloat("Restitution",&o.restitution,0,1);
                 int finish=static_cast<int>(o.finish)-1;
@@ -172,6 +179,10 @@ bool EditorPanel::draw(StudioSession& session,Camera& camera){
                 const auto& p=e.world().transform(item->entity)->position;const auto& v=e.world().rigid_body(item->entity)->velocity;
                 ImGui::Text("Position  %.2f  %.2f  %.2f",p.x,p.y,p.z);ImGui::Text("Velocity  %.2f  %.2f  %.2f",v.x,v.y,v.z);
                 ImGui::TextWrapped("Build restores your authored experiment.");
+                ImGui::BeginDisabled(o.mass==0);
+                ImGui::DragFloat3("Impulse N s",glm::value_ptr(impulse_),.1F,-100,100,"%.1f",ImGuiSliderFlags_AlwaysClamp);
+                if(ImGui::Button("Apply impulse"))edit([&]{e.impulse(impulse_);});
+                ImGui::EndDisabled();
             }
             ImGui::PopID();
         }else ImGui::TextWrapped("Select a body in the viewport.");
