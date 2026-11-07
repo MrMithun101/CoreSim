@@ -4,16 +4,17 @@
 #include <array>
 #include <exception>
 namespace coresim {
-bool StudioPanel::draw(StudioSession& session) {
+bool StudioPanel::draw(StudioSession& session, Camera& camera) {
+    if(session.scene().editor()) return editor_.draw(session,camera);
     bool camera_reset=false;
     ImGui::SetNextWindowPos({12,12},ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowSize({350,270},ImGuiCond_FirstUseEver);
     if (ImGui::Begin("CoreSim Studio")) {
         ImGui::TextUnformatted("Interactive 3D systems-performance laboratory");
-        constexpr std::array names{"Tower","Rain","Particle Storm","Sandbox"};
-        constexpr std::array kinds{SceneKind::stress_tower,SceneKind::sphere_rain,SceneKind::particle_storm,SceneKind::collision_demo};
+        constexpr std::array names{"Tower","Rain","Particle Storm","Collision demo","Sandbox"};
+        constexpr std::array kinds{SceneKind::stress_tower,SceneKind::sphere_rain,SceneKind::particle_storm,SceneKind::collision_demo,SceneKind::sandbox};
         int current=0;
-        for (int i=0;i<4;++i) { if (session.scene().config().kind==kinds[static_cast<std::size_t>(i)]) { current=i; } }
+        for (int i=0;i<5;++i) { if (session.scene().config().kind==kinds[static_cast<std::size_t>(i)]) { current=i; } }
         ImGui::SetNextItemWidth(200);
         if (ImGui::Combo("Simulation",&current,names.data(),static_cast<int>(names.size()))) {
             try {
@@ -34,7 +35,7 @@ bool StudioPanel::draw(StudioSession& session) {
         ImGui::Text("Objects: %zu | Seed: %u",session.scene().config().objects,session.scene().config().seed);
         ImGui::TextWrapped("Single step advances 1/120 s while paused. Switching scenes loads default counts and seed; pause state is preserved.");
         if (session.scene().config().kind==SceneKind::collision_demo) {
-            ImGui::TextWrapped("Sandbox: mixed spheres and boxes. Object editing is not available yet.");
+            ImGui::TextWrapped("Original mixed-body collision preset. Choose Sandbox to build an experiment.");
         }
         ImGui::Separator();
         ImGui::TextWrapped("WASD move | Q/E down/up | Right-drag look | R reset | Esc close");

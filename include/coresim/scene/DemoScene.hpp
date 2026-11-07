@@ -4,6 +4,8 @@
 #include <coresim/scene/SceneConfig.hpp>
 #include <coresim/scene/Camera.hpp>
 #include <vector>
+#include <memory>
+#include <coresim/studio/SandboxEditor.hpp>
 
 namespace coresim {
 class DemoScene {
@@ -12,6 +14,7 @@ public:
     [[nodiscard]] Camera camera() const;
     [[nodiscard]] glm::vec3 gravity() const noexcept;
     [[nodiscard]] const SceneConfig& config() const noexcept { return config_; }
+    SandboxEditor* editor() noexcept { return editor_.get(); }
     void update(float delta_seconds);
     void reset_physics();
     [[nodiscard]] World& world() noexcept { return world_; }
@@ -30,6 +33,7 @@ private:
     float radius_{8};
     float particle_extent_{};
     World world_;
+    std::unique_ptr<SandboxEditor> editor_;
     std::vector<InitialMotion> initial_motion_;
 };
 } // namespace coresim

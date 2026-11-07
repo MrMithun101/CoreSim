@@ -23,6 +23,7 @@ public:
     [[nodiscard]] float restitution() const noexcept { return restitution_; }
     [[nodiscard]] glm::vec3 accumulated_force() const noexcept { return force_; }
 
+    bool gravity_enabled{true};
     glm::vec3 velocity{0.0F};
     glm::vec3 angular_velocity{0.0F}; // World-space radians per second.
     // Persistent user acceleration, in addition to gravity and force / mass.

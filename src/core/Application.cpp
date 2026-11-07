@@ -19,7 +19,7 @@ int Application::run(std::uint64_t frame_limit) {
                 break;
             }
             profiler_panel_.begin_frame();
-            if (studio_panel_.draw(session_)) { camera_=session_.scene().camera(); }
+            if (studio_panel_.draw(session_,camera_)) { camera_=session_.scene().camera(); }
             update(timer.stats());
             render();
         }
@@ -74,7 +74,7 @@ void Application::render() {
             const float aspect = static_cast<float>(width) / static_cast<float>(height);
             renderer_.draw(width, height, camera_.projection(aspect) * camera_.view(), session_.scene().world());
         }
-        profiler_panel_.draw(profiler_,true);
+        if(!session_.scene().editor() || studio_panel_.analyze()) profiler_panel_.draw(profiler_,!session_.scene().editor());
         profiler_panel_.render();
     }
     ScopedProfiler presentation(&profiler_, ProfileSection::presentation);

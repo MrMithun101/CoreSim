@@ -4,7 +4,7 @@
 #include <limits>
 using namespace coresim;
 TEST_CASE("Studio pause, step and resume exclude paused wall time") {
-    REQUIRE(scene_config("sandbox").kind==SceneKind::collision_demo);
+    REQUIRE(scene_config("sandbox").kind==SceneKind::sandbox);
     StudioSession session(scene_config("sphere-rain",8,7));
     session.advance(FixedStepper::step_seconds);
     REQUIRE(session.ticks()==1);
@@ -82,4 +82,33 @@ TEST_CASE("Studio reset clears residual time and pending steps") {
     REQUIRE(session.ticks()==0);
     REQUIRE_THROWS(session.advance(-1));
     REQUIRE_THROWS(session.advance(std::numeric_limits<double>::quiet_NaN()));
+}
+
+TEST_CASE("Sandbox authors supported physical shapes and restores the experiment after stepping") {
+    StudioSession session(scene_config("sandbox"));
+    REQUIRE(session.paused());auto& e=*session.scene().editor();
+    REQUIRE(e.items().size()==3);
+    const Camera camera=session.scene().camera();
+    REQUIRE(glm::distance(camera_ray(camera,{0,0},1.5F).direction,camera.direction())<.0001F);
+    for(auto shape:{Primitive::cube,Primitive::sphere,Primitive::platform,Primitive::ramp,Primitive::wall,Primitive::plane}){
+        auto spec=primitive_spec(shape,{4,3,-4});
+        auto id=e.create(spec);
+        REQUIRE(e.selected()->entity==id);REQUIRE(e.world().collider(id)!=nullptr);
+        spec.pose.scale={2,1,3};spec.gravity=false;e.change(spec);
+        if(shape==Primitive::sphere)REQUIRE(std::get<SphereCollider>(*e.world().collider(id)).radius==2);
+        else if(shape==Primitive::plane)REQUIRE(e.world().rigid_body(id)->inverse_mass()==0);
+        else REQUIRE(std::get<BoxCollider>(*e.world().collider(id)).half_extents==spec.pose.scale);
+        REQUIRE_FALSE(e.world().rigid_body(id)->gravity_enabled);
+        e.duplicate();auto copy=e.selected()->entity;REQUIRE(copy!=id);
+        e.erase();REQUIRE_FALSE(e.world().alive(copy));REQUIRE(e.selected()==nullptr);
+        e.select(id);e.erase();
+    }
+    auto o=primitive_spec(Primitive::sphere,{0,5,0});o.velocity={1,0,0};
+    auto id=e.create(o);e.pick({{0,5,5},{0,0,-1}});REQUIRE(e.selected()->entity==id);
+    auto bad=o;bad.pose.scale.x=-1;REQUIRE_THROWS(e.change(bad));REQUIRE(e.world().transform(id)->scale==o.pose.scale);
+    session.request_step();session.advance(0);REQUIRE(session.ticks()==1);
+    REQUIRE(e.world().transform(id)->position!=o.pose.position);REQUIRE_THROWS(e.erase());
+    session.reset();REQUIRE(e.building());REQUIRE(session.paused());REQUIRE(session.ticks()==0);
+    REQUIRE(e.world().transform(id)->position==o.pose.position);REQUIRE(e.world().rigid_body(id)->velocity==o.velocity);
+    e.pick({{0,100,0},{0,1,0}});REQUIRE(e.selected()==nullptr);
 }

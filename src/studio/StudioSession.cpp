@@ -2,7 +2,7 @@
 #include <cmath>
 #include <stdexcept>
 namespace coresim {
-StudioSession::StudioSession(SceneConfig config) : state_(std::make_unique<State>(config)) {}
+StudioSession::StudioSession(SceneConfig config) : state_(std::make_unique<State>(config)), paused_(state_->scene.editor()!=nullptr) {}
 void StudioSession::restart_clock() noexcept {
     clock_.reset();
     ticks_=0;
@@ -14,21 +14,24 @@ void StudioSession::select(SceneConfig config) {
     // Construct first: validation/allocation failures leave the active scene intact.
     auto replacement=std::make_unique<State>(config);
     state_.swap(replacement);
+    if(state_->scene.editor()) paused_=true;
     restart_clock();
 }
 void StudioSession::reset() {
     state_->scene.reset_physics();
+    if(state_->scene.editor())paused_=true;
     restart_clock();
 }
 void StudioSession::set_paused(bool paused) {
     if (paused_==paused) { return; }
+    if(!paused && state_->scene.editor())state_->scene.editor()->simulate();
     paused_=paused;
     clock_.reset();
     step_requested_=false;
     discard_frames_=1;
 }
 void StudioSession::request_step() noexcept {
-    if (paused_) { step_requested_=true; }
+    if (paused_) { if(state_->scene.editor())state_->scene.editor()->simulate(); step_requested_=true; }
 }
 void StudioSession::advance(double seconds, Profiler* profiler, JobSystem* jobs) {
     if (!std::isfinite(seconds) || seconds<0) { throw std::invalid_argument("Invalid Studio frame duration"); }

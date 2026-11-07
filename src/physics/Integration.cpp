@@ -23,7 +23,7 @@ void integrate_bodies(World& world, glm::vec3 gravity, float delta_seconds, Body
             throw std::invalid_argument("Plane colliders must be static");
         }
         if (transform && body.inverse_mass() > 0.0F) {
-            const auto acceleration = gravity + body.acceleration +
+            const auto acceleration = (body.gravity_enabled ? gravity : glm::vec3(0)) + body.acceleration +
                                       body.accumulated_force() * body.inverse_mass();
             const auto velocity = body.velocity + acceleration * delta_seconds;
             const auto position = transform->position + velocity * delta_seconds;

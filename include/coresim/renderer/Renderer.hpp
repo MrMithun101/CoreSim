@@ -22,10 +22,10 @@ public:
 private:
     Shader shader_;
     Shader instanced_shader_;
-    std::array<std::vector<std::array<float, 16>>, 2> batches_;
+    std::array<std::vector<std::array<float, 16>>, 12> batches_;
     RenderStats stats_;
     Mesh cube_;
     Mesh sphere_;
-    int transform_location_{};
+    int transform_location_{}, finish_location_{}, instance_finish_{};
 };
 } // namespace coresim

@@ -37,10 +37,10 @@ TEST_CASE("Studio controls select scenes and drive paused simulation through the
         ui.begin_frame();
         ImGui::GetIO().DisplaySize={1280,720};
         ImGui::GetIO().DisplayFramebufferScale={1,1};
-        if (panel.draw(session)) { camera=session.scene().camera(); }
+        if (panel.draw(session,camera)) { camera=session.scene().camera(); }
         session.advance(0);
         renderer.draw(1280,720,camera.projection(1280.F/720.F)*camera.view(),session.scene().world());
-        ui.draw(profiler,true);
+        if(!session.scene().editor() || panel.analyze()) ui.draw(profiler,true);
         ui.render();
         REQUIRE(ImGui::GetDrawData()->TotalVtxCount>0);
         REQUIRE(glGetError()==GL_NO_ERROR);
@@ -85,6 +85,24 @@ TEST_CASE("Studio controls select scenes and drive paused simulation through the
     }
     click(40,87);
     REQUIRE_FALSE(session.paused());
+    session.select(scene_config("sandbox"));camera=session.scene().camera();
+    frame();frame();
+    auto& editor=*session.scene().editor();
+    const auto sphere=editor.items().back().entity;
+    auto pos=editor.world().transform(sphere)->position;
+    auto clip=camera.projection(1280.F/720.F)*camera.view()*glm::vec4(pos,1);
+    click((1+clip.x/clip.w)*640,(1-clip.y/clip.w)*360);
+    REQUIRE(editor.selected()!=nullptr);
+    REQUIRE(editor.selected()->entity==sphere);
+    if(const auto* path=std::getenv("CORESIM_EDITOR_IMAGE")) {
+        frame();
+        std::vector<unsigned char> pixels(1280*720*4);
+        glReadPixels(0,0,1280,720,GL_RGBA,GL_UNSIGNED_BYTE,pixels.data());
+        std::ofstream image(path,std::ios::binary);image<<"P6\n1280 720\n255\n";
+        for(int y=719;y>=0;--y)for(int x=0;x<1280;++x)
+            image.write(reinterpret_cast<const char*>(pixels.data()+static_cast<std::size_t>((y*1280+x)*4)),3);
+        REQUIRE(image.good());
+    }
     glDeleteRenderbuffers(1,&depth);
     glDeleteTextures(1,&texture);
     glDeleteFramebuffers(1,&framebuffer);

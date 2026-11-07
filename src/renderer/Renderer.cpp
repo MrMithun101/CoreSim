@@ -61,6 +61,8 @@ Renderer::Renderer(const std::filesystem::path& shader_directory)
     : shader_(shader_directory / "cube.vert", shader_directory / "cube.frag"),
       instanced_shader_(shader_directory / "instanced.vert", shader_directory / "cube.frag"),
       cube_(cube_vertices, cube_indices), sphere_(make_sphere()) {
+    finish_location_=shader_.uniform_location("u_finish");
+    instance_finish_=instanced_shader_.uniform_location("u_finish");
     transform_location_ = shader_.uniform_location("u_transform");
 }
 
@@ -90,13 +92,12 @@ void Renderer::draw(int framebuffer_width, int framebuffer_height,
         std::copy_n(glm::value_ptr(transform), matrix.size(), matrix.begin());
         ++stats_.objects;
         if (mode == RenderMode::instanced) {
-            switch (entry.value.kind) {
-            case MeshKind::cube: batches_[0].push_back(matrix); break;
-            case MeshKind::sphere: batches_[1].push_back(matrix); break;
-            }
+            const auto index=2*static_cast<std::size_t>(entry.value.finish)+(entry.value.kind==MeshKind::sphere ? 1U : 0U);
+            batches_.at(index).push_back(matrix);
             continue;
         }
         ++stats_.draw_calls;
+        glUniform1i(finish_location_,static_cast<int>(entry.value.finish));
         shader_.set_matrix(transform_location_, matrix);
         switch (entry.value.kind) {
         case MeshKind::cube: cube_.draw(); break;
@@ -104,10 +105,11 @@ void Renderer::draw(int framebuffer_width, int framebuffer_height,
         }
     }
     if (mode == RenderMode::instanced) {
-        cube_.draw_instanced(batches_[0]);
-        sphere_.draw_instanced(batches_[1]);
-        for (const auto& batch : batches_) {
-            if (!batch.empty()) { ++stats_.draw_calls; }
+        for (std::size_t i=0;i<batches_.size();++i) {
+            const auto& batch=batches_[i];if(batch.empty())continue;
+            glUniform1i(instance_finish_,static_cast<int>(i/2));
+            (i%2 ? sphere_ : cube_).draw_instanced(batch);
+            ++stats_.draw_calls;
             stats_.uploaded_bytes += batch.size() * sizeof(batch[0]);
         }
     }

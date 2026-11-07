@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <string_view>
 namespace coresim {
-enum class SceneKind { collision_demo, stress_tower, sphere_rain, particle_storm };
+enum class SceneKind { collision_demo, stress_tower, sphere_rain, particle_storm, sandbox };
 struct SceneConfig {
     SceneKind kind = SceneKind::collision_demo;
     std::size_t objects = 100;

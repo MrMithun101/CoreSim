@@ -25,7 +25,7 @@ int main(int argc, char** argv) {
         }
         std::uint64_t frame_limit = 0;
         std::filesystem::path shader_directory = CORESIM_SHADER_DIR;
-        std::string_view scene="collision-demo";
+        std::string_view scene="sandbox";
         std::size_t objects=0;
         std::uint32_t seed=1;
         std::set<std::string_view> seen;

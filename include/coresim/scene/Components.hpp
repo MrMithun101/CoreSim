@@ -5,8 +5,10 @@
 namespace coresim {
 // A mesh reference carries no GPU ownership; the renderer owns shared geometry.
 enum class MeshKind { cube, sphere };
+enum class Finish { legacy, steel, concrete, wood, rubber, plastic };
 struct MeshComponent {
     MeshKind kind{MeshKind::cube};
+    Finish finish{Finish::legacy};
 };
 
 // Demo animation only, not rigid-body angular dynamics. Axis must be normalized.
