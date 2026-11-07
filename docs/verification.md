@@ -1,5 +1,17 @@
 # Verification
 
+## Milestone 20 — Optional CUDA particle integration — November 6, 2026
+
+Code checkpoint `687b91d` adds a C++20 CUDA batch API and the `cuda` backend in the existing particle runner. It preserves the constant-acceleration-v1 input layout, timestep, acceleration and update order. The default configuration still requires no CUDA toolkit. Explicit CUDA requests do not fall back to CPU. The batch returns a complete final state or reports failure; its provisional numerical comparison checks every component against an untimed serial CPU replay. See the [CUDA setup, ownership and validation guide](cuda-particles.md).
+
+All 56 local headless Release CTest entries passed in a fresh CPU-only build on Apple Silicon. The expanded particle suite passed 1,473 assertions in 11 cases. Local checks covered absolute and relative tolerances and nonfinite data, rejection of invalid inputs and device options, CPU-only status and explicit unavailable-backend failures. A 100K-particle CPU comparison still matched exactly after every tick. Unsupported macOS CUDA configuration and device-test registration without the required backend/test build were rejected.
+
+The [code CI run](https://github.com/MrMithun101/CoreSim/actions/runs/42332519334) passed all eight jobs: CUDA and HIP compilation, GCC/Clang Debug/Release with display coverage (81 tests in Linux Release), ASan/UBSan and repeated concurrency tests under ThreadSanitizer.
+
+The [offline CUDA CI job](https://github.com/MrMithun101/CoreSim/actions/runs/42332519334/job/128282014030) used NVIDIA NVCC 12.6.85 and GNU 13.3.0 on Ubuntu 24.04. It compiled `CudaParticles.cu` for compute capability 8.0, linked the actual runner and opt-in hardware-test executable, and passed all 14 registered hardware-independent particle/inspection tests selected by the job. The hardware suite is deliberately not registered on the hosted runner.
+
+**Device execution is unverified.** No compatible NVIDIA machine is available. The linked hardware suite is intended to test 1K/10K/100K batches and block boundaries, input preservation, repeated execution, overflow handling and device restoration. Compilation and CPU tests do not establish those device behaviors, measured numerical errors or CUDA speedups. Milestone 21 requires an actual NVIDIA GPU for validation and profiling.
+
 ## Milestone 19 — CPU particle measurement baseline — November 6, 2026
 
 Code checkpoint `ee1c254` adds serial and pooled SoA execution alongside the existing AoS baseline. Both share a checked integration kernel and joined range dispatcher. Every benchmark verifies its final state against an untimed serial AoS replay. Local Release passed all 54 headless CTest entries; the particle suite passed 1,448 assertions in eight cases. The particle and JSON/CSV export suites also passed in a separate ASan/UBSan build. Local tests cover exact per-tick equivalence, reset, overflow rollback, empty and uneven partitions, warmup-independent final state and export semantics.
