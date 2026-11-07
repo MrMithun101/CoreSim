@@ -17,6 +17,10 @@ void integrate_bodies(World& world, glm::vec3 gravity, float delta_seconds, Body
         throw std::invalid_argument("Integration requires finite gravity and a positive finite timestep");
     }
     const auto integrate = [&](Entity entity, RigidBody& body) {
+        if(body.sleeping()){
+            if(body.velocity==glm::vec3(0) && body.angular_velocity==glm::vec3(0) && body.acceleration==glm::vec3(0))return;
+            body.wake();
+        }
         auto* transform = world.transform(entity);
         const auto* collider = world.collider(entity);
         if (collider && std::holds_alternative<PlaneCollider>(*collider) && body.inverse_mass() > 0) {

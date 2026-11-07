@@ -16,6 +16,7 @@ void RigidBody::set_mass(float mass) {
     if (!std::isfinite(inverse)) {
         throw std::invalid_argument("Mass is too small to represent its inverse");
     }
+    wake();
     mass_ = mass;
     inverse_mass_ = inverse;
 }
@@ -36,6 +37,7 @@ void RigidBody::add_force(glm::vec3 force) {
     if (!std::isfinite(sum.x) || !std::isfinite(sum.y) || !std::isfinite(sum.z)) {
         throw std::invalid_argument("Accumulated force must remain finite");
     }
+    if(force!=glm::vec3(0))wake();
     force_ = sum;
 }
 void RigidBody::add_torque(glm::vec3 torque) {
@@ -43,6 +45,7 @@ void RigidBody::add_torque(glm::vec3 torque) {
     if (!std::isfinite(sum.x) || !std::isfinite(sum.y) || !std::isfinite(sum.z)) {
         throw std::invalid_argument("Accumulated torque must remain finite");
     }
+    if(torque!=glm::vec3(0))wake();
     torque_ = sum;
 }
 void RigidBody::add_force_at_offset(glm::vec3 force, glm::vec3 offset) {

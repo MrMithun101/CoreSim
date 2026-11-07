@@ -112,3 +112,23 @@ TEST_CASE("Sandbox authors supported physical shapes and restores the experiment
     REQUIRE(e.world().transform(id)->position==o.pose.position);REQUIRE(e.world().rigid_body(id)->velocity==o.velocity);
     e.pick({{0,100,0},{0,1,0}});REQUIRE(e.selected()==nullptr);
 }
+
+TEST_CASE("Supported sandbox bodies settle, wake under force, and fall if support is removed") {
+    StudioSession session(scene_config("sandbox"));auto& e=*session.scene().editor();
+    auto bottom=e.create(primitive_spec(Primitive::cube,{4,.65F,0}));
+    auto top=e.create(primitive_spec(Primitive::cube,{4,1.95F,0}));
+    auto floor=e.items()[0].entity;
+    session.set_paused(false);
+    for(int i=0;i<720;++i)session.advance(FixedStepper::step_seconds);
+    REQUIRE(e.world().rigid_body(bottom)->sleeping());
+    REQUIRE(e.world().rigid_body(top)->sleeping());
+    REQUIRE(e.world().transform(bottom)->position.y>.62F);
+    e.world().rigid_body(top)->add_force({240,0,0});
+    session.advance(FixedStepper::step_seconds);
+    REQUIRE_FALSE(e.world().rigid_body(top)->sleeping());
+    REQUIRE(e.world().rigid_body(top)->velocity.x>0);
+    REQUIRE(e.world().destroy(floor));
+    for(int i=0;i<20;++i)session.advance(FixedStepper::step_seconds);
+    REQUIRE_FALSE(e.world().rigid_body(bottom)->sleeping());
+    REQUIRE(e.world().rigid_body(bottom)->velocity.y<0);
+}

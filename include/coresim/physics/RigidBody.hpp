@@ -23,12 +23,17 @@ public:
     [[nodiscard]] float restitution() const noexcept { return restitution_; }
     [[nodiscard]] glm::vec3 accumulated_force() const noexcept { return force_; }
 
+    [[nodiscard]] bool sleeping() const noexcept { return asleep_; }
+    void wake() noexcept { asleep_=false; quiet_seconds_=0; }
     bool gravity_enabled{true};
     glm::vec3 velocity{0.0F};
     glm::vec3 angular_velocity{0.0F}; // World-space radians per second.
     // Persistent user acceleration, in addition to gravity and force / mass.
     glm::vec3 acceleration{0.0F};
 private:
+    friend class CollisionSystem;
+    bool asleep_{}, supported_{};
+    float quiet_seconds_{};
     float mass_{1.0F};
     float inverse_mass_{1.0F};
     float restitution_{0.5F};

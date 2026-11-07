@@ -18,7 +18,7 @@ float visibility(vec3 normal,vec3 sun){
     vec4 clip=u_light*vec4(v_world,1);
     vec3 p=clip.xyz/clip.w*.5+.5;
     if(any(lessThanEqual(p,vec3(0)))||any(greaterThanEqual(p,vec3(1))))return 1.;
-    float bias=max(.00018,.0008*(1.-max(dot(normal,sun),0.)));
+    float bias=max(.00065,.0018*(1.-max(dot(normal,sun),0.)));
     vec2 texel=1./vec2(textureSize(u_depth,0));
     float lit=0.;
     for(int y=-1;y<=1;++y)for(int x=-1;x<=1;++x)

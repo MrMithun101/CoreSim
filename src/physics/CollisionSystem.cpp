@@ -196,4 +196,31 @@ void CollisionSystem::solve(World& world, CollisionStats* stats) {
         stats->total_collision_ms = milliseconds(collision_start, now());
     }
 }
+void CollisionSystem::update_rest(World& world,glm::vec3 gravity,float seconds) {
+    const float magnitude=glm::length(gravity);
+    const auto up=magnitude>0 ? -gravity/magnitude : glm::vec3(0);
+    world.for_each_rigid_body([](Entity,RigidBody& b){b.supported_=b.inverse_mass()==0;});
+    // Only rest on a support chain rooted at static geometry, never in free fall.
+    // Bounded propagation is conservative: very deep unsupported chains stay awake.
+    for(int pass=0;pass<16;++pass){
+        bool changed=false;
+        for(const auto& constraint:contacts_){
+            const auto& c=constraint.contact;
+            auto* a=world.rigid_body(c.a);auto* b=world.rigid_body(c.b);
+            const float dot=glm::dot(c.geometry.normal,up);
+            if(dot>.6F && (!a||a->supported_) && b && !b->supported_){b->supported_=true;changed=true;}
+            if(dot<-.6F && (!b||b->supported_) && a && !a->supported_){a->supported_=true;changed=true;}
+        }
+        if(!changed)break;
+    }
+    world.for_each_rigid_body([&](Entity,RigidBody& b){
+        if(b.inverse_mass()==0)return;
+        if(!b.supported_ || glm::dot(b.velocity,b.velocity)>.000625F ||
+           glm::dot(b.angular_velocity,b.angular_velocity)>.0016F || b.acceleration!=glm::vec3(0)){
+            b.wake();return;
+        }
+        b.quiet_seconds_=std::min(.6F,b.quiet_seconds_+seconds);
+        if(b.quiet_seconds_>=.6F){b.asleep_=true;b.velocity={};b.angular_velocity={};}
+    });
+}
 } // namespace coresim

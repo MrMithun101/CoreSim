@@ -28,6 +28,7 @@ void PhysicsSystem::step(World& world, float delta_seconds, CollisionStats* stat
     }
     integrate_bodies(world, gravity_, delta_seconds, iteration_, jobs, grain);
     collisions_.solve(world, stats);
+    if(rest_)collisions_.update_rest(world,gravity_,delta_seconds);
     if (profiling) {
         profiler->record(ProfileSection::broad_phase, stats->broad_phase_ms);
         profiler->record(ProfileSection::narrow_phase, stats->narrow_phase_ms);

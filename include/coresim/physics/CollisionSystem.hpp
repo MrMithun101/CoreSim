@@ -16,6 +16,7 @@ class CollisionSystem {
 public:
     explicit CollisionSystem(BroadPhase mode = BroadPhase::spatial_hash, float cell_size = 3.0F)
         : mode_(mode), spatial_(cell_size) {}
+    void update_rest(World& world,glm::vec3 gravity,float seconds);
     void solve(World& world, CollisionStats* stats = nullptr);
 private:
     struct Constraint {

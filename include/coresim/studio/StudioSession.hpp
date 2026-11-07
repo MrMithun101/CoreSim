@@ -20,7 +20,7 @@ public:
     void advance(double seconds, Profiler* profiler = nullptr, JobSystem* jobs = nullptr);
 private:
     struct State {
-        explicit State(SceneConfig config) : scene(config), physics(scene.gravity()) {}
+        explicit State(SceneConfig config) : scene(config), physics(scene.gravity()) {physics.enable_rest(scene.editor()!=nullptr);}
         DemoScene scene;
         PhysicsSystem physics;
     };

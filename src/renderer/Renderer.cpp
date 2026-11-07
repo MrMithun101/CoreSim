@@ -121,10 +121,12 @@ void Renderer::draw(int framebuffer_width, int framebuffer_height,
         light=glm::ortho(-23.F,23.F,-23.F,23.F,1.F,100.F)*glm::lookAt(glm::vec3(-16,32,20),glm::vec3(0),glm::vec3(0,1,0));
         GLint framebuffer{};glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING,&framebuffer);
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER,shadows_->fbo);glViewport(0,0,Shadows::resolution,Shadows::resolution);
+        glEnable(GL_POLYGON_OFFSET_FILL);glPolygonOffset(2.F,4.F);
         glClear(GL_DEPTH_BUFFER_BIT);shadows_->program.bind();glUniformMatrix4fv(shadows_->light,1,GL_FALSE,glm::value_ptr(light));
         for(std::size_t i=2;i<batches_.size();++i)if(!batches_[i].empty()){
             (i%2?sphere_:cube_).draw_instanced(batches_[i]);++stats_.draw_calls;stats_.uploaded_bytes+=batches_[i].size()*sizeof(batches_[i][0]);
         }
+        glDisable(GL_POLYGON_OFFSET_FILL);
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER,static_cast<GLuint>(framebuffer));glViewport(0,0,framebuffer_width,framebuffer_height);
     }
     const bool single=mode==RenderMode::individual;
