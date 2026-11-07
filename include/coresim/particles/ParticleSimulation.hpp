@@ -34,6 +34,9 @@ public:
     [[nodiscard]] std::span<const Particle> state() const noexcept { return current_; }
     [[nodiscard]] std::uint64_t ticks() const noexcept { return ticks_; }
     [[nodiscard]] Acceleration acceleration() const noexcept { return acceleration_; }
+    [[nodiscard]] std::size_t owned_capacity_bytes() const noexcept {
+        return (initial_.capacity() + current_.capacity() + next_.capacity()) * sizeof(Particle);
+    }
     void reset();
     [[nodiscard]] StepStats step_serial();
     [[nodiscard]] StepStats step_parallel(JobSystem& jobs);

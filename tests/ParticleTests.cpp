@@ -151,3 +151,44 @@ TEST_CASE("Particle CLI reports actual execution and validates input") {
         REQUIRE_THROWS_AS(parse_options(args),std::invalid_argument);
     }
 }
+
+#include <coresim/particles/SoASimulation.hpp>
+#include <coresim/particles/ParticleBenchmark.hpp>
+TEST_CASE("SoA matches AoS at every tick, resets, and preserves state on worker failure") {
+    JobSystem jobs(3);
+    for (const std::size_t count : {0U, 1U, 1025U, 100000U}) {
+        Config config{count, 19};
+        ParticleSimulation reference(config);
+        SoASimulation soa(config);
+        const auto initial = soa.snapshot();
+        REQUIRE(soa.owned_capacity_bytes() >= count * 3 * sizeof(Particle));
+        for (int i=0; i<8; ++i) {
+            (void)reference.step_serial();
+            if (i%2) { (void)soa.step_parallel(jobs); } else { (void)soa.step_serial(); }
+            REQUIRE(compare(reference.state(), soa.snapshot()).equal);
+        }
+        soa.reset();
+        REQUIRE(soa.ticks()==0);
+        REQUIRE(initial==soa.snapshot());
+    }
+    auto bad=initial_particles(31,1);
+    bad.back().x=bad.back().vx=std::numeric_limits<float>::max();
+    SoASimulation soa(bad);
+    REQUIRE_THROWS_AS(soa.step_parallel(jobs),std::overflow_error);
+    REQUIRE(soa.ticks()==0);
+    REQUIRE(soa.snapshot()==bad);
+}
+TEST_CASE("Benchmark verifies measured steps independently of warmup and reports task count") {
+    BenchmarkOptions o;
+    o.count=17; o.steps=7; o.workers=3;
+    std::string expected;
+    for (bool soa : {false,true}) for (bool parallel : {false,true}) for (unsigned warmup : {0U,5U}) {
+        o.soa=soa; o.parallel=parallel; o.warmup=warmup;
+        auto r=benchmark(o);
+        if (expected.empty()) { expected=r.state_digest; }
+        REQUIRE(r.state_digest==expected);
+        REQUIRE(r.worker_tasks==(parallel ? 21 : 0));
+        REQUIRE(r.elapsed_ms>0);
+        if (r.peak_rss_after) { REQUIRE(*r.peak_rss_after>=*r.peak_rss_baseline); }
+    }
+}

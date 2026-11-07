@@ -1,7 +1,16 @@
-add_library(coresim_particles src/particles/ParticleSimulation.cpp src/particles/ParticleRunner.cpp)
+add_library(coresim_particles src/particles/ParticleSimulation.cpp src/particles/ParticleRunner.cpp src/particles/SoASimulation.cpp src/particles/ParticleBenchmark.cpp)
 target_include_directories(coresim_particles PUBLIC include)
 target_link_libraries(coresim_particles PUBLIC coresim_jobs)
 coresim_target_options(coresim_particles)
+target_compile_definitions(coresim_particles PRIVATE
+    CORESIM_BUILD_TYPE="$<CONFIG>"
+    CORESIM_COMPILER="${CMAKE_CXX_COMPILER_ID}-${CMAKE_CXX_COMPILER_VERSION}"
+    CORESIM_SANITIZER_NAME="${CORESIM_SANITIZER}"
+    CORESIM_BUILD_OS="${CMAKE_SYSTEM_NAME}"
+    CORESIM_BUILD_ARCH="${CMAKE_SYSTEM_PROCESSOR}")
+add_executable(coresim_particle_benchmark src/particles/benchmark_main.cpp)
+target_link_libraries(coresim_particle_benchmark PRIVATE coresim_particles)
+coresim_target_options(coresim_particle_benchmark)
 add_executable(coresim_particle_runner src/particles/main.cpp)
 target_link_libraries(coresim_particle_runner PRIVATE coresim_particles)
 coresim_target_options(coresim_particle_runner)
@@ -23,4 +32,11 @@ if(BUILD_TESTING)
         add_test(NAME coresim.particles_invalid_${bad_name} COMMAND coresim_particle_runner ${bad_args})
         set_tests_properties(coresim.particles_invalid_${bad_name} PROPERTIES WILL_FAIL TRUE)
     endforeach()
+endif()
+if(BUILD_TESTING)
+    find_package(Python3 QUIET COMPONENTS Interpreter)
+    if(Python3_Interpreter_FOUND)
+        add_test(NAME coresim.particle_benchmark_exports COMMAND ${Python3_EXECUTABLE}
+            ${PROJECT_SOURCE_DIR}/tests/ParticleExportTest.py $<TARGET_FILE:coresim_particle_benchmark>)
+    endif()
 endif()
