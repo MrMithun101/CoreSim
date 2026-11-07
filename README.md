@@ -2,9 +2,13 @@
 
 **High-Performance 3D Physics Simulation Engine**
 
-A C++20 systems and performance engineering project developed one measured milestone at a time. Current scope: **Milestone 20 — Optional CUDA Particle Integration**. It provides custom fixed-step linear and angular physics, generation-checked entity IDs, packed component storage, primitive collision detection and impulse response, a movable perspective camera and a 100-body sphere/box demo, move-aware RAII GPU resources, file-based shaders, depth testing, frame timing, and tests. A deterministic spatial hash accelerates broad-phase collision detection; a live ImGui CPU profiler exposes timing bottlenecks. Bodies rotate under torque and off-center impulses; oriented-box manifolds and contact friction support the falling-body demo. The renderer batches repeated cubes and spheres with instancing, with a retained individual-draw path and measured comparisons up to 25,000 objects. An optional Linux AMD HIP vector-add workload now provides the compute foundation; device execution remains unverified. A headless CSV benchmark compares spatial hashing with the retained all-pairs baseline; see [measurements and methodology](BENCHMARKS.md).
+A C++20 systems and performance engineering project developed one measured milestone at a time. Current scope: **Milestone 21 — CPU/CUDA profiling workflow prepared; hardware validation pending**. It provides custom fixed-step linear and angular physics, generation-checked entity IDs, packed component storage, primitive collision detection and impulse response, a movable perspective camera and a 100-body sphere/box demo, move-aware RAII GPU resources, file-based shaders, depth testing, frame timing, and tests. A deterministic spatial hash accelerates broad-phase collision detection; a live ImGui CPU profiler exposes timing bottlenecks. Bodies rotate under torque and off-center impulses; oriented-box manifolds and contact friction support the falling-body demo. The renderer batches repeated cubes and spheres with instancing, with a retained individual-draw path and measured comparisons up to 25,000 objects. An optional Linux AMD HIP vector-add workload now provides the compute foundation; device execution remains unverified. A headless CSV benchmark compares spatial hashing with the retained all-pairs baseline; see [measurements and methodology](BENCHMARKS.md).
 
 ![Sphere and box collision scene rendered by CoreSim](docs/images/angular.png)
+
+## Same-host CPU/CUDA profiling
+
+The [hardware study guide](docs/cuda-profiling.md) provides one reproducible command for correctness checks, separate upload/kernel/download timing and a same-machine CPU comparison. A [CPU-only rehearsal](benchmarks/results/particles-m21-cpu-rehearsal/report.md) demonstrates the format. Physical NVIDIA measurements remain pending.
 
 ## Optional NVIDIA CUDA particle backend
 
@@ -174,4 +178,4 @@ Shaders are copied into the build directory and found independently of the worki
 
 See [verification notes](docs/verification.md) for actual local results and commands. The screenshot above is an actual framebuffer capture, not an illustration or performance benchmark.
 
-**Next: Milestone 21 — hardware validation and profiling on an NVIDIA GPU.**
+**Remaining in Milestone 21:** run the prepared hardware study on an NVIDIA GPU and report the observed errors and end-to-end comparisons.

@@ -1,0 +1,7 @@
+particles,backend,median_ms,min_ms,max_ms,upload_ms,kernel_ms,download_ms,max_absolute_error
+1000,serial,0.202541,0.197833,0.221042,,,,0
+1000,parallel,1.37625,1.298916,1.540584,,,,0
+10000,serial,1.973084,1.958583,2.050625,,,,0
+10000,parallel,2.659916,2.600791,2.787708,,,,0
+100000,serial,20.133125,19.896083,20.893625,,,,0
+100000,parallel,11.002125,10.496542,11.1825,,,,0

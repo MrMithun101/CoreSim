@@ -28,7 +28,7 @@ The host generates exactly the same seeded 24-byte AoS particle records as the s
 3. Keep the particle array resident throughout the batch. If any component becomes nonfinite, set the sticky failure flag. Check submission errors after each launch and execution errors at stream synchronization. On failure no partial state is returned.
 4. Read the flag and download the final particle array. Private allocations/stream are released on success and exception paths. Restore the calling thread's previous device; cleanup errors during unwinding are logged. Host inputs are never modified. Callers must keep input storage stable during the synchronous call and must not reset a device concurrently.
 
-This is a synchronous host API, not a timing interface. Memory is device-resident **within** a batch, not retained between calls. Transfers use pageable host buffers. Milestone 20 does not implement transfer overlap, graphics interop, collisions, or the Studio backend selector.
+This is a synchronous host API. Milestone 21 adds optional event timing for the [same-host study](cuda-profiling.md). Memory is device-resident **within** a batch, not retained between calls. Transfers use pageable host buffers. Milestone 20 does not implement transfer overlap, graphics interop, collisions, or the Studio backend selector.
 
 ## Correctness and remaining validation
 
