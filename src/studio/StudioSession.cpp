@@ -1,11 +1,13 @@
 #include <coresim/studio/StudioSession.hpp>
 #include <cmath>
+#include <chrono>
+#include <coresim/studio/SceneFile.hpp>
 #include <stdexcept>
 namespace coresim {
 StudioSession::StudioSession(SceneConfig config) : state_(std::make_unique<State>(config)), paused_(state_->scene.editor()!=nullptr) {}
 void StudioSession::restart_clock() noexcept {
     clock_.reset();
-    ticks_=0;
+    ticks_=0;collision_={};physics_ms_=0;
     dropped_=0;
     step_requested_=false;
     discard_frames_=2;
@@ -16,6 +18,12 @@ void StudioSession::select(SceneConfig config) {
     state_.swap(replacement);
     if(state_->scene.editor()) paused_=true;
     restart_clock();
+}
+void StudioSession::load(const SceneDocument& doc){
+    if(doc.kind!=SceneKind::sandbox && doc.kind!=SceneKind::structural_lab)throw std::invalid_argument("Not an editor document");
+    auto next=std::make_unique<State>(scene_config(scene_name(doc.kind)));
+    next->scene.editor()->replace_objects(doc.objects,doc.projectile,doc.launch);
+    state_.swap(next);paused_=true;restart_clock();
 }
 void StudioSession::reset() {
     state_->scene.reset_physics();
@@ -36,7 +44,10 @@ void StudioSession::request_step() noexcept {
 void StudioSession::advance(double seconds, Profiler* profiler, JobSystem* jobs) {
     if (!std::isfinite(seconds) || seconds<0) { throw std::invalid_argument("Invalid Studio frame duration"); }
     const auto tick=[&](float step) {
-        state_->physics.step(state_->scene.world(),step,nullptr,profiler,jobs);
+        using Clock=std::chrono::steady_clock;
+        const auto begin=collect_?Clock::now():Clock::time_point{};
+        state_->physics.step(state_->scene.world(),step,collect_?&collision_:nullptr,profiler,jobs);
+        if(collect_)physics_ms_=std::chrono::duration<double,std::milli>(Clock::now()-begin).count();
         state_->scene.update(step);
         ++ticks_;
     };

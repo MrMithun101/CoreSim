@@ -30,7 +30,7 @@ int Application::run(std::uint64_t frame_limit) {
     }
     const auto& stats = timer.stats();
     std::cout << "CoreSim stopped cleanly: scene=" << scene_name(session_.scene().config().kind)
-              << " objects=" << session_.scene().config().objects << " seed=" << session_.scene().config().seed << " frames=" << stats.frame_count
+              << " objects=" << (session_.scene().editor()?session_.scene().editor()->items().size():session_.scene().config().objects) << " seed=" << session_.scene().config().seed << " frames=" << stats.frame_count
               << " elapsed_s=" << stats.elapsed_seconds << " average_fps=" << stats.fps
               << " last_frame_ms=" << stats.total_frame_seconds * 1000.0
               << " physics_ticks=" << session_.ticks()
@@ -73,9 +73,11 @@ void Application::render() {
         const auto [width, height] = window_.framebuffer_size();
         if (width > 0 && height > 0) {
             const float aspect = static_cast<float>(width) / static_cast<float>(height);
+            const auto start=Profiler::Clock::now();
             renderer_.draw(width, height, camera_.projection(aspect) * camera_.view(), session_.scene().world(),RenderMode::instanced,camera_.position());
+            if(studio_panel_.analyze())studio_panel_.set_submission_ms(std::chrono::duration<double,std::milli>(Profiler::Clock::now()-start).count());
         }
-        if(!session_.scene().editor() || studio_panel_.analyze()) profiler_panel_.draw(profiler_,!session_.scene().editor());
+        if(!session_.scene().editor())profiler_panel_.draw(profiler_,true);
         profiler_panel_.render();
     }
     ScopedProfiler presentation(&profiler_, ProfileSection::presentation);

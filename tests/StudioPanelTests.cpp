@@ -103,6 +103,20 @@ TEST_CASE("Studio controls select scenes and drive paused simulation through the
             image.write(reinterpret_cast<const char*>(pixels.data()+static_cast<std::size_t>((y*1280+x)*4)),3);
         REQUIRE(image.good());
     }
+    const auto count=editor.items().size();
+    click(35,228); // Cube in the creation palette.
+    REQUIRE(editor.items().size()==count+1);REQUIRE(editor.selected()->authored.primitive==Primitive::cube);
+    const auto held=editor.selected()->entity;
+    const auto before=editor.selected()->authored.pose.position;
+    auto project=[&](glm::vec3 p){auto c=camera.projection(1280.F/720.F)*camera.view()*glm::vec4(p,1);return glm::vec2((1+c.x/c.w)*640,(1-c.y/c.w)*360);};
+    auto origin=project(before);
+    auto arm=project(before+glm::vec3(std::clamp(glm::distance(camera.position(),before)*.12F,.3F,15.F),0,0))-origin;
+    auto handle=origin+arm*.8F;auto end=handle+glm::normalize(arm)*38.F;
+    auto& io=ImGui::GetIO();io.AddMousePosEvent(handle.x,handle.y);frame();
+    io.AddMouseButtonEvent(0,true);frame();io.AddMousePosEvent(end.x,end.y);frame();
+    io.AddMouseButtonEvent(0,false);frame();
+    REQUIRE(editor.selected()->entity==held);REQUIRE(editor.selected()->authored.pose.position.x>before.x+.15F);
+    editor.undo();REQUIRE(editor.selected()->authored.pose.position==before);
     session.select(scene_config("structural-lab"));camera=session.scene().camera();frame();frame();
     auto capture_lab=[&](const char* path){
         if(!path)return;

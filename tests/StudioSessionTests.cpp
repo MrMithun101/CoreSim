@@ -136,13 +136,13 @@ TEST_CASE("Supported sandbox bodies settle, wake under force, and fall if suppor
 TEST_CASE("Structural Lab holds a stable tower then transfers projectile momentum and resets") {
     StudioSession s(scene_config("structural-lab"));auto& e=*s.scene().editor();REQUIRE(e.items().size()==27);
     REQUIRE(e.launch_ready());auto projectile=e.projectile();auto start=e.world().transform(projectile)->position;
-    s.set_paused(false);
+    s.collect_analysis(true);s.set_paused(false);
     for(int i=0;i<240;++i)s.advance(FixedStepper::step_seconds);
     REQUIRE(e.world().transform(projectile)->position==start);
     float drift=0;
     for(const auto& item:e.items())if(item.authored.finish==Finish::wood)
         drift=std::max(drift,glm::distance(e.world().transform(item.entity)->position,item.authored.pose.position));
-    REQUIRE(drift<.15F);
+    REQUIRE(drift<.15F);REQUIRE(s.collision_stats().contacts>0);REQUIRE(s.collision_stats().candidate_pairs>=s.collision_stats().collision_checks);
     e.launch();REQUIRE_FALSE(e.launch_ready());
     for(int i=0;i<240;++i)s.advance(FixedStepper::step_seconds);
     int displaced=0;
@@ -154,4 +154,43 @@ TEST_CASE("Structural Lab holds a stable tower then transfers projectile momentu
     REQUIRE(displaced>=6);
     s.reset();REQUIRE(e.launch_ready());REQUIRE(e.world().transform(projectile)->position==start);
     for(const auto& item:e.items())REQUIRE(e.world().transform(item.entity)->position==item.authored.pose.position);
+}
+
+#include <coresim/studio/SceneFile.hpp>
+#include <fstream>
+#include <chrono>
+#include <cstdlib>
+TEST_CASE("History coalesces axis gestures and reconstructs deleted entities without stale selection") {
+    StudioSession s(scene_config("structural-lab"));auto& e=*s.scene().editor();REQUIRE_FALSE(e.can_undo());
+    auto original=e.projectile();auto spec=e.selected()->authored;auto initial=spec.pose;
+    e.begin_gesture();for(int i=1;i<=4;++i){spec.pose.position.x=static_cast<float>(i);e.change(spec);}e.end_gesture();
+    e.undo();REQUIRE(e.selected()->authored.pose.position==initial.position);REQUIRE_FALSE(e.can_undo());
+    e.redo();REQUIRE(e.selected()->authored.pose.position.x==4);
+    e.erase();REQUIRE_FALSE(e.launch_ready());REQUIRE_FALSE(e.world().alive(original));
+    e.undo();REQUIRE(e.launch_ready());REQUIRE(e.selected()->entity!=original);REQUIRE(e.selected()->entity==e.projectile());
+    e.redo();REQUIRE_FALSE(e.launch_ready());e.undo();e.duplicate();
+    REQUIRE_FALSE(e.can_redo());REQUIRE(e.selected()->entity!=e.projectile());e.undo();REQUIRE(e.selected()->entity==e.projectile());
+    s.set_paused(false);REQUIRE_FALSE(e.can_undo());s.reset();REQUIRE(e.can_undo());
+}
+TEST_CASE("Scene serialization restores authored experiment and rejects corrupt replacements atomically") {
+    auto path=std::filesystem::temp_directory_path()/("coresim-scene-"+std::to_string(std::chrono::steady_clock::now().time_since_epoch().count())+".json");
+    struct Clean{std::filesystem::path p;~Clean(){std::error_code ec;std::filesystem::remove(p,ec);}} clean{path};
+    StudioSession s(scene_config("structural-lab"));auto& e=*s.scene().editor();
+    if(const char* sample=std::getenv("CORESIM_SAMPLE_SCENE"))write_scene_file(sample,SceneKind::structural_lab,e,s.scene().camera());
+    auto o=e.selected()->authored;o.pose.position={-8,2,1};o.mass=36;o.gravity=false;o.friction=.31F;o.angular={1,2,3};e.change(o);
+    e.launch_velocity={12,2,0};
+    Camera camera({1,8,9},-.8F,-.3F);write_scene_file(path,SceneKind::structural_lab,e,camera);
+    auto doc=read_scene_file(path);REQUIRE(glm::distance(doc.camera.direction(),camera.direction())<1e-5F);
+    REQUIRE(doc.camera.position()==camera.position());
+    s.select(scene_config("sandbox"));s.load(doc);auto* restored=s.scene().editor();
+    REQUIRE(s.paused());REQUIRE(s.ticks()==0);REQUIRE(restored->items().size()==27);
+    auto projectile=restored->projectile();REQUIRE(restored->launch_ready());
+    REQUIRE(restored->world().rigid_body(projectile)->mass()==36);
+    REQUIRE(restored->world().rigid_body(projectile)->angular_velocity==o.angular);
+    REQUIRE(restored->world().transform(projectile)->position==o.pose.position);
+    REQUIRE(restored->launch_velocity==glm::vec3(12,2,0));REQUIRE_FALSE(restored->can_undo());
+    doc.objects.back().mass=-1;REQUIRE_THROWS(s.load(doc));REQUIRE(s.scene().editor()==restored);REQUIRE(restored->world().alive(projectile));
+    for(const auto& invalid:std::vector<std::string>{"{}","{} false","[]","{\"schema\":200}",std::string(100,'[')}){
+        {std::ofstream f(path);f<<invalid;}REQUIRE_THROWS(read_scene_file(path));
+    }
 }

@@ -78,7 +78,7 @@ InputState Window::input(bool keyboard_captured, bool mouse_captured) {
         const bool reset_down = pressed(GLFW_KEY_R) > 0;
         state.reset_physics = !keyboard_captured && reset_down && !reset_was_down_;
         reset_was_down_ = reset_down;
-        if (!keyboard_captured) {
+        if (!keyboard_captured && pressed(GLFW_KEY_LEFT_CONTROL)==0.F && pressed(GLFW_KEY_RIGHT_CONTROL)==0.F && pressed(GLFW_KEY_LEFT_SUPER)==0.F && pressed(GLFW_KEY_RIGHT_SUPER)==0.F) {
             state.right = pressed(GLFW_KEY_D) - pressed(GLFW_KEY_A);
             state.forward = pressed(GLFW_KEY_W) - pressed(GLFW_KEY_S);
             state.up = pressed(GLFW_KEY_E) - pressed(GLFW_KEY_Q);

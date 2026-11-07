@@ -1,0 +1,1 @@
+picojson.h is the unmodified header from [picojson v1.3.0](https://github.com/kazuho/picojson/tree/25fc213cca61ea22b3c2e4db8def9927562ba5f7). Its BSD license is included in the header. Used privately by the Studio scene file reader/writer.

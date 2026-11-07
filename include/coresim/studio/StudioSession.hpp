@@ -5,6 +5,7 @@
 #include <memory>
 namespace coresim {
 // Main-thread owner. All worker tasks join within a tick before controls can mutate state.
+struct SceneDocument;
 class StudioSession {
 public:
     explicit StudioSession(SceneConfig config = {});
@@ -14,7 +15,11 @@ public:
     std::uint64_t ticks() const noexcept { return ticks_; }
     double dropped_seconds() const noexcept { return dropped_; }
     void select(SceneConfig config);
+    void load(const SceneDocument& document);
     void reset();
+    void collect_analysis(bool enabled) {collect_=enabled;}
+    const CollisionStats& collision_stats() const {return collision_;}
+    double physics_ms() const {return physics_ms_;}
     void set_paused(bool paused);
     void request_step() noexcept;
     void advance(double seconds, Profiler* profiler = nullptr, JobSystem* jobs = nullptr);
@@ -27,6 +32,9 @@ private:
     void restart_clock() noexcept;
     std::unique_ptr<State> state_;
     FixedStepper clock_;
+    bool collect_{};
+    CollisionStats collision_{};
+    double physics_ms_{};
     std::uint64_t ticks_{};
     double dropped_{};
     bool paused_{};

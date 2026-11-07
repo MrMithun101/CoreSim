@@ -17,7 +17,7 @@ void validate_scene_config(const SceneConfig& c) {
     (void)scene_name(c.kind);
     const std::size_t limit = c.kind == SceneKind::stress_tower ? 1000 : c.kind == SceneKind::sphere_rain ? 25000 : 100000;
     if ((c.kind==SceneKind::structural_lab && c.objects!=27) || (c.kind==SceneKind::sandbox && c.objects!=3) || c.objects == 0 || c.objects > limit || (c.kind == SceneKind::collision_demo && c.objects != 100)) {
-        throw std::invalid_argument("Object count: collision-demo requires 100; tower supports 1..1000, rain 1..25000, particles 1..100000");
+        throw std::invalid_argument("Object count: Structural Lab starts with 27 objects, Sandbox with 3; collision-demo requires 100; tower supports 1..1000, rain 1..25000, particles 1..100000");
     }
 }
 SceneConfig scene_config(std::string_view name, std::size_t objects, std::uint32_t seed) {
