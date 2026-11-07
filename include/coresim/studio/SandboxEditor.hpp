@@ -2,6 +2,7 @@
 #include <coresim/scene/Camera.hpp>
 #include <coresim/scene/World.hpp>
 #include <optional>
+#include <variant>
 namespace coresim {
 enum class Primitive { cube, sphere, platform, ramp, wall, plane };
 struct ObjectSpec {
@@ -25,7 +26,8 @@ class SandboxEditor {
         return world_.alive(projectile_) && world_.rigid_body(projectile_)->inverse_mass() > 0 &&
                !launched_;
     }
-    glm::vec3 launch_velocity{16, 0, 0};
+    glm::vec3 launch_velocity() const noexcept { return launch_velocity_; }
+    void set_launch_velocity(glm::vec3 velocity);
     void launch();
     void impulse(glm::vec3 impulse);
     struct Item {
@@ -60,12 +62,17 @@ class SandboxEditor {
 
   private:
     friend class StudioSession;
-    struct Command {
+    struct ObjectCommand {
         std::uint64_t key, previous_selection;
         std::optional<ObjectSpec> before, after;
         Transform original;
         bool projectile;
     };
+    struct LaunchCommand {
+        glm::vec3 before, after;
+    };
+    using Command = std::variant<ObjectCommand, LaunchCommand>;
+    glm::vec3 launch_velocity_{16, 0, 0};
     std::vector<Command> undo_, redo_;
     bool gesture_{}, gesture_changed_{};
     std::uint64_t next_key_{1};

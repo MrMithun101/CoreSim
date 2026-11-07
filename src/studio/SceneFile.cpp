@@ -149,7 +149,7 @@ void write_scene_file(const std::filesystem::path& path, SceneKind kind,
              {"gravity", vec({0, -9.81F, 0})},
              {"scene", V(std::string(scene_name(kind)))},
              {"projectile", V(double(projectile))},
-             {"launch_velocity", vec(editor.launch_velocity)},
+             {"launch_velocity", vec(editor.launch_velocity())},
              {"eye", vec(camera.position())},
              {"direction", vec(camera.direction())},
              {"objects", V(objects)}});

@@ -28,7 +28,7 @@ Launch `./build-studio/coresim` after building the app. **Structural Lab** opens
 | Play/pause / reset | **Space** / **R** |
 | Leave Studio | **Esc** |
 
-Framing sets the navigation pivot. Frame all fits finite bodies rather than attempting to fit an infinite plane. Orbit/dolly have distance limits; fly mode allows inspection from arbitrary positions. Axis drags and inspector edits operate in Build, after any prior worker jobs have joined. History stores up to 128 object-edit commands, coalesces drag updates, and restores logical selections across deletions without reviving stale world entity IDs. Camera navigation, simulation playback, the launch vector and opening files are outside object history.
+Framing sets the navigation pivot. Frame all fits finite bodies rather than attempting to fit an infinite plane. Orbit/dolly have distance limits; fly mode allows inspection from arbitrary positions. Axis drags and inspector edits operate in Build, after any prior worker jobs have joined. History stores up to 128 object-edit commands, coalesces drag updates, and restores logical selections across deletions without reviving stale world entity IDs. Projectile launch velocity also participates in the same history. Camera navigation, simulation playback and opening files are outside edit history.
 
 **Analyze** shows frame history and FPS, scene CPU submission time, physics time, broad-phase and solver time, candidates, contact points and process peak RSS where supported. Physics/collision values describe the last collected fixed tick, not GPU time. The standalone [performance benchmarks](../BENCHMARKS.md) are separate workloads.
 

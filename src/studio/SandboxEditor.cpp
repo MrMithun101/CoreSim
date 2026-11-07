@@ -211,7 +211,7 @@ Entity SandboxEditor::create(ObjectSpec object) {
         throw;
     }
     selection_ = id;
-    remember({key, previous, {}, o, o.pose, false});
+    remember(ObjectCommand{key, previous, {}, o, o.pose, false});
     return id;
 }
 void SandboxEditor::change(ObjectSpec object) {
@@ -222,8 +222,8 @@ void SandboxEditor::change(ObjectSpec object) {
     for (auto& item : items_)
         if (item.entity == selection_) {
             apply(world_, selection_, o);
-            remember(
-                {item.key, item.key, item.authored, o, item.original, item.entity == projectile_});
+            remember(ObjectCommand{item.key, item.key, item.authored, o, item.original,
+                                   item.entity == projectile_});
             item.authored = o;
             return;
         }
@@ -233,8 +233,8 @@ void SandboxEditor::erase() {
     auto* item = selected();
     if (!item)
         return;
-    remember(
-        {item->key, item->key, item->authored, {}, item->original, item->entity == projectile_});
+    remember(ObjectCommand{
+        item->key, item->key, item->authored, {}, item->original, item->entity == projectile_});
     if (selection_ == projectile_)
         projectile_ = {};
     world_.destroy(selection_);
@@ -257,19 +257,43 @@ void SandboxEditor::reset_transform() {
         change(o);
     }
 }
+void SandboxEditor::set_launch_velocity(glm::vec3 velocity) {
+    require_build();
+    if (!finite(velocity) || glm::length(velocity) > 100)
+        throw std::invalid_argument("Launch speed must be finite and at most 100 m/s");
+    if (velocity == launch_velocity_)
+        return;
+    remember(LaunchCommand{launch_velocity_, velocity});
+    launch_velocity_ = velocity;
+}
 void SandboxEditor::remember(Command c) {
     redo_.clear();
-    if (gesture_ && gesture_changed_ && c.before && c.after && !undo_.empty() &&
-        undo_.back().key == c.key && undo_.back().before && undo_.back().after) {
-        undo_.back().after = c.after;
-        return;
+    const auto* object = std::get_if<ObjectCommand>(&c);
+    if (gesture_ && gesture_changed_ && !undo_.empty()) {
+        if (object && object->before && object->after) {
+            auto* last = std::get_if<ObjectCommand>(&undo_.back());
+            if (last && last->key == object->key && last->before && last->after) {
+                last->after = object->after;
+                return;
+            }
+        } else if (auto* launch = std::get_if<LaunchCommand>(&c)) {
+            if (auto* last = std::get_if<LaunchCommand>(&undo_.back())) {
+                last->after = launch->after;
+                return;
+            }
+        }
     }
+    gesture_changed_ = gesture_ && (!object || (object->before && object->after));
     if (undo_.size() == 128)
         undo_.erase(undo_.begin());
     undo_.push_back(c);
-    gesture_changed_ = gesture_ && c.before && c.after;
 }
-void SandboxEditor::replay(const Command& c, bool forward) {
+void SandboxEditor::replay(const Command& cmd, bool forward) {
+    if (auto* launch = std::get_if<LaunchCommand>(&cmd)) {
+        launch_velocity_ = forward ? launch->after : launch->before;
+        return;
+    }
+    const auto& c = std::get<ObjectCommand>(cmd);
     auto target = forward ? c.after : c.before;
     auto it = std::find_if(items_.begin(), items_.end(), [&](auto& i) { return i.key == c.key; });
     if (target) {
@@ -336,7 +360,7 @@ void SandboxEditor::replace_objects(const std::vector<ObjectSpec>& specs, int pr
         if (static_cast<int>(i) == projectile)
             projectile_ = id;
     }
-    launch_velocity = velocity;
+    launch_velocity_ = velocity;
     launched_ = false;
     selection_ = projectile_;
     undo_.clear();
@@ -346,11 +370,11 @@ void SandboxEditor::replace_objects(const std::vector<ObjectSpec>& specs, int pr
 void SandboxEditor::launch() {
     if (building_ || !launch_ready())
         throw std::logic_error("Projectile cannot launch");
-    if (!finite(launch_velocity) || glm::length(launch_velocity) > 100)
+    if (!finite(launch_velocity_) || glm::length(launch_velocity_) > 100)
         throw std::invalid_argument("Launch speed must be at most 100 m/s");
     auto* body = world_.rigid_body(projectile_);
     body->wake();
-    body->velocity = launch_velocity;
+    body->velocity = launch_velocity_;
     body->gravity_enabled = true;
     launched_ = true;
 }

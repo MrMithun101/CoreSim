@@ -178,7 +178,7 @@ TEST_CASE("Scene serialization restores authored experiment and rejects corrupt 
     StudioSession s(scene_config("structural-lab"));auto& e=*s.scene().editor();
     if(const char* sample=std::getenv("CORESIM_SAMPLE_SCENE"))write_scene_file(sample,SceneKind::structural_lab,e,s.scene().camera());
     auto o=e.selected()->authored;o.pose.position={-8,2,1};o.mass=36;o.gravity=false;o.friction=.31F;o.angular={1,2,3};e.change(o);
-    e.launch_velocity={12,2,0};
+    e.set_launch_velocity({12,2,0});
     Camera camera({1,8,9},-.8F,-.3F);write_scene_file(path,SceneKind::structural_lab,e,camera);
     auto doc=read_scene_file(path);REQUIRE(glm::distance(doc.camera.direction(),camera.direction())<1e-5F);
     REQUIRE(doc.camera.position()==camera.position());
@@ -188,9 +188,33 @@ TEST_CASE("Scene serialization restores authored experiment and rejects corrupt 
     REQUIRE(restored->world().rigid_body(projectile)->mass()==36);
     REQUIRE(restored->world().rigid_body(projectile)->angular_velocity==o.angular);
     REQUIRE(restored->world().transform(projectile)->position==o.pose.position);
-    REQUIRE(restored->launch_velocity==glm::vec3(12,2,0));REQUIRE_FALSE(restored->can_undo());
+    REQUIRE(restored->launch_velocity()==glm::vec3(12,2,0));REQUIRE_FALSE(restored->can_undo());
     doc.objects.back().mass=-1;REQUIRE_THROWS(s.load(doc));REQUIRE(s.scene().editor()==restored);REQUIRE(restored->world().alive(projectile));
     for(const auto& invalid:std::vector<std::string>{"{}","{} false","[]","{\"schema\":200}",std::string(100,'[')}){
         {std::ofstream f(path);f<<invalid;}REQUIRE_THROWS(read_scene_file(path));
     }
+}
+
+TEST_CASE("Launch velocity edits coalesce, validate and replay without moving the projectile") {
+    StudioSession session(scene_config("structural-lab"));
+    auto& editor=*session.scene().editor();
+    const auto original=editor.launch_velocity();
+    editor.begin_gesture();
+    editor.set_launch_velocity({12,2,0});
+    editor.set_launch_velocity({15,3,0});
+    editor.end_gesture();
+    editor.undo();
+    REQUIRE(editor.launch_velocity()==original);
+    REQUIRE_FALSE(editor.can_undo());
+    REQUIRE_THROWS_AS(editor.set_launch_velocity({101,0,0}),std::invalid_argument);
+    editor.set_launch_velocity(original);
+    REQUIRE(editor.can_redo());
+    editor.redo();
+    REQUIRE(editor.launch_velocity()==glm::vec3(15,3,0));
+    auto* body=editor.world().rigid_body(editor.projectile());
+    REQUIRE(body->velocity==glm::vec3(0));
+    session.set_paused(false);
+    REQUIRE_THROWS_AS(editor.set_launch_velocity({1,0,0}),std::logic_error);
+    editor.launch();
+    REQUIRE(body->velocity==glm::vec3(15,3,0));
 }

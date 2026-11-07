@@ -372,9 +372,12 @@ bool EditorPanel::draw(StudioSession& session, Camera& camera) {
                 changed |= ImGui::DragFloat3("m/s", glm::value_ptr(o.velocity), .1F, -100, 100);
                 changed |= ImGui::DragFloat3("rad/s", glm::value_ptr(o.angular), .1F, -50, 50);
                 ImGui::EndDisabled();
-                if (item->entity == e.projectile())
-                    ImGui::DragFloat3("Launch m/s", glm::value_ptr(e.launch_velocity), .1F, -50, 50,
-                                      "%.1f", ImGuiSliderFlags_AlwaysClamp);
+                if (item->entity == e.projectile()) {
+                    auto velocity = e.launch_velocity();
+                    if (ImGui::DragFloat3("Launch m/s", glm::value_ptr(velocity), .1F, -50, 50,
+                                          "%.1f", ImGuiSliderFlags_AlwaysClamp))
+                        edit([&] { e.set_launch_velocity(velocity); });
+                }
                 ImGui::SeparatorText("Surface");
                 changed |= ImGui::SliderFloat("Friction", &o.friction, 0, 1);
                 changed |= ImGui::SliderFloat("Restitution", &o.restitution, 0, 1);
