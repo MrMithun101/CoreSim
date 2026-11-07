@@ -1,5 +1,15 @@
 # Verification
 
+## Milestone 21 preparation — November 6, 2026 (hardware validation pending)
+
+Code checkpoint `4cbac0a` adds optional same-stream CUDA event intervals and a single executable for same-host CPU and CUDA batch measurements. All backends start from identical seeded host input, discard warmup, time a complete host-to-host batch, and verify every final scalar outside timing. The study requires enabled, passing CUDA tests before hardware trials and publishes only validated results. CPU rehearsal must be explicitly selected.
+
+All 58 local headless Release tests passed, including the profiler CLI and rehearsal/export test. The latter rejects a hardware study on a CPU-only build without publishing results, exercises both CPU backends at 1K/10K/100K, and checks report labeling and output-directory protection. Checkpoint `7e76ca0` retains the [30-trial CPU rehearsal](../benchmarks/results/particles-m21-cpu-rehearsal/report.md) from clean source with zero observed CPU error and null device timings. The sandbox did not expose the CPU model string during that rehearsal; the metadata records architecture and this limitation.
+
+The [implementation run](https://github.com/MrMithun101/CoreSim/actions/runs/42333823696) passed the four Linux compiler/display jobs, ASan/UBSan, repeated ThreadSanitizer checks and NVCC compilation. Its HIP build succeeded, but the rehearsal metadata lookup failed because Git rejected the container-mounted checkout ownership. CI-only commit `83db5e6` scoped the safe-directory exception to that checkout and test process; the [corrected HIP integration job](https://github.com/MrMithun101/CoreSim/actions/runs/42334144158/job/128287143681) passed without weakening study provenance checks.
+
+The [offline NVCC job](https://github.com/MrMithun101/CoreSim/actions/runs/42333823696/job/128286124472) compiled the CUDA timing instrumentation with NVIDIA 12.6.85/GNU 13.3.0, linked the profile executable and hardware suite, and passed all 16 selected hardware-independent checks. This is build evidence only. No NVIDIA device, GPU numerical error, event duration, end-to-end GPU time, speedup or crossover has been measured. Milestone 21 remains open until the [hardware session](cuda-profiling.md) runs and its real results are reviewed.
+
 ## Milestone 20 — Optional CUDA particle integration — November 6, 2026
 
 Code checkpoint `687b91d` adds a C++20 CUDA batch API and the `cuda` backend in the existing particle runner. It preserves the constant-acceleration-v1 input layout, timestep, acceleration and update order. The default configuration still requires no CUDA toolkit. Explicit CUDA requests do not fall back to CPU. The batch returns a complete final state or reports failure; its provisional numerical comparison checks every component against an untimed serial CPU replay. See the [CUDA setup, ownership and validation guide](cuda-particles.md).
