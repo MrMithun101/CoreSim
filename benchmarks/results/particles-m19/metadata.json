@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "utc_start": "2026-11-07T02:25:55.016175+00:00",
+  "binary_name": "coresim_particle_benchmark",
+  "binary_sha256": "fa65041abc6fc544f1a749d1cbb167a1bc6af6fd04a36db1592a7cdedac04aca",
+  "source_revision_at_run": "ee1c254b08660aa33f0e186a9c1ab7130decd26c",
+  "source_dirty_at_run": false,
+  "os": "macOS-26.3.1-arm64-arm-64bit",
+  "architecture": "arm64",
+  "logical_cpus": 8,
+  "workload_seed": 7,
+  "order_seed": 19,
+  "counts": [
+    1000,
+    10000,
+    100000
+  ],
+  "workers": [
+    1,
+    4,
+    8
+  ],
+  "steps": 1000,
+  "warmup": 60,
+  "trials": 5,
+  "python": "3.12.5",
+  "cpu_model": "Apple M1",
+  "physical_memory_bytes": 8589934592,
+  "compile_commands": [
+    "/Library/Developer/CommandLineTools/usr/bin/c++  -I/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/include -O3 -DNDEBUG -std=c++20 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk -mmacosx-version-min=26.3 -Wall -Wextra -Wpedantic -Wconversion -Wshadow -o CMakeFiles/coresim_jobs.dir/src/jobs/JobSystem.cpp.o -c /Users/mithunselvananthan/Documents/ChatGPT/CoreSim/src/jobs/JobSystem.cpp",
+    "/Library/Developer/CommandLineTools/usr/bin/c++ -DCORESIM_BUILD_ARCH=\\\"arm64\\\" -DCORESIM_BUILD_OS=\\\"Darwin\\\" -DCORESIM_BUILD_TYPE=\\\"Release\\\" -DCORESIM_COMPILER=\\\"AppleClang-21.0.0.21000101\\\" -DCORESIM_SANITIZER_NAME=\\\"none\\\" -I/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/include -O3 -DNDEBUG -std=c++20 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk -mmacosx-version-min=26.3 -Wall -Wextra -Wpedantic -Wconversion -Wshadow -o CMakeFiles/coresim_particles.dir/src/particles/ParticleSimulation.cpp.o -c /Users/mithunselvananthan/Documents/ChatGPT/CoreSim/src/particles/ParticleSimulation.cpp",
+    "/Library/Developer/CommandLineTools/usr/bin/c++ -DCORESIM_BUILD_ARCH=\\\"arm64\\\" -DCORESIM_BUILD_OS=\\\"Darwin\\\" -DCORESIM_BUILD_TYPE=\\\"Release\\\" -DCORESIM_COMPILER=\\\"AppleClang-21.0.0.21000101\\\" -DCORESIM_SANITIZER_NAME=\\\"none\\\" -I/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/include -O3 -DNDEBUG -std=c++20 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk -mmacosx-version-min=26.3 -Wall -Wextra -Wpedantic -Wconversion -Wshadow -o CMakeFiles/coresim_particles.dir/src/particles/SoASimulation.cpp.o -c /Users/mithunselvananthan/Documents/ChatGPT/CoreSim/src/particles/SoASimulation.cpp",
+    "/Library/Developer/CommandLineTools/usr/bin/c++ -DCORESIM_BUILD_ARCH=\\\"arm64\\\" -DCORESIM_BUILD_OS=\\\"Darwin\\\" -DCORESIM_BUILD_TYPE=\\\"Release\\\" -DCORESIM_COMPILER=\\\"AppleClang-21.0.0.21000101\\\" -DCORESIM_SANITIZER_NAME=\\\"none\\\" -I/Users/mithunselvananthan/Documents/ChatGPT/CoreSim/include -O3 -DNDEBUG -std=c++20 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk -mmacosx-version-min=26.3 -Wall -Wextra -Wpedantic -Wconversion -Wshadow -o CMakeFiles/coresim_particles.dir/src/particles/ParticleBenchmark.cpp.o -c /Users/mithunselvananthan/Documents/ChatGPT/CoreSim/src/particles/ParticleBenchmark.cpp"
+  ],
+  "utc_end": "2026-11-07T02:26:14.640657+00:00"
+}
