@@ -1,5 +1,9 @@
 # Verification
 
+## Studio redesign — November 6, 2026
+
+The [implementation report](studio-redesign-report.md) records the five staged checkpoints, native rendering captures, 83-test display-enabled Release run, and saved-scene replay evidence. In the Structural Lab sample, the unlaunched tower stayed within 0.025 m of its authored poses; 23 of 24 beams moved over a metre after two simulated seconds of projectile interaction. The existing CPU and GPU benchmark suites remain separate. CUDA/HIP hardware validation is still pending.
+
 ## Milestone 21 preparation — November 6, 2026 (hardware validation pending)
 
 Code checkpoint `4cbac0a` adds optional same-stream CUDA event intervals and a single executable for same-host CPU and CUDA batch measurements. All backends start from identical seeded host input, discard warmup, time a complete host-to-host batch, and verify every final scalar outside timing. The study requires enabled, passing CUDA tests before hardware trials and publishes only validated results. CPU rehearsal must be explicitly selected.

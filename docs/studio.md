@@ -1,37 +1,39 @@
-# CoreSim Studio — Milestone 17
+# CoreSim Studio
 
-Studio adds scene selection and playback controls to the native application. It is the first step of Studio V1, an interactive 3D systems-performance laboratory. Live configuration, algorithm switches, debug overlays and the redesigned performance dashboard belong to later milestones.
+Launch `./build-studio/coresim` after building the app. **Structural Lab** opens in Build mode: a 24-beam wooden tower, static ground and backstop, and a selected 22 kg steel sphere. Click **Launch sphere** to start the simulation and release it. The structure is separate rigid bodies; there is no fracture or scripted collapse.
 
-```sh
-./build-release/coresim
-./build-release/coresim --scene sandbox
-./build-release/coresim --scene stress-tower
-```
+![Structural Lab in Build mode](images/structural-lab.png)
 
-The existing collision demo opens as **Sandbox**. It contains 50 spheres and 50 boxes above a plane; this basic sandbox has no object editing, spawning, force tools or explosions. `sandbox` is a CLI alias of `collision-demo`, preserving existing scene construction and benchmark compatibility.
+## Make an experiment
 
-![Studio Sandbox with playback controls](images/studio-m17.png)
+1. Choose **sandbox** in the scene selector. This opens a three-object editable experiment; the original 100-body preset is still **collision-demo**. Tower, Rain and Particle Storm remain available with their original playback and profiler controls.
+2. Click a primitive in **Create**. Placement follows the camera's center ray to a hit or a short distance ahead. Cubes, platforms, walls and ramps use box colliders (a ramp is an inclined box). Spheres have uniform radius. Ground is an infinite static half-space; its finite slab shows the surface.
+3. Click geometry to select it. The thin teal bounds mark selection; clicking empty space clears it. Use **Move**, **Rotate** or **Scale** and drag a labeled X/Y/Z handle along its screen direction. Move and rotate can use world or local axes; size changes always follow the object's own axes. Sphere scaling stays uniform. Numeric inspector fields provide precise values even when an axis points toward the camera.
+4. In **Inspector**, edit position (metres), Euler rotation (degrees), half-extents/radius (metres), mass (kg), gravity, initial linear/angular velocities (m/s and rad/s), friction, restitution and visual finish. Physical coefficients and finish are independent. Static bodies have zero mass and no initial motion. Changing size updates physical dimensions; inertia is calculated from current mass and geometry.
+5. **Play** advances the existing 120 Hz fixed-timestep solver. **Pause** stops ticking; **Step** advances exactly one tick while paused. Play/step lock authoring, but selection, navigation, live inspection and world-space impulses remain available. **Build / reset** restores authored objects, poses and initial motion. A reset does not save a falling body's pose over its starting pose.
+6. In Build, open **File**, enter a path, and click **Save**. Open **File → Load** to restore it. Relative paths are relative to the directory from which Studio was launched. Try `scenes/ramp-drop.json` or `scenes/structural-lab.json` when launching from the repository. A successful load starts paused with the saved camera; validation failures leave the active experiment intact.
+
+![One second after a physical projectile launch](images/structural-impact.png)
 
 ## Controls
 
-- **Simulation:** switch between Tower (256 boxes), Rain (2,500 spheres), Particle Storm (25,000 independent CPU particles), and Sandbox (100 mixed bodies). Selecting a different entry rebuilds the scene using its default count and seed 1. Command-line counts/seeds apply to the initial scene; switching loads the selected preset defaults.
-- **Pause / Resume:** freeze or resume physics while leaving the camera and interface responsive.
-- **Single step:** advance exactly one 1/120-second physics tick while paused. Disabled while running. Each command is consumed once; it does not accumulate a background queue.
-- **Reset / R:** restore initial motion, clear simulation ticks and dropped-time counters, and return the camera to its starting view. Reset preserves the selected scene, count, seed and pause state.
-- **Camera:** WASD moves, Q/E moves vertically, right-drag looks around, Esc closes. Keyboard/mouse capture by the UI prevents camera/reset input from leaking through controls.
+| Action | Control |
+|---|---|
+| Select / Move / Rotate / Scale | Left palette or **1 / 2 / 3 / 4** |
+| Fly / look | **WASD**, **Q/E**, hold **right mouse** to look |
+| Orbit / pan / zoom | **Alt + left drag**, **middle drag**, **wheel** |
+| Frame selected / scene | **F** or Inspector **Frame** / toolbar **Frame all** |
+| Duplicate / delete | **Cmd/Ctrl+D** / **Delete** or **Backspace** |
+| Undo / redo | **Cmd/Ctrl+Z** / **Cmd/Ctrl+Shift+Z**, or toolbar buttons |
+| Play/pause / reset | **Space** / **R** |
+| Leave Studio | **Esc** |
 
-The Studio panel starts at the upper left; the existing CPU Profiler starts collapsed to its right. Both are movable/resizable ImGui windows. The profiler retains its existing cumulative semantics across scene switches; use its Reset statistics button for a fresh collection. Its collection switch does not pause simulation. Studio displays physics tick count and elapsed simulation time, not GPU timing or benchmark results.
+Framing sets the navigation pivot. Frame all fits finite bodies rather than attempting to fit an infinite plane. Orbit/dolly have distance limits; fly mode allows inspection from arbitrary positions. Axis drags and inspector edits operate in Build, after any prior worker jobs have joined. History stores up to 128 object-edit commands, coalesces drag updates, and restores logical selections across deletions without reviving stale world entity IDs. Camera navigation, simulation playback, the launch vector and opening files are outside object history.
 
-## Transition and ownership rules
+**Analyze** shows frame history and FPS, scene CPU submission time, physics time, broad-phase and solver time, candidates, contact points and process peak RSS where supported. Physics/collision values describe the last collected fixed tick, not GPU time. The standalone [performance benchmarks](../BENCHMARKS.md) are separate workloads.
 
-`StudioSession` owns a replaceable scene/physics pair without requiring graphics. The application draws controls before the simulation update; all physics jobs from the previous update have joined. Scene construction happens before the old state is replaced. Validation or allocation failure leaves the active scene intact and displays an error in the selector.
+## Scene files and limitations
 
-Switching scenes changes gravity with the scene (zero for particles), resets the fixed-step accumulator and counters, cancels pending manual steps, restores the camera, and preserves pause state. Entity IDs and component references belong to the old scene and must not be retained across a switch; the renderer borrows the current world each frame.
+Schema 1 JSON stores authored transforms (quaternions in w,x,y,z order), primitive and shape dimensions, body and visual material settings, initial motion, projectile reference/launch vector, fixed rate, world gravity and camera pose. Shape IDs are cube/sphere/platform/ramp/wall/plane (0–5); finish IDs are steel/concrete/wood/rubber/plastic (1–5). The two sample files are portable examples. Save replaces its target by renaming a completed sibling temporary file. Load validates an isolated replacement before swapping worlds. Live solver contacts, motion in progress, undo history and selection are not serialized. The workspace limit is 2,048 objects; the reader limits file size to 2 MiB and nesting to 32 levels.
 
-Paused wall time is discarded. Resume clears fractional accumulated time and ignores the control frame's elapsed duration. Reset/selection additionally ignore the following frame's elapsed duration because it includes the preceding rebuild work. This prevents scene construction or time spent paused from causing catch-up ticks. Manual steps remain available immediately while paused. Normal running retains the existing bounded fixed-step catch-up policy.
-
-## Validation
-
-Headless tests cover pause/step/resume, discarded paused time, reset of fractional time, repeated scene transitions, per-scene gravity, worker-backed stepping, exact initial-motion restoration, rejected transitions and invalid frame durations. Display tests click the actual Pause, Single step, Reset and Resume buttons and select all four scenes, while checking GL errors and rendered UI geometry. The screenshot above is an actual framebuffer capture of the same renderer and panels used by the application.
-
-The November 2026 [revised roadmap](roadmap.md) prioritizes comparable CPU/GPU workloads. Milestone 18 now implements the headless particle correctness foundation; live configuration and the remaining Studio V1 product controls are deferred. No accounts, cloud services or community features are included.
+See the [implementation report](studio-redesign-report.md) for validation and technical limits.

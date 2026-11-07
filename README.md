@@ -1,10 +1,16 @@
-# CoreSim
+# CoreSim Studio
 
-**High-Performance 3D Physics Simulation Engine**
+A custom C++20 real-time physics sandbox and systems-performance laboratory. **CoreSim Studio** opens in **Structural Lab**, where a heavy steel sphere can knock down a tower of 24 independent wooden beams. Build experiments with collider-backed shapes, select and transform bodies in the viewport, edit physical properties, run the simulation, and save or load versioned scenes.
 
-A C++20 systems and performance engineering project developed one measured milestone at a time. Current scope: **Milestone 21 — CPU/CUDA profiling workflow prepared; hardware validation pending**. It provides custom fixed-step linear and angular physics, generation-checked entity IDs, packed component storage, primitive collision detection and impulse response, a movable perspective camera and a 100-body sphere/box demo, move-aware RAII GPU resources, file-based shaders, depth testing, frame timing, and tests. A deterministic spatial hash accelerates broad-phase collision detection; a live ImGui CPU profiler exposes timing bottlenecks. Bodies rotate under torque and off-center impulses; oriented-box manifolds and contact friction support the falling-body demo. The renderer batches repeated cubes and spheres with instancing, with a retained individual-draw path and measured comparisons up to 25,000 objects. An optional Linux AMD HIP vector-add workload now provides the compute foundation; device execution remains unverified. A headless CSV benchmark compares spatial hashing with the retained all-pairs baseline; see [measurements and methodology](BENCHMARKS.md).
+![Structural Lab in CoreSim Studio](docs/images/structural-lab.png)
 
-![Sphere and box collision scene rendered by CoreSim](docs/images/angular.png)
+```sh
+cmake -S . -B build-studio -DCMAKE_BUILD_TYPE=Release -DCORESIM_WINDOW_TESTS=ON
+cmake --build build-studio --parallel
+./build-studio/coresim
+```
+
+Click **Launch sphere** to try the flagship experiment. To build your own, choose **sandbox** in the scene selector. See the [Studio guide](docs/studio.md), [sample scenes](scenes), and [redesign implementation report](docs/studio-redesign-report.md). No CUDA or HIP installation is required for Studio.
 
 ## Same-host CPU/CUDA profiling
 
@@ -18,13 +24,7 @@ A Linux CUDA build can run the same seeded particle workload with `coresim_parti
 
 A headless runner compares serial and persistent worker-pool execution on identical seeded particles at a fixed 1/120-second timestep. It checks all six position/velocity scalars after every tick, with verified 1K, 10K and 100K workloads. Run `./build-m18-release/coresim_particle_runner --particles 100000 --workers 4 --seed 7` after following the [build instructions and workload contract](docs/particle-workload.md). This runner checks correctness. For timing and memory measurements, see the [CPU particle baseline](docs/particle-cpu-baseline.md), including AoS/SoA comparisons, raw JSON/CSV trials and reproduction commands.
 
-See the [revised CPU/GPU roadmap](docs/roadmap.md). Studio live configuration is deferred in favor of the comparable simulation and measurement foundation.
-
-## CoreSim Studio
-
-Launch `./build-release/coresim` to open Studio. Choose Tower, Rain, Particle Storm or Sandbox from the Simulation selector, then pause, resume, single-step or reset without restarting. Sandbox uses the original mixed-body demo; object editing is deferred. The camera remains available while physics is paused. See [Studio controls, transition behavior and scope](docs/studio.md).
-
-![CoreSim Studio Sandbox](docs/images/studio-m17.png)
+See the [revised CPU/GPU roadmap](docs/roadmap.md). The Studio editor is independent of these benchmark workloads.
 
 ## HIP compute foundation
 
@@ -32,7 +32,7 @@ Run the portable reference with `./build/coresim_gpu_demo --elements 1025`, or u
 
 ## Reproducible scenes
 
-Launch seeded Stress Tower, Sphere Rain or Particle Storm scenes with automatic starting cameras and R-to-reset motion. The original collision demo remains the default.
+Launch seeded Stress Tower, Sphere Rain or Particle Storm scenes with automatic starting cameras and R-to-reset motion. The original collision demo remains available with `--scene collision-demo`; Structural Lab is the Studio default.
 
 ```sh
 ./build-release/coresim --scene stress-tower
@@ -45,7 +45,7 @@ The headless runner uses exact 120 Hz ticks and records motion digests and colli
 
 ## Rendering scalability
 
-`Renderer` defaults to instanced rendering: one draw per nonempty mesh type. The retained individual path and deterministic 1,000/10,000/25,000-object benchmark compare draw counts, CPU submission, completed offscreen render time and derived FPS. See [the measured results and limits](docs/rendering-scalability.md); these exclude physics and presentation.
+`Renderer` defaults to instanced rendering: the legacy path uses one draw per nonempty mesh type; the lit editor batches by mesh and finish for shadow and color passes. The retained individual path and deterministic 1,000/10,000/25,000-object benchmark compare draw counts, CPU submission, completed offscreen render time and derived FPS. See [the measured results and limits](docs/rendering-scalability.md); these exclude physics and presentation.
 
 ```sh
 ./build-release/coresim_render_benchmark --mode instanced --objects 25000
@@ -70,7 +70,7 @@ ctest --test-dir build --output-on-failure
 ./build/coresim
 ```
 
-The scene contains 50 spheres and 50 tilted, spinning boxes falling onto a static plane visualized by a slab. They bounce and settle from two initial layers. Press **R** to reset the dynamic bodies. Use **WASD** to move, **Q/E** to descend/ascend, and **hold right mouse** to look. Release right mouse to restore the cursor. Escape or the close button exits. Its title updates twice per second with simulation time, dropped physics time, average FPS, delta time, and the last completed frame duration. A shutdown summary appears on standard output. Vertical synchronization is enabled; frame duration includes presentation waiting and is not a rendering benchmark.
+The legacy collision-demo preset contains 50 spheres and 50 tilted, spinning boxes falling onto a static plane visualized by a slab. They bounce and settle from two initial layers. Press **R** to reset the dynamic bodies. Use **WASD** to move, **Q/E** to descend/ascend, and **hold right mouse** to look. Release right mouse to restore the cursor. Escape or the close button exits. Its title updates twice per second with simulation time, dropped physics time, average FPS, delta time, and the last completed frame duration. A shutdown summary appears on standard output. Vertical synchronization is enabled; frame duration includes presentation waiting and is not a rendering benchmark.
 
 ```sh
 cmake -S . -B build-release -DCMAKE_BUILD_TYPE=Release
@@ -79,7 +79,7 @@ ctest --test-dir build-release --output-on-failure
 ./build-release/coresim
 ```
 
-On this verified local setup, CMake is temporarily available via `export PATH="/tmp/coresim-build-tools/bin:$PATH"`. For long-term macOS use, install Xcode command-line tools and CMake normally, then use the same commands. Apple's deprecated OpenGL implementation is sufficient for this foundation. HIP is optional and requires a separate Linux ROCm build; the default macOS build uses the CPU reference.
+On macOS, install the Xcode command-line tools and CMake 3.25+ before using these commands. Apple's deprecated OpenGL implementation is sufficient for this foundation. HIP is optional and requires a separate Linux ROCm build; the default macOS build uses the CPU reference.
 
 Presets `debug`, `release`, `asan`, and `tsan` use separate directories:
 

@@ -2,7 +2,7 @@
 
 Collision geometry belongs to `Collider`: sphere radius, oriented-box local half extents, or a static plane. Dimensions are explicit world units; transform position/rotation place the shape, and render scale is ignored. Constructors validate dimensions and plane normals; callers must preserve their invariants when editing fields. A rotated plane has world normal `rotation * normal` and solid half-space `dot(world_normal, point - position) <= offset`.
 
-Supported pairs are sphere/sphere, oriented box/box, sphere/plane and box/plane, including reversed order. Sphere/box and plane/plane remain unsupported. Normals point from A toward B. `detect_manifold` returns a bounded contact patch; `detect_contact` returns its centroid, common normal and maximum penetration for geometric queries and pair correction. Coincident spheres use a deterministic X-axis normal. Box face clipping, edge contacts and the 0.002-unit resting-contact skin are described in [angular dynamics](angular-dynamics.md).
+Supported pairs are sphere/sphere, oriented box/box, sphere/plane and box/plane, including reversed order. Sphere/oriented-box contacts are also supported in both orders: clamp the sphere center in box-local space, or choose the closest exit face if it lies inside. Plane/plane remains unsupported. Normals point from A toward B. `detect_manifold` returns a bounded contact patch; `detect_contact` returns its centroid, common normal and maximum penetration for geometric queries and pair correction. Coincident spheres use a deterministic X-axis normal. Box face clipping, edge contacts and the 0.002-unit resting-contact skin are described in [angular dynamics](angular-dynamics.md).
 
 ## Response
 

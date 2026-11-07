@@ -11,6 +11,6 @@ Revised November 6, 2026: prioritize a benchmarkable CPU/GPU simulation engine, 
 | 22 | Particle collision processing: boundaries first, then spatially partitioned particle–particle collisions, validated before timing. |
 | 23 | Comparative report and supported execution controls in Studio; extend the equivalent workload to HIP when AMD hardware is available. |
 
-The previous Studio V1 live configuration, algorithm switches, debug visualization and dashboard work is deferred. It is not silently included in the revised Milestone 18. Accounts, cloud storage and community features remain outside the immediate scope.
+The separately commissioned [Studio sandbox redesign](studio-redesign-report.md) adds interactive authoring, visualization and live diagnostics. Benchmark algorithm/backend switching is separate work. It is not silently included in the revised Milestone 18. Accounts, cloud storage and community features remain outside the immediate scope.
 
 GPU correctness/performance cannot be established by compilation. No compatible GPU machine is currently available to the project owner. GPU milestones requiring execution remain conditional on hardware access. The existing Apple Silicon CPU build provides portable ARM execution; CUDA is optional, not a prerequisite for the CPU application.
