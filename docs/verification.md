@@ -1,5 +1,13 @@
 # Verification
 
+## Milestone 19 — CPU particle measurement baseline — November 6, 2026
+
+Code checkpoint `ee1c254` adds serial and pooled SoA execution alongside the existing AoS baseline. Both share a checked integration kernel and joined range dispatcher. Every benchmark verifies its final state against an untimed serial AoS replay. Local Release passed all 54 headless CTest entries; the particle suite passed 1,448 assertions in eight cases. The particle and JSON/CSV export suites also passed in a separate ASan/UBSan build. Local tests cover exact per-tick equivalence, reset, overflow rollback, empty and uneven partitions, warmup-independent final state and export semantics.
+
+The [code CI run](https://github.com/MrMithun101/CoreSim/actions/runs/42329219315) passed all seven jobs: GCC/Clang Debug/Release with display coverage (79 tests in Linux Release), ASan/UBSan, HIP compilation, and repeated concurrency/particle tests under ThreadSanitizer.
+
+Study checkpoint `358b086` publishes the [report and chart](particle-cpu-baseline.md) and [raw evidence](../benchmarks/results/particles-m19). The clean Apple M1 Release binary ran 120 fresh-process trials (24 configurations, five repetitions). All trial outputs passed full final-state verification. The JSON/CSV records, all 24 grouped medians, displayed table values and executable hash were independently cross-checked. The memory data distinguishes process peak RSS from owned vector capacity; no GPU, collision or full-frame measurement is claimed.
+
 ## Milestone 18 — Comparable Particle Workload — November 6, 2026
 
 Code checkpoint `44b3aaf` implements the revised compute-first Milestone 18: a standalone particle state/integrator, deterministic initialization, serial and persistent worker-pool CPU paths, a headless correctness runner and concurrency/error-path tests. Documentation checkpoint `bc13548` records the workload contract, revised roadmap and reproducible validation runs. Studio live configuration is deferred; the existing Particle Storm is not treated as an equivalent workload because it uses different motion/boundary rules.

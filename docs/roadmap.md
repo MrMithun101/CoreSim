@@ -5,7 +5,7 @@ Revised November 6, 2026: prioritize a benchmarkable CPU/GPU simulation engine, 
 | Milestone | Scope |
 |---|---|
 | 18 | Comparable particle workload: fixed rules, seeded inputs, serial/worker-pool CPU paths and correctness checks at 1K, 10K and 100K particles. |
-| 19 | CPU measurement baseline: reproducible trials, relevant layout comparisons, measured memory usage, machine/build metadata and result export. |
+| 19 | CPU measurement baseline: reproducible trials, relevant layout comparisons, measured memory usage, machine/build metadata and result export. [Completed CPU study](particle-cpu-baseline.md). |
 | 20 | Optional CUDA particle integration implementing the same workload; CPU-only builds remain portable and the HIP foundation stays available. |
 | 21 | Real NVIDIA GPU validation/profiling: correctness policy, kernel/transfer/end-to-end times and hardware-backed results. |
 | 22 | Particle collision processing: boundaries first, then spatially partitioned particle–particle collisions, validated before timing. |
