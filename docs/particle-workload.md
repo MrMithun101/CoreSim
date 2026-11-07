@@ -22,7 +22,7 @@ The default backend is `compare`: run both paths from identical inputs and compa
 
 Independent serial/parallel runs report `cpu_parity=not-checked`; successful execution alone is not a parity test. Comparison runs report `cpu_parity=exact-every-tick`. Output includes workload version, backend, count, seed, ticks, actual float timestep/acceleration, pool worker count, submitted worker tasks and a diagnostic state digest. A worker-task count is not a utilization measurement or proof of simultaneous execution.
 
-CLI bounds: 1–100,000 particles, 1–10,000 steps, 1–64 workers, uint32 seed including zero. Defaults: 1,000 particles, 120 steps, four workers, seed 1. Duplicate, unknown, missing, negative, out-of-range and partially parsed arguments fail. `--workers` is rejected for serial mode; serial runs create no pool and report zero workers/tasks. CUDA/HIP are not accepted as particle backends yet. The library additionally supports empty state for boundary testing.
+CLI bounds: 1–100,000 particles, 1–10,000 steps, 1–64 workers, uint32 seed including zero. Defaults: 1,000 particles, 120 steps, four workers, seed 1. Duplicate, unknown, missing, negative, out-of-range and partially parsed arguments fail. `--workers` is rejected for serial mode; serial runs create no pool and report zero workers/tasks. Milestone 20 adds an [optional CUDA particle backend](cuda-particles.md); HIP remains a separate vector-add workload. The library additionally supports empty state for boundary testing.
 
 ## Version 1 contract
 
