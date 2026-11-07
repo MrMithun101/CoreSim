@@ -52,6 +52,10 @@ TEST_CASE("CUDA requests are explicit and never fall back") {
     REQUIRE(status.devices.empty());
     REQUIRE_FALSE(status.diagnostic.empty());
     REQUIRE_THROWS_AS(integrate_cuda({}, default_acceleration, 0), std::runtime_error);
-    REQUIRE_THROWS_AS(integrate_cuda(initial_particles(8,1), default_acceleration, 2), std::runtime_error);
+    CudaPhases phases{-1,-1,-1};
+    REQUIRE_THROWS_AS(integrate_cuda(initial_particles(8,1), default_acceleration, 2, 0, &phases), std::runtime_error);
+    REQUIRE(phases.upload_ms == -1);
+    REQUIRE(phases.kernel_ms == -1);
+    REQUIRE(phases.download_ms == -1);
 #endif
 }

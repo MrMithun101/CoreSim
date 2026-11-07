@@ -2,6 +2,7 @@
 #include <cuda_runtime.h>
 #include <algorithm>
 #include <cstdio>
+#include <memory>
 #include <stdexcept>
 #include <type_traits>
 
@@ -34,6 +35,20 @@ struct Stream {
     Stream(const Stream&) = delete;
     ~Stream() { cleanup(cudaStreamDestroy(value), "destroy stream"); }
 };
+struct Event {
+    cudaEvent_t value{};
+    Event() { check(cudaEventCreate(&value), "create timing event"); }
+    Event(const Event&) = delete;
+    ~Event() { cleanup(cudaEventDestroy(value), "destroy timing event"); }
+};
+struct Events {
+    std::array<Event,6> marks;
+    float elapsed(unsigned begin) const {
+        float ms{};
+        check(cudaEventElapsedTime(&ms, marks[begin].value, marks[begin+1].value), "measure CUDA interval");
+        return ms;
+    }
+};
 template<class T> struct Buffer {
     T* ptr{};
     explicit Buffer(std::size_t count) { check(cudaMalloc(&ptr, count * sizeof(T)), "allocate particle batch storage"); }
@@ -59,6 +74,10 @@ CudaStatus cuda_status() {
     int count{};
     auto error = cudaGetDeviceCount(&count);
     if (error != cudaSuccess) { status.diagnostic = std::string("cudaGetDeviceCount: ") + cudaGetErrorString(error); return status; }
+    status.toolkit = CUDART_VERSION;
+    error = cudaDriverGetVersion(&status.driver_api);
+    if (error == cudaSuccess) { error = cudaRuntimeGetVersion(&status.runtime); }
+    if (error != cudaSuccess) { status.diagnostic = std::string("CUDA version query: ") + cudaGetErrorString(error); return status; }
     for (int i = 0; i < count; ++i) {
         cudaDeviceProp props{};
         error = cudaGetDeviceProperties(&props, i);
@@ -72,10 +91,11 @@ CudaStatus cuda_status() {
     if (!count) { status.diagnostic = "CUDA runtime reports no devices"; }
     return status;
 }
-std::vector<Particle> detail::cuda_batch(std::span<const Particle> initial, Acceleration a, std::size_t steps, int device) {
+std::vector<Particle> detail::cuda_batch(std::span<const Particle> initial, Acceleration a, std::size_t steps, int device, CudaPhases* phases) {
     const auto status = cuda_status();
     if (!status.diagnostic.empty()) { throw std::runtime_error(status.diagnostic); }
     if (static_cast<std::size_t>(device) >= status.devices.size()) { throw std::invalid_argument("CUDA device index unavailable"); }
+    CudaPhases measured;
     DeviceScope scope(device);
     std::vector<Particle> result(initial.begin(), initial.end());
     if (!initial.empty() && steps != 0) {
@@ -92,19 +112,32 @@ std::vector<Particle> detail::cuda_batch(std::span<const Particle> initial, Acce
         Buffer<Particle> state(initial.size());
         Buffer<int> invalid(1);
         int flag{};
+        auto events = phases ? std::make_unique<Events>() : nullptr;
+        auto mark = [&](unsigned index) {
+            if (events) { check(cudaEventRecord(events->marks[index].value, stream.value), "record CUDA event"); }
+        };
+        mark(0);
         check(cudaMemcpyAsync(state.ptr, initial.data(), initial.size_bytes(), cudaMemcpyHostToDevice, stream.value), "upload particles");
+        mark(1);
         check(cudaMemsetAsync(invalid.ptr, 0, sizeof(int), stream.value), "clear overflow flag");
+        mark(2);
         for (std::size_t i = 0; i < steps; ++i) {
             integrate_tick<<<static_cast<unsigned>(blocks), threads, 0, stream.value>>>(
                 state.ptr, initial.size(), a[0], a[1], a[2], timestep, invalid.ptr);
             check(cudaGetLastError(), "launch CUDA particle tick");
         }
+        mark(3);
         check(cudaStreamSynchronize(stream.value), "complete CUDA particle ticks");
         check(cudaMemcpy(&flag, invalid.ptr, sizeof(int), cudaMemcpyDeviceToHost), "read overflow flag");
         if (flag) { throw std::overflow_error("Non-finite CUDA particle integration result"); }
-        check(cudaMemcpy(result.data(), state.ptr, initial.size_bytes(), cudaMemcpyDeviceToHost), "download particles");
+        mark(4);
+        check(cudaMemcpyAsync(result.data(), state.ptr, initial.size_bytes(), cudaMemcpyDeviceToHost, stream.value), "download particles");
+        mark(5);
+        check(cudaStreamSynchronize(stream.value), "complete particle download");
+        if (events) { measured = {events->elapsed(0), events->elapsed(2), events->elapsed(4)}; }
     }
     scope.restore();
+    if (phases) { *phases = measured; }
     return result;
 }
 }

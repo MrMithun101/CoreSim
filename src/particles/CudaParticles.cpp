@@ -4,10 +4,10 @@
 
 namespace coresim::particles {
 std::vector<Particle> integrate_cuda(std::span<const Particle> input, Acceleration acceleration,
-                                     std::size_t steps, int device) {
+                                     std::size_t steps, int device, CudaPhases* phases) {
     detail::validate(input, acceleration);
     if (device < 0 || steps > 10000) { throw std::invalid_argument("Invalid CUDA device or tick count"); }
-    return detail::cuda_batch(input, acceleration, steps, device);
+    return detail::cuda_batch(input, acceleration, steps, device, phases);
 }
 
 Comparison compare_cuda(std::span<const Particle> reference, std::span<const Particle> actual) {

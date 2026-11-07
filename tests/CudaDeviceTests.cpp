@@ -1,6 +1,7 @@
 #include <coresim/particles/CudaParticles.hpp>
 #include <catch2/catch_test_macros.hpp>
 #include <cuda_runtime_api.h>
+#include <cmath>
 #include <limits>
 #include <stdexcept>
 using namespace coresim::particles;
@@ -23,7 +24,13 @@ TEST_CASE("Real CUDA particles match the serial reference and preserve caller st
             for (std::size_t i=0; i<steps; ++i) { (void)cpu.step_serial(); }
             REQUIRE(integrate_cuda(input, acceleration, 0, device.index) == input);
             for (int repeat=0; repeat<2; ++repeat) {
-                const auto actual=integrate_cuda(input, acceleration, steps, device.index);
+                CudaPhases phases{-1,-1,-1};
+                const auto actual=integrate_cuda(input, acceleration, steps, device.index, &phases);
+                for (float t : {phases.upload_ms, phases.kernel_ms, phases.download_ms}) {
+                    REQUIRE(std::isfinite(t));
+                    REQUIRE(t >= 0);
+                    if (input.empty()) { REQUIRE(t == 0); }
+                }
                 REQUIRE(compare_cuda(cpu.state(), actual).equal);
             }
             REQUIRE(input == saved);

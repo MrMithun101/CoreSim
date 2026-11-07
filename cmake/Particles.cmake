@@ -61,3 +61,22 @@ if(BUILD_TESTING)
         set_tests_properties(coresim.cuda_unavailable PROPERTIES WILL_FAIL TRUE)
     endif()
 endif()
+add_executable(coresim_particle_profile src/particles/profile_main.cpp)
+target_link_libraries(coresim_particle_profile PRIVATE coresim_particles)
+target_compile_definitions(coresim_particle_profile PRIVATE
+    CORESIM_BUILD_TYPE="$<CONFIG>" CORESIM_COMPILER="${CMAKE_CXX_COMPILER_ID}-${CMAKE_CXX_COMPILER_VERSION}"
+    CORESIM_SANITIZER_NAME="${CORESIM_SANITIZER}")
+coresim_target_options(coresim_particle_profile)
+if(BUILD_TESTING)
+    add_test(NAME coresim.particles_profile_cpu COMMAND coresim_particle_profile --backend parallel --workers 3 --particles 257 --steps 12 --warmup 2)
+    set_tests_properties(coresim.particles_profile_cpu PROPERTIES PASS_REGULAR_EXPRESSION "verified\":true")
+    if(CORESIM_CUDA_DEVICE_TESTS)
+        add_test(NAME coresim.cuda_profile COMMAND coresim_particle_profile --backend cuda --particles 100000 --steps 120)
+        set_tests_properties(coresim.cuda_profile PROPERTIES LABELS cuda TIMEOUT 180)
+    endif()
+endif()
+if(BUILD_TESTING AND Python3_Interpreter_FOUND AND NOT CORESIM_CUDA_DEVICE_TESTS
+   AND CMAKE_BUILD_TYPE STREQUAL "Release" AND CORESIM_SANITIZER STREQUAL "none")
+    add_test(NAME coresim.particles_profile_rehearsal COMMAND ${Python3_EXECUTABLE}
+        ${PROJECT_SOURCE_DIR}/tests/CudaStudyTest.py ${CMAKE_BINARY_DIR} ${CMAKE_CTEST_COMMAND})
+endif()
