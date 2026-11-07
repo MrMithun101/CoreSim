@@ -7,6 +7,7 @@ class StudioPanel {
 public:
     // Called after ImGui NewFrame, before simulation update. True resets the camera.
     bool draw(StudioSession& session,Camera& camera);
+    float sensitivity() const {return editor_.sensitivity;}
     bool analyze() const {return editor_.analyze;}
 private:
     EditorPanel editor_;

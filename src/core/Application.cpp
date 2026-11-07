@@ -47,7 +47,8 @@ void Application::update(const FrameStats& stats) {
     const auto input = window_.input(profiler_panel_.captures_keyboard(), profiler_panel_.captures_mouse());
     // Interactive motion must not leap after a debugger stop or a long OS stall.
     const auto dt = static_cast<float>(std::min(stats.delta_seconds, 0.1));
-    camera_.look(input.look_x * 0.0025F, input.look_y * 0.0025F);
+    const float sensitivity=session_.scene().editor()?studio_panel_.sensitivity():1.F;
+    camera_.look(input.look_x*.0025F*sensitivity,input.look_y*.0025F*sensitivity);
     camera_.move({input.right, input.up, input.forward}, dt);
     if (input.reset_physics) {
         session_.reset();
@@ -72,7 +73,7 @@ void Application::render() {
         const auto [width, height] = window_.framebuffer_size();
         if (width > 0 && height > 0) {
             const float aspect = static_cast<float>(width) / static_cast<float>(height);
-            renderer_.draw(width, height, camera_.projection(aspect) * camera_.view(), session_.scene().world());
+            renderer_.draw(width, height, camera_.projection(aspect) * camera_.view(), session_.scene().world(),RenderMode::instanced,camera_.position());
         }
         if(!session_.scene().editor() || studio_panel_.analyze()) profiler_panel_.draw(profiler_,!session_.scene().editor());
         profiler_panel_.render();

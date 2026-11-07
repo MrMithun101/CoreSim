@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <glm/mat4x4.hpp>
 #include <vector>
+#include <memory>
 #include <array>
 
 namespace coresim {
@@ -16,10 +17,16 @@ struct RenderStats {
 class Renderer {
 public:
     explicit Renderer(const std::filesystem::path& shader_directory);
+    ~Renderer();
     void draw(int framebuffer_width, int framebuffer_height, const glm::mat4& view_projection,
-              const World& world, RenderMode mode = RenderMode::instanced);
+              const World& world, RenderMode mode = RenderMode::instanced, glm::vec3 eye = {9,7,12});
     [[nodiscard]] const RenderStats& stats() const noexcept { return stats_; }
 private:
+    struct Shadows;
+    std::unique_ptr<Shadows> shadows_;
+    std::filesystem::path shaders_;
+    struct Lighting { int vp, light, eye, round, depth; };
+    Lighting individual_light_{}, instance_light_{};
     Shader shader_;
     Shader instanced_shader_;
     std::array<std::vector<std::array<float, 16>>, 12> batches_;

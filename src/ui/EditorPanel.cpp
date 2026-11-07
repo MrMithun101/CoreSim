@@ -22,13 +22,35 @@ void frame(Camera& camera,glm::vec3 target,float radius){
 void EditorPanel::viewport(SandboxEditor& editor,Camera& cam){
     auto& io=ImGui::GetIO();const glm::vec2 size{io.DisplaySize.x,io.DisplaySize.y},mouse{io.MousePos.x,io.MousePos.y};
     if(size.x<1||size.y<1)return;
+    if(!io.WantCaptureMouse && !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) && axis_<0){
+        auto delta=io.MouseDelta;auto d=cam.direction();float distance=std::clamp(glm::distance(cam.position(),focus_),.7F,110.F);
+        auto place=[&](glm::vec3 pos,glm::vec3 direction){
+            pos.y=std::max(pos.y,.18F);cam=Camera(pos,std::atan2(direction.z,direction.x),std::asin(std::clamp(direction.y,-1.F,1.F)));
+        };
+        if(io.KeyAlt && ImGui::IsMouseDragging(0)){
+            const auto offset=focus_-cam.position();
+            if(glm::length(offset)>.001F)d=glm::normalize(offset);
+            Camera orbit({},std::atan2(d.z,d.x),std::asin(d.y));
+            orbit.look(delta.x*.006F*sensitivity,-delta.y*.006F*sensitivity);
+            d=orbit.direction();place(focus_-d*distance,d);
+        } else if(ImGui::IsMouseDragging(2)){
+            auto right=glm::normalize(glm::cross(d,glm::vec3(0,1,0)));auto up=glm::cross(right,d);
+            auto shift=(up*delta.y-right*delta.x)*(distance/size.y)*sensitivity;
+            focus_+=shift;place(cam.position()+shift,d);
+        } else if(io.MouseWheel!=0){
+            auto toward=focus_-cam.position();
+            if(glm::length(toward)>.001F)toward=glm::normalize(toward);else toward=d;
+            float next=std::clamp(distance*std::exp(-io.MouseWheel*.16F*sensitivity),.7F,110.F);
+            place(cam.position()+toward*(distance-next),d);
+        }
+    }
     auto vp=cam.projection(size.x/size.y)*cam.view();
     auto project=[&](glm::vec3 p)->std::optional<glm::vec2>{
         const auto c=vp*glm::vec4(p,1);if(c.w<.1F)return {};
         return glm::vec2{(1+c.x/c.w)*size.x*.5F,(1-c.y/c.w)*size.y*.5F};
     };
     auto* draw=ImGui::GetBackgroundDrawList();
-    const bool click=ImGui::IsMouseClicked(0)&&!io.WantCaptureMouse&&!ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow)&&!ImGui::IsMouseDown(1);
+    const bool click=!io.KeyAlt&&ImGui::IsMouseClicked(0)&&!io.WantCaptureMouse&&!ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow)&&!ImGui::IsMouseDown(1);
     if(!ImGui::IsMouseDown(0))axis_=-1;
     if(auto* item=editor.selected()){
         const auto* t=editor.world().transform(item->entity);
@@ -70,6 +92,16 @@ void EditorPanel::viewport(SandboxEditor& editor,Camera& cam){
 bool EditorPanel::draw(StudioSession& session,Camera& camera){
     auto& e=*session.scene().editor();auto size=ImGui::GetIO().DisplaySize;bool reset_camera=false;
     auto edit=[&](auto action){try{action();error_.clear();}catch(const std::exception& ex){error_=ex.what();}};
+    struct Theme {
+        Theme(){
+            ImGui::PushStyleColor(ImGuiCol_WindowBg,ImVec4(.062F,.077F,.085F,.97F));
+            ImGui::PushStyleColor(ImGuiCol_TitleBgActive,ImVec4(.10F,.16F,.17F,1));
+            ImGui::PushStyleColor(ImGuiCol_Button,ImVec4(.15F,.25F,.26F,1));
+            ImGui::PushStyleColor(ImGuiCol_Header,ImVec4(.13F,.29F,.29F,1));
+            ImGui::PushStyleColor(ImGuiCol_CheckMark,ImVec4(.45F,.82F,.76F,1));
+        }
+        ~Theme(){ImGui::PopStyleColor(5);}
+    } theme;
     try {
         dock("CoreSim Studio",{8,8},{std::max(320.F,size.x-16),65});
         if(ImGui::BeginCombo("##scene", "Sandbox",ImGuiComboFlags_WidthFitPreview)){
@@ -83,8 +115,16 @@ bool EditorPanel::draw(StudioSession& session,Camera& camera){
         ImGui::SameLine();if(ImGui::Button(session.paused()?"Play":"Pause"))session.set_paused(!session.paused());
         ImGui::SameLine();ImGui::BeginDisabled(!session.paused());if(ImGui::Button("Step"))session.request_step();ImGui::EndDisabled();
         ImGui::SameLine();ImGui::Checkbox("Analyze",&analyze);ImGui::SameLine();ImGui::TextDisabled("%zu objects  |  %.2f s",e.items().size(),static_cast<double>(session.ticks())/120.);
+        ImGui::SameLine();if(ImGui::Button("Frame all")){
+            glm::vec3 lo(10000),hi(-10000);bool any=false;
+            for(const auto& item:e.items())if(item.authored.primitive!=Primitive::plane){
+                auto* t=e.world().transform(item.entity);auto r=glm::vec3(glm::length(t->scale));
+                lo=glm::min(lo,t->position-r);hi=glm::max(hi,t->position+r);any=true;
+            }
+            focus_=any?(lo+hi)*.5F:glm::vec3(0);frame(camera,focus_,any?glm::length(hi-lo)*.5F:6.F);
+        }
         ImGui::End();
-        dock("Tools",{8,81},{146,335});
+        dock("Tools",{8,81},{146,365});
         ImGui::BeginDisabled(!e.building());
         for(int i=0;i<4;++i)if(ImGui::Selectable(std::array{"Select","Move","Rotate","Scale"}[static_cast<std::size_t>(i)],tool_==i)){tool_=i;axis_=-1;}
         ImGui::Checkbox("Local axes",&local_);ImGui::SeparatorText("Create");
@@ -94,13 +134,15 @@ bool EditorPanel::draw(StudioSession& session,Camera& camera){
             auto o=primitive_spec(static_cast<Primitive>(i),point);o.pose.position.y+=o.pose.scale.y+.02F;
             edit([&]{e.create(o);tool_=1;});
         }
-        ImGui::EndDisabled();ImGui::End();
+        ImGui::EndDisabled();ImGui::SeparatorText("Navigation");
+        ImGui::SetNextItemWidth(120);ImGui::SliderFloat("##sensitivity",&sensitivity,.35F,2.5F,"Gain %.2f");
+        ImGui::TextDisabled("Alt-drag orbit");ImGui::TextDisabled("Middle-drag pan");ImGui::End();
         dock("Inspector",{std::max(162.F,size.x-276),81},{268,std::max(280.F,size.y-90)});
         if(auto* item=e.selected()){
             auto o=item->authored;
             ImGui::PushID(static_cast<int>(item->entity.index));
             ImGui::Text("%s  /  %u",shapes[static_cast<int>(o.primitive)],item->entity.index);
-            if(ImGui::Button("Frame"))frame(camera,e.world().transform(item->entity)->position,glm::length(o.pose.scale));
+            if(ImGui::Button("Frame")){focus_=e.world().transform(item->entity)->position;frame(camera,focus_,glm::length(o.pose.scale));}
             if(e.building()){
                 bool changed=false;
                 ImGui::SeparatorText("Transform");
